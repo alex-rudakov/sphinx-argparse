@@ -14,9 +14,11 @@ def test_parse_options():
     assert data['options'] == [
         {
             'name': ['--foo'],
+            'default': False,
             'help': 'foo help'
         }, {
             'name': ['--bar'],
+            'default': False,
             'help': ''
         },
     ]
@@ -77,6 +79,7 @@ def test_parse_nested():
             'options': [
                 {
                     'name': ['--upgrade'],
+                    'default': False,
                     'help': 'foo2 help'
                 },
             ]
@@ -96,8 +99,8 @@ def test_parse_nested_traversal():
     subparsers3 = subparser2.add_subparsers()
     subparser3 = subparsers3.add_parser('level3')
 
-    subparser3.add_argument('foo', default=False, help='foo help')
-    subparser3.add_argument('bar', default=False)
+    subparser3.add_argument('foo', help='foo help')
+    subparser3.add_argument('bar')
 
     data = parse_parser(parser)
 

@@ -60,13 +60,13 @@ def print_arg_list(data, nested_content):
                 my_def.append(nodes.paragraph(text='Undocumented'))
 
             items.append(
-                nodes.field('',
-                    nodes.field_name(text=name),
-                    nodes.field_body('', *my_def)
+                nodes.option_list_item('',
+                    nodes.option_group('', nodes.option_string(text=name)),
+                    nodes.description('', *my_def)
                 )
             )
 
-    return nodes.field_list('', *items) if items else None
+    return nodes.option_list('', *items) if items else None
 
 
 
@@ -78,27 +78,39 @@ def print_opt_list(data, nested_content):
 
     if 'options' in data:
         for opt in data['options']:
-            names = [nodes.strong(text=opt['name'][0])]
+
+            names = []
 
             my_def = [nodes.paragraph(text=opt['help'])] if opt['help'] else []
 
-            for name in opt['name'][1:]:
-                names.append(nodes.inline(text=', '))
-                names.append(nodes.inline(text=name))
+            for name in opt['name']:
+
+                print '-' * 40
+                print opt
+                print '-' * 40
+
+                option_declaration = [nodes.option_string(text=name)]
+                if not opt['default'] is None:
+                    option_declaration += nodes.option_argument(text=opt['default'])
+
+                names.append(nodes.option('', *option_declaration))
 
                 my_def = apply_definition(definitions, my_def, name)
+
+
+            print '-' * 40
 
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
 
             items.append(
-                nodes.field('',
-                    nodes.field_name('', '', *names),
-                    nodes.field_body('', *my_def)
+                nodes.option_list_item('',
+                    nodes.option_group('', *names),
+                    nodes.description('', *my_def)
                 )
             )
 
-    return nodes.field_list('', *items) if items else None
+    return nodes.option_list('', *items) if items else None
 
 def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
 

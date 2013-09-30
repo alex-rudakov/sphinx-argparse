@@ -84,6 +84,7 @@ def parse_parser(parser, data=None):
 
         data['options'].append({
             'name': action.option_strings,
+            'default': action.default,
             'help': action.help or ''
         })
 
