@@ -85,20 +85,14 @@ def print_opt_list(data, nested_content):
 
             for name in opt['name']:
 
-                print '-' * 40
-                print opt
-                print '-' * 40
-
                 option_declaration = [nodes.option_string(text=name)]
                 if not opt['default'] is None:
-                    option_declaration += nodes.option_argument(text=opt['default'])
+                    option_declaration += nodes.option_argument('', text='=' + str(opt['default']))
 
                 names.append(nodes.option('', *option_declaration))
 
                 my_def = apply_definition(definitions, my_def, name)
 
-
-            print '-' * 40
 
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
