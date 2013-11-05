@@ -122,7 +122,7 @@ def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
             nodes.definition('', opt_list)
         ))
 
-    if sub_list:
+    if sub_list and len(sub_list):
         items.append(nodes.definition_list_item('',
             nodes.term(text='Sub-commands:'),
             nodes.definition('', sub_list)
