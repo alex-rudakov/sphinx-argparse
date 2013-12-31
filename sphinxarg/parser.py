@@ -35,10 +35,26 @@ def parser_navigate(parser_result, path, current_path=None):
     ))
 
 
+def _try_add_parser_attribute(data, parser, attribname):
+
+    attribval = getattr(parser, attribname, None)
+    if attribval is None:
+        return
+
+    if not isinstance(attribval, str):
+        return
+
+    if len(attribval) > 0:
+        data[attribname] = attribval
+
+
 def parse_parser(parser, data=None):
 
     if data is None:
         data = {'name': '', 'usage': parser.format_usage()}
+
+    _try_add_parser_attribute(data, parser, 'description')
+    _try_add_parser_attribute(data, parser, 'epilog')
 
     for action in parser._get_positional_actions():
 
