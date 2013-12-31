@@ -193,8 +193,6 @@ class ArgParseDirective(Directive):
 
     option_spec = dict(module=unchanged, func=unchanged, prog=unchanged, path=unchanged)
 
-
-
     def run(self):
 
         mod = __import__(self.options['module'], globals(), locals(), [self.options['func']])
@@ -222,6 +220,9 @@ class ArgParseDirective(Directive):
             if not isinstance(item, nodes.definition_list):
                 items.append(item)
 
+        if 'description' in result:
+            items.append(nodes.paragraph(text=result['description']))
+
         items.append(nodes.literal_block(text=result['usage']))
 
         items.append(print_command_args_and_opts(
@@ -230,6 +231,8 @@ class ArgParseDirective(Directive):
             print_subcommand_list(result, nested_content)
         ))
 
+        if 'epilog' in result:
+            items.append(nodes.paragraph(text=result['epilog']))
 
         return items
 

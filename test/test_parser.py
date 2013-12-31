@@ -42,6 +42,28 @@ def test_parse_positional():
     ]
 
 
+def test_parse_description():
+    parser = argparse.ArgumentParser(description='described', epilog='epilogged')
+    parser.add_argument('foo', default=False, help='foo help')
+    parser.add_argument('bar', default=False)
+
+    data = parse_parser(parser)
+
+    assert data['description'] == 'described'
+
+    assert data['epilog'] == 'epilogged'
+
+    assert data['args'] == [
+        {
+            'name': 'foo',
+            'help': 'foo help'
+        }, {
+            'name': 'bar',
+            'help': ''
+        },
+    ]
+
+
 def test_parse_nested():
     parser = argparse.ArgumentParser()
     parser.add_argument('foo', default=False, help='foo help')
