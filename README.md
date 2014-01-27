@@ -11,6 +11,11 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog:
 
 ------------------------------
+0.1.6
+
+Adding :nodefault: directive that skips default values for options (Stephen Tridgell)
+
+------------------------------
 0.1.5
 
 Fix issue: epilog is ignored (James Anderson - https://github.com/jamesra)
