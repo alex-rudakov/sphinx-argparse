@@ -191,7 +191,7 @@ class ArgParseDirective(Directive):
 
     has_content = True
 
-    option_spec = dict(module=unchanged, func=unchanged, prog=unchanged, path=unchanged)
+    option_spec = dict(module=unchanged, func=unchanged, prog=unchanged, path=unchanged, nodefault=flag)
 
     def run(self):
 
@@ -206,7 +206,8 @@ class ArgParseDirective(Directive):
 
         parser.prog = self.options['prog']
 
-        result = parse_parser(parser)
+        result = parse_parser(parser,
+                              skip_default_values='nodefault' in self.options)
         result = parser_navigate(result, path)
 
         nested_content = nodes.paragraph()

@@ -24,6 +24,36 @@ def test_parse_options():
     ]
 
 
+def test_parse_default():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--foo', default='123')
+
+    data = parse_parser(parser)
+
+    assert data['options'] == [
+        {
+            'name': ['--foo'],
+            'default': '123',
+            'help': ''
+        }
+    ]
+
+
+def test_parse_default_skip_default():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--foo', default='123')
+
+    data = parse_parser(parser, skip_default_values=True)
+
+    assert data['options'] == [
+        {
+            'name': ['--foo'],
+            'default': '==SUPPRESS==',
+            'help': ''
+        }
+    ]
+
+
 def test_parse_positional():
     parser = argparse.ArgumentParser()
     parser.add_argument('foo', default=False, help='foo help')

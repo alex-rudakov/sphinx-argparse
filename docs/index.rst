@@ -82,6 +82,12 @@ Nesting level is not limited::
        :path: install subcomand1 subcommand2 subcommand3
 
 
+Other useful directives
+-----------------------------------------
+
+:nodefault: will hide all default values of options.
+
+
 Extending result of `argparse` directive
 -----------------------------------------
 
