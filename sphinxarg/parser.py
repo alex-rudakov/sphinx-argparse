@@ -64,7 +64,7 @@ def parse_parser(parser, data=None, **kwargs):
             for item in action._choices_actions:
                 helps[item.dest] = item.help
 
-            for name, subaction in action._name_parser_map.iteritems():
+            for name, subaction in action._name_parser_map.items():
                 subaction.prog = '%s %s' % (parser.prog, name)
                 subdata = {
                     'name': name,

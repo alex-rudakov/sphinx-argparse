@@ -24,4 +24,8 @@ setup(
     description='Sphinx extension that automatically document argparse commands and options',
     long_description='',
     install_requires=deps,
+
+    extras_require={
+        'dev': ['pytest'],
+    }
 )
