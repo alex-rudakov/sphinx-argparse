@@ -11,6 +11,11 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog:
 
 ------------------------------
+0.1.7
+
+Argparse is not required anymore separate module as of python 2.7 (Mike Gleen)
+
+------------------------------
 0.1.6
 
 Adding :nodefault: directive that skips default values for options (Stephen Tridgell)

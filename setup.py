@@ -1,10 +1,18 @@
+from distutils.version import StrictVersion
 import os
 from setuptools import setup
 # from tests import PyTest
+import sys
+
+deps = ["sphinx"]
+
+# argparse was added to python stdlib since 2.7
+if StrictVersion(sys.version.split(' ')[0]) < StrictVersion('2.7.0'):
+    deps.append('argparse')
 
 setup(
     name='sphinx-argparse',
-    version='0.1.6',
+    version='0.1.7',
     packages=[
         'sphinxarg',
     ],
@@ -15,7 +23,5 @@ setup(
     author_email='ribozz@gmail.com',
     description='Sphinx extension that automatically document argparse commands and options',
     long_description='',
-    install_requires=[
-        "argparse", "sphinx"
-    ],
+    install_requires=deps,
 )
