@@ -6,13 +6,12 @@ import sys
 
 deps = ["sphinx"]
 
-# argparse was added to python stdlib since 2.7
-if StrictVersion(sys.version.split(' ')[0]) < StrictVersion('2.7.0'):
+if sys.version_info[:2] == (2, 6):
     deps.append('argparse')
 
 setup(
     name='sphinx-argparse',
-    version='0.1.7',
+    version='0.1.8',
     packages=[
         'sphinxarg',
     ],
