@@ -11,14 +11,19 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog:
 
 ------------------------------
-0.1.8
+0.1.9
 
 Fix problem with python version comparison, when python reports it as "2.7.5+" (Alex Rudakov)
 
 ------------------------------
-0.1.7
+0.1.8
 
 Argparse is not required anymore separate module as of python 2.7 (Mike Gleen)
+
+------------------------------
+0.1.7
+
+-- Nothing -- Created by axident.
 
 ------------------------------
 0.1.6
