@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>sphinx-argparse &mdash; sphinx-argparse 0.1.0 documentation</title>
+    <title>sphinx-argparse &mdash; sphinx-argparse 0.1.9 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="sphinx-argparse 0.1.0 documentation" href="#" /> 
+    <link rel="top" title="sphinx-argparse 0.1.9 documentation" href="#" /> 
   </head>
   <body>
     <div class="related">
@@ -32,7 +32,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="#">sphinx-argparse 0.1.0 documentation</a> &raquo;</li> 
+        <li><a href="#">sphinx-argparse 0.1.9 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -47,27 +47,28 @@
 for command line tools based on argparse library.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>This extension requires is tested on python 2.7. If you have successfully used it on any other version
+<p>This extension is tested on python 2.7 and python 3.3 (via py.test, see below). If you have successfully used it on any other version
 of python, then add this info to this doc please (through gihtub pull reuqest).</p>
-<p>Package is  available in the Python Package Index:</p>
-<div class="highlight-python"><pre>pip install sphinx-argparse</pre>
+<p>Package is available in the Python Package Index:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install sphinx-argparse
+</pre></div>
 </div>
-<p>And enable extension in your sphinx config:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">extansions</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;sphinxarg.ext&#39;</span><span class="p">]</span>
+<p>Enable extension in your sphinx config:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">extensions</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;sphinxarg.ext&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="basic-usage">
 <h2>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
-<p>Extension add &#8220;argparse&#8221; directive you can use in your documentation:</p>
-<div class="highlight-python"><pre>.. argparse::
+<p>Extension adds &#8220;argparse&#8221; directive:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. argparse::
    :module: my.module
    :func: my_func_that_return_parser
-   :prog: fancytool</pre>
+   :prog: fancytool
+</pre></div>
 </div>
-<p>module, func and prog options are required, don&#8217;t try to use this directive without them, you may get some nasty
-errors otherwise.</p>
-<p>For this directive to work you should point it to the function that will return pre-filled ArgumentParser.
+<p><cite>module</cite>, <cite>func</cite> and <cite>prog</cite> options are required.</p>
+<p>For this directive to work, you should point it to the function, that will return pre-filled <cite>ArgumentParser</cite>.
 Something like:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">my_func_that_return_parser</span><span class="p">():</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
@@ -85,44 +86,57 @@ Something like:</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">We will use this example as reference later, so take a look at it time to time during reading.</p>
+<p class="last">We will use this example as a reference for every example in this doc.</p>
 </div>
 <dl class="docutils">
 <dt>:module:</dt>
-<dd>Module name where function is located</dd>
+<dd>Module name, where the function is located</dd>
 <dt>:func:</dt>
 <dd>Function name</dd>
 <dt>:prog:</dt>
-<dd>It&#8217;s just name of your tool (or how it&#8217;s should be presented in documentation). Ex. if you run your script as
+<dd>It&#8217;s just name of your tool (or how it&#8217;s should appear in your documentation). Ex. if you run your script as
 <cite>./boo &#8211;some args</cite> then :prog: will be &#8220;boo&#8221;</dd>
 </dl>
 <p>That&#8217;s it. Directive will render positional arguments, options and sub-commands.</p>
-<p>Sub-commands are limited to one level. But, you always able to render help for sub-commands:</p>
-<div class="highlight-python"><pre>.. argparse::
+<p>Sub-commands are limited to one level. But, you always can output help for subcommands separately:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. argparse::
    :module: my.module
    :func: my_func_that_return_parser
    :prog: fancytool
-   :path: install</pre>
+   :path: install
+</pre></div>
 </div>
 <p>This will render same doc for &#8220;install&#8221; subcommand.</p>
 <p>Nesting level is not limited:</p>
-<div class="highlight-python"><pre>.. argparse::
+<div class="highlight-python"><div class="highlight"><pre>.. argparse::
    :module: my.module
    :func: my_func_that_return_parser
    :prog: fancytool
-   :path: install subcomand1 subcommand2 subcommand3</pre>
+   :path: install subcomand1 subcommand2 subcommand3
+</pre></div>
 </div>
+</div>
+<div class="section" id="other-useful-directives">
+<h2>Other useful directives<a class="headerlink" href="#other-useful-directives" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nodefault:</th><td class="field-body">will hide all default values of options.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="extending-result-of-argparse-directive">
 <h2>Extending result of <cite>argparse</cite> directive<a class="headerlink" href="#extending-result-of-argparse-directive" title="Permalink to this headline">¶</a></h2>
-<p>You can add extra content, or even replace some part of documentation generated by directive.
-For example any content you put inside, will be inserted, just before argument and option list:</p>
-<div class="highlight-python"><pre>.. argparse::
+<p>You can add extra content or even replace some part of documentation generated by <cite>argparse</cite> directive.
+For example, any content you put inside directive (follow reText identation rules), will be inserted, just before argument and option list:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. argparse::
     :module: my.module
     :func: my_func_that_return_parser
     :prog: fancytool
 
-    My content that will be inserted as extra, right before argument list.
+    My content here that will be inserted as extra, right before argument list.
 
     Also any valid markup...
     *************************
@@ -131,28 +145,30 @@ For example any content you put inside, will be inserted, just before argument a
 
     including::
 
-         any directives you usually use.</pre>
+         any directives you usually use.
+</pre></div>
 </div>
-<p>Also there is an option to insert own content into argument/option/subcommand description. Just creaete definition-list
-where the name is argument/option/subcommand name and definition-body is nay text:</p>
-<div class="highlight-python"><pre>.. argparse::
+<p>Also, there is an option to insert own content into argument/option/subcommand description. Just create definition-list,
+where name is argument/option/subcommand name and definition-body is any reStructured markup:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. argparse::
     :module: my.module
     :func: my_func_that_return_parser
     :prog: fancytool
 
-    My content that will be inserted as extra, right before argument list.
+    My content here that will be inserted as extra right before argument list.
 
     foo
-         This text will go right after "foo" positional argument help.
+         This text will go right after &quot;foo&quot; positional argument help.
 
     install
-         This text will go right after "install" subcommand help and befor it arguments.
+         This text will go right after &quot;install&quot; subcommand help and before it&#39;s arguments.
 
          --upgrade
-             This text will go to upgrade option of install subcommand, nesting is not limited</pre>
+             This text will go to upgrade option of install subcommand, nesting is not limited
+</pre></div>
 </div>
-<p>You can also add classifiers to definition-list to change behavior of content merge:</p>
-<div class="highlight-python"><pre>.. argparse::
+<p>You can also add classifiers to definition-list that will change behavior of content merge algorythm:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. argparse::
     :module: my.module
     :func: my_func_that_return_parser
     :prog: fancytool
@@ -160,13 +176,14 @@ where the name is argument/option/subcommand name and definition-body is nay tex
     My content that will be inserted as extra, right before argument list.
 
     foo : @before
-         This text will go right after "foo" positional argument help.
+         This text will go right after &quot;foo&quot; positional argument help.
 
     install : @replace
-         This text will go right after "install" subcommand help and befor it arguments.
+         This text will go right after &quot;install&quot; subcommand help and befor it&#39;s arguments.
 
          --upgrade : @after
-             This text will go to upgrade option of install subcommand, nesting is not limited</pre>
+             This text will go to upgrade option of install subcommand, nesting is not limited
+</pre></div>
 </div>
 <dl class="docutils">
 <dt>&#64;before</dt>
@@ -181,26 +198,28 @@ where the name is argument/option/subcommand name and definition-body is nay tex
 </div>
 <div class="section" id="example-structure-of-pages">
 <h2>Example structure of pages<a class="headerlink" href="#example-structure-of-pages" title="Permalink to this headline">¶</a></h2>
-<p>Here is example structure of documentation for complex command with lot&#8217;s of subcommands.
-You are free to use any structure, but this may be a good starting point</p>
+<p>Here is example structure of documentation for complex commands with lots of subcommands.
+You are free to use any structure, but this may be a good starting point.</p>
 <p>File &#8220;index.rst&#8221;:</p>
-<div class="highlight-python"><pre>.. toctree::
+<div class="highlight-python"><div class="highlight"><pre>.. toctree::
    :maxdepth: 2
 
-   cmd</pre>
+   cmd
+</pre></div>
 </div>
 <p>File &#8220;cmd.rst&#8221;:</p>
-<div class="highlight-python"><pre>Command line utitlites
+<div class="highlight-python"><div class="highlight"><pre>Command line utitlites
 ***********************
 
 .. toctree::
    :maxdepth: 1
 
    cmd_main
-   cmd_subcommand</pre>
+   cmd_subcommand
+</pre></div>
 </div>
 <p>File &#8220;cmd_main.rst&#8221;:</p>
-<div class="highlight-python"><pre>Fancytool command
+<div class="highlight-python"><div class="highlight"><pre>Fancytool command
 ***********************
 
 .. argparse::
@@ -210,26 +229,37 @@ You are free to use any structure, but this may be a good starting point</p>
 
    subcommand
         Here we add reference to subcommand, to simplify navigation.
-        See :doc:`cmd_subcommand`</pre>
+        See :doc:`cmd_subcommand`
+</pre></div>
 </div>
 <p>File &#8220;cmd_subcommand.rst&#8221;:</p>
-<div class="highlight-python"><pre>Subcommand command
+<div class="highlight-python"><div class="highlight"><pre>Subcommand command
 ***********************
 
 .. argparse::
    :module: my.module
    :func: my_func_that_return_parser
    :prog: fancytool
-   :path: subcommand</pre>
+   :path: subcommand
+</pre></div>
 </div>
 </div>
 <div class="section" id="contribution">
 <h2>Contribution<a class="headerlink" href="#contribution" title="Permalink to this headline">¶</a></h2>
 <p>Any help is welcome!
-Contributions are accepted through github pull-request.
+Most wanted:
+* documentation correction (I am not native english speaker)
+* bugfixes
+* examples
+* ports for other libraries (optparse, what else?)</p>
+<p>Contributions are accepted through github pull-request.
 Bug reports are also through bug-tracker on github.</p>
 <p><a class="reference external" href="https://github.com/ribozz/sphinx-argparse">https://github.com/ribozz/sphinx-argparse</a></p>
-<p>Don&#8217;t forget to run test befor making commit: <cite>py.test</cite> ;)</p>
+<p>Don&#8217;t forget to run tests before commit:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">py</span><span class="o">.</span><span class="n">test</span>
+</pre></div>
+</div>
+<p>Any feedback is welcome: ribozz (a) gmail dot com</p>
 </div>
 </div>
 
@@ -244,6 +274,7 @@ Bug reports are also through bug-tracker on github.</p>
 <li><a class="reference internal" href="#"><cite>sphinx-argparse</cite></a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#basic-usage">Basic usage</a></li>
+<li><a class="reference internal" href="#other-useful-directives">Other useful directives</a></li>
 <li><a class="reference internal" href="#extending-result-of-argparse-directive">Extending result of <cite>argparse</cite> directive</a></li>
 <li><a class="reference internal" href="#example-structure-of-pages">Example structure of pages</a></li>
 <li><a class="reference internal" href="#contribution">Contribution</a></li>
@@ -279,12 +310,12 @@ Bug reports are also through bug-tracker on github.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="#">sphinx-argparse 0.1.0 documentation</a> &raquo;</li> 
+        <li><a href="#">sphinx-argparse 0.1.9 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Alex Rudakov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2b1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.1.
     </div>
   </body>
 </html>
