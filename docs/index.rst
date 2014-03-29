@@ -8,10 +8,10 @@ for command line tools based on argparse library.
 Installation
 ------------
 
-This extension is tested on python 2.7. If you have successfully used it on any other version
+This extension is tested on python 2.7 and python 3.3 (via py.test, see below). If you have successfully used it on any other version
 of python, then add this info to this doc please (through gihtub pull reuqest).
 
-Package is  available in the Python Package Index::
+Package is available in the Python Package Index::
 
     pip install sphinx-argparse
 
@@ -220,7 +220,7 @@ Contribution
 -----------------------------------------
 
 Any help is welcome!
-Most wanted: 
+Most wanted:
 * documentation correction (I am not native english speaker)
 * bugfixes
 * examples
@@ -233,6 +233,6 @@ https://github.com/ribozz/sphinx-argparse
 
 Don't forget to run tests before commit::
 
-    py.test`
+    py.test
 
 Any feedback is welcome: ribozz (a) gmail dot com

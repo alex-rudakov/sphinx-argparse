@@ -185,7 +185,12 @@ def print_subcommand_list(data, nested_content):
 
     return nodes.definition_list('', *items)
 
-
+def get_ref(obj, attr):
+    """ Handle things that are subattributes and subsubattributes ... perhaps there is a better way? """
+    item = obj
+    for x in attr.split('.'):
+        item = getattr(item, x)
+    return(item)
 
 class ArgParseDirective(Directive):
 
@@ -195,8 +200,9 @@ class ArgParseDirective(Directive):
 
     def run(self):
 
-        mod = __import__(self.options['module'], globals(), locals(), [self.options['func']])
-        func = getattr(mod, self.options['func'])
+        mod = __import__(self.options['module'], globals(), locals(), self.options['module'].split('.')[-1:])
+        func = get_ref(mod, self.options['func'])
+
 
         parser = func()
 
