@@ -34,3 +34,5 @@ nosetests.xml
 .project
 .idea
 .pydevproject
+.env/
+
