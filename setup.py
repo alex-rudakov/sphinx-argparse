@@ -11,7 +11,7 @@ if sys.version_info[:2] == (2, 6):
 
 setup(
     name='sphinx-argparse',
-    version='0.1.9',
+    version='0.1.10',
     packages=[
         'sphinxarg',
     ],
@@ -25,6 +25,6 @@ setup(
     install_requires=deps,
 
     extras_require={
-        'dev': ['pytest'],
+        'dev': ['pytest', 'sphinx_rtd_theme', 'sphinx'],
     }
 )

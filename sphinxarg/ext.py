@@ -1,4 +1,4 @@
-from argparse import _HelpAction, _SubParsersAction
+from argparse import _HelpAction, _SubParsersAction, ArgumentParser
 from docutils import nodes
 from sphinx.util.compat import Directive
 from sphinx.util.compat import make_admonition
@@ -59,6 +59,9 @@ def print_arg_list(data, nested_content):
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
 
+            if 'choices' in arg:
+                my_def.append(nodes.paragraph(text=('Possible choices: %s' % ', '.join(arg['choices']))))
+
             items.append(
                 nodes.option_list_item('',
                     nodes.option_group('', nodes.option_string(text=name)),
@@ -96,6 +99,10 @@ def print_opt_list(data, nested_content):
 
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
+
+            if 'choices' in opt:
+                my_def.append(nodes.paragraph(text=('Possible choices: %s' % ', '.join(opt['choices']))))
+
 
             items.append(
                 nodes.option_list_item('',
@@ -191,14 +198,28 @@ class ArgParseDirective(Directive):
 
     has_content = True
 
-    option_spec = dict(module=unchanged, func=unchanged, prog=unchanged, path=unchanged, nodefault=flag)
+    option_spec = dict(module=unchanged, func=unchanged, ref=unchanged, prog=unchanged, path=unchanged, nodefault=flag)
 
     def run(self):
 
-        mod = __import__(self.options['module'], globals(), locals(), [self.options['func']])
-        func = getattr(mod, self.options['func'])
+        if 'module' in self.options and 'func' in self.options:
+            module_name = self.options['module']
+            attr_name = self.options['func']
+        elif 'ref' in self.options:
+            _parts = self.options['ref'].split('.')
+            module_name = '.'.join(_parts[0:-1])
+            attr_name = _parts[-1]
+            print attr_name
+        else:
+            raise ValueError(':module: and :func: should be specified, or :ref:')
 
-        parser = func()
+        mod = __import__(module_name, globals(), locals(), [attr_name])
+        func = getattr(mod, attr_name)
+
+        if isinstance(func, ArgumentParser):
+            parser = func
+        else:
+            parser = func()
 
         if not 'path' in self.options:
             self.options['path'] = ''

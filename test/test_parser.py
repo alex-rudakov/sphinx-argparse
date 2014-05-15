@@ -39,6 +39,38 @@ def test_parse_default():
     ]
 
 
+def test_parse_arg_choices():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('move', choices=['rock', 'paper', 'scissors'])
+
+    data = parse_parser(parser)
+
+    assert data['args'] == [
+        {
+            'name': 'move',
+            'help': '',
+            'choices': ['rock', 'paper', 'scissors']
+        }
+    ]
+
+
+def test_parse_opt_choices():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--move', choices=['rock', 'paper', 'scissors'])
+
+    data = parse_parser(parser)
+
+    assert data['options'] == [
+        {
+            'name': ['--move'],
+            'default': None,
+            'help': '',
+            'choices': ['rock', 'paper', 'scissors']
+        }
+    ]
+
+
+
 def test_parse_default_skip_default():
     parser = argparse.ArgumentParser()
     parser.add_argument('--foo', default='123')
@@ -121,7 +153,7 @@ def test_parse_nested():
         {
             'name': 'install',
             'help': 'install help',
-            'usage': 'usage: py.test install [-h] [--upgrade] ref\n',
+            'usage': 'usage: py.test install [-h] [--upgrade] ref',
             'args': [
                 {
                     'name': 'ref',
@@ -173,7 +205,7 @@ def test_parse_nested_traversal():
                 {
                     'name': 'level3',
                     'help': '',
-                    'usage': 'usage: py.test level1 level2 level3 [-h] foo bar\n',
+                    'usage': 'usage: py.test level1 level2 level3 [-h] foo bar',
                     'args': [
                         {
                             'name': 'foo',

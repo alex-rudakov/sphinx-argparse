@@ -69,7 +69,7 @@ def parse_parser(parser, data=None, **kwargs):
                 subdata = {
                     'name': name,
                     'help': helps[name] if name in helps else '',
-                    'usage': subaction.format_usage()
+                    'usage': subaction.format_usage().strip()
                 }
                 parse_parser(subaction, subdata, **kwargs)
 
@@ -82,14 +82,20 @@ def parse_parser(parser, data=None, **kwargs):
         if not 'args' in data:
             data['args'] = []
 
-        data['args'].append({
+        arg = {
             'name': action.dest,
             'help': action.help or ''
-        })
+        }
+        if action.choices:
+            arg['choices'] = action.choices
+
+        data['args'].append(arg)
 
     show_defaults = (not 'skip_default_values' in kwargs) or (kwargs['skip_default_values'] == False)
 
     for action in parser._get_optional_actions():
+
+        #
 
         if isinstance(action, _HelpAction):
             continue
@@ -97,10 +103,15 @@ def parse_parser(parser, data=None, **kwargs):
         if not 'options' in data:
             data['options'] = []
 
-        data['options'].append({
+        option = {
             'name': action.option_strings,
             'default': action.default if show_defaults else '==SUPPRESS==',
             'help': action.help or ''
-        })
+        }
+
+        if action.choices:
+            option['choices'] = action.choices
+
+        data['options'].append(option)
 
     return data

@@ -11,6 +11,14 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog:
 
 ------------------------------
+0.1.10
+
+- Remove the ugly new line in the end of usage string (Vadim Markovtsev)
+- Issue #9 Display argument choises (Proposed by Felix-neko, done by Alex Rudakov)
+- :ref: syntax for specifying path to parser instance. Issue #7 (Proposed by David Cottrell, Implemented by Alex Rudakov)
+- Updated docs to read the docs theme
+
+------------------------------
 0.1.9
 
 Fix problem with python version comparison, when python reports it as "2.7.5+" (Alex Rudakov)
