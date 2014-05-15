@@ -48,7 +48,7 @@ def _try_add_parser_attribute(data, parser, attribname):
 
 def parse_parser(parser, data=None, **kwargs):
     if data is None:
-        data = {'name': '', 'usage': parser.format_usage()}
+        data = {'name': '', 'usage': parser.format_usage().strip()}
 
     _try_add_parser_attribute(data, parser, 'description')
     _try_add_parser_attribute(data, parser, 'epilog')
