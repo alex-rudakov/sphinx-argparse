@@ -209,7 +209,6 @@ class ArgParseDirective(Directive):
             _parts = self.options['ref'].split('.')
             module_name = '.'.join(_parts[0:-1])
             attr_name = _parts[-1]
-            print attr_name
         else:
             raise ValueError(':module: and :func: should be specified, or :ref:')
 

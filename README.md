@@ -11,6 +11,12 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog:
 
 ------------------------------
+0.1.11
+
+- Fixed stupid bug, prevented things working on py3 (Alex Rudakov)
+- added tox configuration for tests
+
+------------------------------
 0.1.10
 
 - Remove the ugly new line in the end of usage string (Vadim Markovtsev)
