@@ -11,6 +11,11 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog:
 
 ------------------------------
+0.1.12
+
+- Improved error reporting (James Anderson)
+
+------------------------------
 0.1.11
 
 - Fixed stupid bug, prevented things working on py3 (Alex Rudakov)
