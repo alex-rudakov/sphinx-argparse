@@ -89,7 +89,7 @@ def parse_parser(parser, data=None, **kwargs):
 
         data['args'].append(arg)
 
-    show_defaults = (not 'skip_default_values' in kwargs) or (kwargs['skip_default_values'] == False)
+    show_defaults = (not 'skip_default_values' in kwargs) or (kwargs['skip_default_values'] is False)
 
     for action in parser._get_optional_actions():
 
