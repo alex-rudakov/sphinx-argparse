@@ -1,8 +1,6 @@
-from distutils.version import StrictVersion
-import os
+import sys
 from setuptools import setup
 # from tests import PyTest
-import sys
 
 deps = ["sphinx"]
 
