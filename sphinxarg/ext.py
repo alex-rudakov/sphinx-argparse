@@ -1,8 +1,7 @@
-from argparse import _HelpAction, _SubParsersAction, ArgumentParser
+from argparse import ArgumentParser
 from docutils import nodes
 from sphinx.util.compat import Directive
-from sphinx.util.compat import make_admonition
-from docutils.parsers.rst.directives import flag, unchanged, nonnegative_int
+from docutils.parsers.rst.directives import flag, unchanged
 from sphinxarg.parser import parse_parser, parser_navigate
 
 
