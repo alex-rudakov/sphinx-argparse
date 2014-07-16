@@ -129,7 +129,6 @@ def print_subcommand_list(data, nested_content):
         for child in data['children']:
             my_def = [nodes.paragraph(text=child['help'])] if child['help'] else []
             name = child['name']
-            nested_def = definitions[name] if name in definitions else []
             my_def = apply_definition(definitions, my_def, name)
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
