@@ -11,30 +11,33 @@ def map_nested_definitions(nested_content):
     # build definition dictionary
     definitions = {}
     for item in nested_content:
-        if isinstance(item, nodes.definition_list):
-            for subitem in item:
-                if isinstance(subitem, nodes.definition_list_item):
-                    if len(subitem.children) > 0:
-                        classifier = '@after'
-                        idx = subitem.first_child_matching_class(nodes.classifier)
-                        if not idx is None:
-                            ci = subitem[idx]
-                            if len(ci.children) > 0:
-                                classifier = ci.children[0].astext()
+        if not isinstance(item, nodes.definition_list):
+            continue
+        for subitem in item:
+            if not isinstance(subitem, nodes.definition_list_item):
+                continue
+            if not len(subitem.children) > 0:
+                continue
+            classifier = '@after'
+            idx = subitem.first_child_matching_class(nodes.classifier)
+            if not idx is None:
+                ci = subitem[idx]
+                if len(ci.children) > 0:
+                    classifier = ci.children[0].astext()
 
-                        if not classifier is None and not classifier in ('@replace', '@before', '@after'):
-                            raise Exception('Unknown classifier: %s' % classifier)
+            if not classifier is None and not classifier in ('@replace', '@before', '@after'):
+                raise Exception('Unknown classifier: %s' % classifier)
 
-                        idx = subitem.first_child_matching_class(nodes.term)
-                        if not idx is None:
-                            ch = subitem[idx]
-                            if len(ch.children) > 0:
-                                term = ch.children[0].astext()
-                                idx = subitem.first_child_matching_class(nodes.definition)
-                                if not idx is None:
-                                    def_node = subitem[idx]
-                                    def_node.attributes['classifier'] = classifier
-                                    definitions[term] = def_node
+            idx = subitem.first_child_matching_class(nodes.term)
+            if not idx is None:
+                ch = subitem[idx]
+                if len(ch.children) > 0:
+                    term = ch.children[0].astext()
+                    idx = subitem.first_child_matching_class(nodes.definition)
+                    if not idx is None:
+                        def_node = subitem[idx]
+                        def_node.attributes['classifier'] = classifier
+                        definitions[term] = def_node
     return definitions
 
 
