@@ -18,7 +18,9 @@ def parser_navigate(parser_result, path, current_path=None):
         return parser_result
 
     if not 'children' in parser_result:
-        raise NavigationException('Current parser have no children elements. (path: %s)' % ' '.join(current_path))
+        raise NavigationException(
+            'Current parser have no children elements.  (path: %s)' %
+            ' '.join(current_path))
 
     next_hop = path.pop(0)
 
@@ -27,9 +29,9 @@ def parser_navigate(parser_result, path, current_path=None):
             current_path.append(next_hop)
             return parser_navigate(child, path, current_path)
 
-    raise NavigationException('Current parser have no children element with name: %s  (path: %s)' % (
-        next_hop, ' '.join(current_path)
-    ))
+    raise NavigationException(
+        'Current parser have no children element with name: %s  (path: %s)' % (
+            next_hop, ' '.join(current_path)))
 
 
 def _try_add_parser_attribute(data, parser, attribname):
@@ -89,7 +91,9 @@ def parse_parser(parser, data=None, **kwargs):
 
         data['args'].append(arg)
 
-    show_defaults = (not 'skip_default_values' in kwargs) or (kwargs['skip_default_values'] is False)
+    show_defaults = (
+        (not 'skip_default_values' in kwargs)
+        or (kwargs['skip_default_values'] is False))
 
     for action in parser._get_optional_actions():
 
