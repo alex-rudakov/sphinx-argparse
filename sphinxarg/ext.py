@@ -51,8 +51,8 @@ def print_arg_list(data, nested_content):
             if 'choices' in arg:
                 my_def.append(nodes.paragraph(text=('Possible choices: %s' % ', '.join(arg['choices']))))
             items.append(
-                nodes.option_list_item('',
-                    nodes.option_group('', nodes.option_string(text=name)),
+                nodes.option_list_item(
+                    '', nodes.option_group('', nodes.option_string(text=name)),
                     nodes.description('', *my_def)
                 )
             )
@@ -77,8 +77,8 @@ def print_opt_list(data, nested_content):
             if 'choices' in opt:
                 my_def.append(nodes.paragraph(text=('Possible choices: %s' % ', '.join(opt['choices']))))
             items.append(
-                nodes.option_list_item('',
-                    nodes.option_group('', *names),
+                nodes.option_list_item(
+                    '', nodes.option_group('', *names),
                     nodes.description('', *my_def)
                 )
             )
@@ -88,18 +88,18 @@ def print_opt_list(data, nested_content):
 def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
     items = []
     if arg_list:
-        items.append(nodes.definition_list_item('',
-            nodes.term(text='Positional arguments:'),
+        items.append(nodes.definition_list_item(
+            '', nodes.term(text='Positional arguments:'),
             nodes.definition('', arg_list)
         ))
     if opt_list:
-        items.append(nodes.definition_list_item('',
-            nodes.term(text='Options:'),
+        items.append(nodes.definition_list_item(
+            '', nodes.term(text='Options:'),
             nodes.definition('', opt_list)
         ))
     if sub_list and len(sub_list):
-        items.append(nodes.definition_list_item('',
-            nodes.term(text='Sub-commands:'),
+        items.append(nodes.definition_list_item(
+            '', nodes.term(text='Sub-commands:'),
             nodes.definition('', sub_list)
         ))
     return nodes.definition_list('', *items)
