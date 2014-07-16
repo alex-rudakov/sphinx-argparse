@@ -20,21 +20,21 @@ def map_nested_definitions(nested_content):
                 continue
             classifier = '@after'
             idx = subitem.first_child_matching_class(nodes.classifier)
-            if not idx is None:
+            if idx is not None:
                 ci = subitem[idx]
                 if len(ci.children) > 0:
                     classifier = ci.children[0].astext()
 
-            if not classifier is None and not classifier in ('@replace', '@before', '@after'):
+            if classifier is not None and not classifier in ('@replace', '@before', '@after'):
                 raise Exception('Unknown classifier: %s' % classifier)
 
             idx = subitem.first_child_matching_class(nodes.term)
-            if not idx is None:
+            if idx is not None:
                 ch = subitem[idx]
                 if len(ch.children) > 0:
                     term = ch.children[0].astext()
                     idx = subitem.first_child_matching_class(nodes.definition)
-                    if not idx is None:
+                    if idx is not None:
                         def_node = subitem[idx]
                         def_node.attributes['classifier'] = classifier
                         definitions[term] = def_node
@@ -71,7 +71,7 @@ def print_opt_list(data, nested_content):
             my_def = [nodes.paragraph(text=opt['help'])] if opt['help'] else []
             for name in opt['name']:
                 option_declaration = [nodes.option_string(text=name)]
-                if not opt['default'] is None and opt['default'] != '==SUPPRESS==':
+                if opt['default'] is not None and opt['default'] != '==SUPPRESS==':
                     option_declaration += nodes.option_argument('', text='=' + str(opt['default']))
                 names.append(nodes.option('', *option_declaration))
                 my_def = apply_definition(definitions, my_def, name)
