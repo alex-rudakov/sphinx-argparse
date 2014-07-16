@@ -25,7 +25,7 @@ def map_nested_definitions(nested_content):
                 if len(ci.children) > 0:
                     classifier = ci.children[0].astext()
 
-            if classifier is not None and not classifier in (
+            if classifier is not None and classifier not in (
                     '@replace', '@before', '@after'):
                 raise Exception('Unknown classifier: %s' % classifier)
 
@@ -180,12 +180,12 @@ class ArgParseDirective(Directive):
             parser = func
         else:
             parser = func()
-        if not 'path' in self.options:
+        if 'path' not in self.options:
             self.options['path'] = ''
         path = str(self.options['path'])
         parser.prog = self.options['prog']
-        result = parse_parser(parser,
-                              skip_default_values='nodefault' in self.options)
+        result = parse_parser(
+            parser, skip_default_values='nodefault' in self.options)
         result = parser_navigate(result, path)
         nested_content = nodes.paragraph()
         self.state.nested_parse(

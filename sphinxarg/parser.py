@@ -14,7 +14,7 @@ def parser_navigate(parser_result, path, current_path=None):
     current_path = current_path or []
     if len(path) == 0:
         return parser_result
-    if not 'children' in parser_result:
+    if 'children' not in parser_result:
         raise NavigationException(
             'Current parser have no children elements.  (path: %s)' %
             ' '.join(current_path))
@@ -58,11 +58,11 @@ def parse_parser(parser, data=None, **kwargs):
                     'usage': subaction.format_usage().strip()
                 }
                 parse_parser(subaction, subdata, **kwargs)
-                if not 'children' in data:
+                if 'children' not in data:
                     data['children'] = []
                 data['children'].append(subdata)
             continue
-        if not 'args' in data:
+        if 'args' not in data:
             data['args'] = []
         arg = {
             'name': action.dest,
@@ -72,12 +72,12 @@ def parse_parser(parser, data=None, **kwargs):
             arg['choices'] = action.choices
         data['args'].append(arg)
     show_defaults = (
-        (not 'skip_default_values' in kwargs)
+        ('skip_default_values' not in kwargs)
         or (kwargs['skip_default_values'] is False))
     for action in parser._get_optional_actions():
         if isinstance(action, _HelpAction):
             continue
-        if not 'options' in data:
+        if 'options' not in data:
             data['options'] = []
         option = {
             'name': action.option_strings,
