@@ -1,7 +1,5 @@
 from argparse import _HelpAction, _SubParsersAction
-from collections import defaultdict
 import re
-import sys
 
 
 class NavigationException(Exception):
