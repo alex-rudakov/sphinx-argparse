@@ -10,7 +10,6 @@ def map_nested_definitions(nested_content):
     if nested_content is None:
         raise Exception('Nested content should be iterable, not null')
 
-
     # build definition dictionary
     definitions = {}
     for item in nested_content:
@@ -71,7 +70,6 @@ def print_arg_list(data, nested_content):
     return nodes.option_list('', *items) if items else None
 
 
-
 def print_opt_list(data, nested_content):
 
     definitions = map_nested_definitions(nested_content)
@@ -95,13 +93,11 @@ def print_opt_list(data, nested_content):
 
                 my_def = apply_definition(definitions, my_def, name)
 
-
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
 
             if 'choices' in opt:
                 my_def.append(nodes.paragraph(text=('Possible choices: %s' % ', '.join(opt['choices']))))
-
 
             items.append(
                 nodes.option_list_item('',
@@ -111,6 +107,7 @@ def print_opt_list(data, nested_content):
             )
 
     return nodes.option_list('', *items) if items else None
+
 
 def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
 
@@ -135,6 +132,7 @@ def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
         ))
 
     return nodes.definition_list('', *items)
+
 
 def apply_definition(definitions, my_def, name):
     if name in definitions:
@@ -190,7 +188,6 @@ def print_subcommand_list(data, nested_content):
             )
 
     return nodes.definition_list('', *items)
-
 
 
 class ArgParseDirective(Directive):
