@@ -25,7 +25,8 @@ def map_nested_definitions(nested_content):
                 if len(ci.children) > 0:
                     classifier = ci.children[0].astext()
 
-            if classifier is not None and not classifier in ('@replace', '@before', '@after'):
+            if classifier is not None and not classifier in (
+                    '@replace', '@before', '@after'):
                 raise Exception('Unknown classifier: %s' % classifier)
 
             idx = subitem.first_child_matching_class(nodes.term)
@@ -52,7 +53,8 @@ def print_arg_list(data, nested_content):
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
-                my_def.append(nodes.paragraph(text=('Possible choices: %s' % ', '.join(arg['choices']))))
+                my_def.append(nodes.paragraph(
+                    text=('Possible choices: %s' % ', '.join(arg['choices']))))
             items.append(
                 nodes.option_list_item(
                     '', nodes.option_group('', nodes.option_string(text=name)),
@@ -71,14 +73,17 @@ def print_opt_list(data, nested_content):
             my_def = [nodes.paragraph(text=opt['help'])] if opt['help'] else []
             for name in opt['name']:
                 option_declaration = [nodes.option_string(text=name)]
-                if opt['default'] is not None and opt['default'] != '==SUPPRESS==':
-                    option_declaration += nodes.option_argument('', text='=' + str(opt['default']))
+                if opt['default'] is not None \
+                        and opt['default'] != '==SUPPRESS==':
+                    option_declaration += nodes.option_argument(
+                        '', text='=' + str(opt['default']))
                 names.append(nodes.option('', *option_declaration))
                 my_def = apply_definition(definitions, my_def, name)
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in opt:
-                my_def.append(nodes.paragraph(text=('Possible choices: %s' % ', '.join(opt['choices']))))
+                my_def.append(nodes.paragraph(
+                    text=('Possible choices: %s' % ', '.join(opt['choices']))))
             items.append(
                 nodes.option_list_item(
                     '', nodes.option_group('', *names),
@@ -127,7 +132,8 @@ def print_subcommand_list(data, nested_content):
     items = []
     if 'children' in data:
         for child in data['children']:
-            my_def = [nodes.paragraph(text=child['help'])] if child['help'] else []
+            my_def = [nodes.paragraph(
+                text=child['help'])] if child['help'] else []
             name = child['name']
             my_def = apply_definition(definitions, my_def, name)
             if len(my_def) == 0:
@@ -149,7 +155,8 @@ def print_subcommand_list(data, nested_content):
 
 class ArgParseDirective(Directive):
     has_content = True
-    option_spec = dict(module=unchanged, func=unchanged, ref=unchanged, prog=unchanged, path=unchanged, nodefault=flag)
+    option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
+                       prog=unchanged, path=unchanged, nodefault=flag)
 
     def run(self):
         if 'module' in self.options and 'func' in self.options:
@@ -160,10 +167,14 @@ class ArgParseDirective(Directive):
             module_name = '.'.join(_parts[0:-1])
             attr_name = _parts[-1]
         else:
-            raise self.error(':module: and :func: should be specified, or :ref:')
+            raise self.error(
+                ':module: and :func: should be specified, or :ref:')
         mod = __import__(module_name, globals(), locals(), [attr_name])
         if not hasattr(mod, attr_name):
-            raise self.error('Module "%s" has no attribute "%s"\nIncorrect argparse :module: or :func: values?' % (module_name, attr_name))
+            raise self.error((
+                'Module "%s" has no attribute "%s"\n'
+                'Incorrect argparse :module: or :func: values?'
+            ) % (module_name, attr_name))
         func = getattr(mod, attr_name)
         if isinstance(func, ArgumentParser):
             parser = func
@@ -177,7 +188,8 @@ class ArgParseDirective(Directive):
                               skip_default_values='nodefault' in self.options)
         result = parser_navigate(result, path)
         nested_content = nodes.paragraph()
-        self.state.nested_parse(self.content, self.content_offset, nested_content)
+        self.state.nested_parse(
+            self.content, self.content_offset, nested_content)
         nested_content = nested_content.children
         items = []
         # add common content between
