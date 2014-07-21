@@ -183,7 +183,8 @@ class ArgParseDirective(Directive):
         if 'path' not in self.options:
             self.options['path'] = ''
         path = str(self.options['path'])
-        parser.prog = self.options['prog']
+        if 'prog' in self.options:
+            parser.prog = self.options['prog']
         result = parse_parser(
             parser, skip_default_values='nodefault' in self.options)
         result = parser_navigate(result, path)
