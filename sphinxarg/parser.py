@@ -66,7 +66,8 @@ def parse_parser(parser, data=None, **kwargs):
             data['args'] = []
         arg = {
             'name': action.dest,
-            'help': action.help or ''
+            'help': action.help or '',
+            'metavar': action.metavar
         }
         if action.choices:
             arg['choices'] = action.choices

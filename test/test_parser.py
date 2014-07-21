@@ -49,7 +49,8 @@ def test_parse_arg_choices():
         {
             'name': 'move',
             'help': '',
-            'choices': ['rock', 'paper', 'scissors']
+            'choices': ['rock', 'paper', 'scissors'],
+            'metavar': None
         }
     ]
 
@@ -96,10 +97,12 @@ def test_parse_positional():
     assert data['args'] == [
         {
             'name': 'foo',
-            'help': 'foo help'
+            'help': 'foo help',
+            'metavar': None
         }, {
             'name': 'bar',
-            'help': ''
+            'help': '',
+            'metavar': None
         },
     ]
 
@@ -118,10 +121,12 @@ def test_parse_description():
     assert data['args'] == [
         {
             'name': 'foo',
-            'help': 'foo help'
+            'help': 'foo help',
+            'metavar': None
         }, {
             'name': 'bar',
-            'help': ''
+            'help': '',
+            'metavar': None
         },
     ]
 
@@ -142,10 +147,12 @@ def test_parse_nested():
     assert data['args'] == [
         {
             'name': 'foo',
-            'help': 'foo help'
+            'help': 'foo help',
+            'metavar': None
         }, {
             'name': 'bar',
-            'help': ''
+            'help': '',
+            'metavar': None
         },
     ]
 
@@ -157,7 +164,8 @@ def test_parse_nested():
             'args': [
                 {
                     'name': 'ref',
-                    'help': 'foo1 help'
+                    'help': 'foo1 help',
+                    'metavar': None
                 },
             ],
             'options': [
@@ -193,10 +201,12 @@ def test_parse_nested_traversal():
     assert data3['args'] == [
         {
             'name': 'foo',
-            'help': 'foo help'
+            'help': 'foo help',
+            'metavar': None
         }, {
             'name': 'bar',
-            'help': ''
+            'help': '',
+            'metavar': None
         },
     ]
 
@@ -209,11 +219,13 @@ def test_parse_nested_traversal():
                     'args': [
                         {
                             'name': 'foo',
-                            'help': 'foo help'
+                            'help': 'foo help',
+                            'metavar': None
                         },
                         {
                             'name': 'bar',
-                            'help': ''
+                            'help': '',
+                            'metavar': None
                         },
                     ],
                 }
