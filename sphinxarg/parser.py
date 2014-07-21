@@ -55,6 +55,7 @@ def parse_parser(parser, data=None, **kwargs):
             'name': '',
             'usage': parser.format_usage().strip(),
             'bare_usage': _format_usage_without_prefix(parser),
+            'prog': parser.prog,
         }
     _try_add_parser_attribute(data, parser, 'description')
     _try_add_parser_attribute(data, parser, 'epilog')
