@@ -38,9 +38,24 @@ def _try_add_parser_attribute(data, parser, attribname):
         data[attribname] = attribval
 
 
+def _format_usage_without_prefix(parser):
+    """
+    Use private argparse APIs to get the usage string without
+    the 'usage: ' prefix.
+    """
+    fmt = parser._get_formatter()
+    fmt.add_usage(parser.usage, parser._actions,
+                  parser._mutually_exclusive_groups, prefix='')
+    return fmt.format_help().strip()
+
+
 def parse_parser(parser, data=None, **kwargs):
     if data is None:
-        data = {'name': '', 'usage': parser.format_usage().strip()}
+        data = {
+            'name': '',
+            'usage': parser.format_usage().strip(),
+            'bare_usage': _format_usage_without_prefix(parser),
+        }
     _try_add_parser_attribute(data, parser, 'description')
     _try_add_parser_attribute(data, parser, 'epilog')
     for action in parser._get_positional_actions():
@@ -55,7 +70,8 @@ def parse_parser(parser, data=None, **kwargs):
                 subdata = {
                     'name': name,
                     'help': helps[name] if name in helps else '',
-                    'usage': subaction.format_usage().strip()
+                    'usage': subaction.format_usage().strip(),
+                    'bare_usage': _format_usage_without_prefix(subaction),
                 }
                 parse_parser(subaction, subdata, **kwargs)
                 if 'children' not in data:

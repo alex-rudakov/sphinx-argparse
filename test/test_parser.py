@@ -161,6 +161,7 @@ def test_parse_nested():
             'name': 'install',
             'help': 'install help',
             'usage': 'usage: py.test install [-h] [--upgrade] ref',
+            'bare_usage': 'py.test install [-h] [--upgrade] ref',
             'args': [
                 {
                     'name': 'ref',
@@ -216,6 +217,7 @@ def test_parse_nested_traversal():
                     'name': 'level3',
                     'help': '',
                     'usage': 'usage: py.test level1 level2 level3 [-h] foo bar',
+                    'bare_usage': 'py.test level1 level2 level3 [-h] foo bar',
                     'args': [
                         {
                             'name': 'foo',
