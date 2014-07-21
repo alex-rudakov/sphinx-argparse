@@ -58,9 +58,7 @@ def print_arg_list(data, nested_content):
             items.append(
                 nodes.option_list_item(
                     '', nodes.option_group('', nodes.option_string(text=name)),
-                    nodes.description('', *my_def)
-                )
-            )
+                    nodes.description('', *my_def)))
     return nodes.option_list('', *items) if items else None
 
 
@@ -87,9 +85,7 @@ def print_opt_list(data, nested_content):
             items.append(
                 nodes.option_list_item(
                     '', nodes.option_group('', *names),
-                    nodes.description('', *my_def)
-                )
-            )
+                    nodes.description('', *my_def)))
     return nodes.option_list('', *items) if items else None
 
 
@@ -98,18 +94,15 @@ def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
     if arg_list:
         items.append(nodes.definition_list_item(
             '', nodes.term(text='Positional arguments:'),
-            nodes.definition('', arg_list)
-        ))
+            nodes.definition('', arg_list)))
     if opt_list:
         items.append(nodes.definition_list_item(
             '', nodes.term(text='Options:'),
-            nodes.definition('', opt_list)
-        ))
+            nodes.definition('', opt_list)))
     if sub_list and len(sub_list):
         items.append(nodes.definition_list_item(
             '', nodes.term(text='Sub-commands:'),
-            nodes.definition('', sub_list)
-        ))
+            nodes.definition('', sub_list)))
     return nodes.definition_list('', *items)
 
 
