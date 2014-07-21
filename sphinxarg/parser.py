@@ -87,5 +87,6 @@ def parse_parser(parser, data=None, **kwargs):
         }
         if action.choices:
             option['choices'] = action.choices
-        data['options'].append(option)
+        if "==SUPPRESS==" not in option['help']:
+            data['options'].append(option)
     return data
