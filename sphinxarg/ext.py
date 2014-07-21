@@ -24,11 +24,9 @@ def map_nested_definitions(nested_content):
                 ci = subitem[idx]
                 if len(ci.children) > 0:
                     classifier = ci.children[0].astext()
-
             if classifier is not None and classifier not in (
                     '@replace', '@before', '@after'):
                 raise Exception('Unknown classifier: %s' % classifier)
-
             idx = subitem.first_child_matching_class(nodes.term)
             if idx is not None:
                 ch = subitem[idx]
