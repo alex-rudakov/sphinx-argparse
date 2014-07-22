@@ -49,7 +49,8 @@ def test_parse_arg_choices():
         {
             'name': 'move',
             'help': '',
-            'choices': ['rock', 'paper', 'scissors']
+            'choices': ['rock', 'paper', 'scissors'],
+            'metavar': None
         }
     ]
 
@@ -96,10 +97,12 @@ def test_parse_positional():
     assert data['args'] == [
         {
             'name': 'foo',
-            'help': 'foo help'
+            'help': 'foo help',
+            'metavar': None
         }, {
             'name': 'bar',
-            'help': ''
+            'help': '',
+            'metavar': None
         },
     ]
 
@@ -118,10 +121,12 @@ def test_parse_description():
     assert data['args'] == [
         {
             'name': 'foo',
-            'help': 'foo help'
+            'help': 'foo help',
+            'metavar': None
         }, {
             'name': 'bar',
-            'help': ''
+            'help': '',
+            'metavar': None
         },
     ]
 
@@ -142,10 +147,12 @@ def test_parse_nested():
     assert data['args'] == [
         {
             'name': 'foo',
-            'help': 'foo help'
+            'help': 'foo help',
+            'metavar': None
         }, {
             'name': 'bar',
-            'help': ''
+            'help': '',
+            'metavar': None
         },
     ]
 
@@ -154,10 +161,12 @@ def test_parse_nested():
             'name': 'install',
             'help': 'install help',
             'usage': 'usage: py.test install [-h] [--upgrade] ref',
+            'bare_usage': 'py.test install [-h] [--upgrade] ref',
             'args': [
                 {
                     'name': 'ref',
-                    'help': 'foo1 help'
+                    'help': 'foo1 help',
+                    'metavar': None
                 },
             ],
             'options': [
@@ -193,10 +202,12 @@ def test_parse_nested_traversal():
     assert data3['args'] == [
         {
             'name': 'foo',
-            'help': 'foo help'
+            'help': 'foo help',
+            'metavar': None
         }, {
             'name': 'bar',
-            'help': ''
+            'help': '',
+            'metavar': None
         },
     ]
 
@@ -206,14 +217,17 @@ def test_parse_nested_traversal():
                     'name': 'level3',
                     'help': '',
                     'usage': 'usage: py.test level1 level2 level3 [-h] foo bar',
+                    'bare_usage': 'py.test level1 level2 level3 [-h] foo bar',
                     'args': [
                         {
                             'name': 'foo',
-                            'help': 'foo help'
+                            'help': 'foo help',
+                            'metavar': None
                         },
                         {
                             'name': 'bar',
-                            'help': ''
+                            'help': '',
+                            'metavar': None
                         },
                     ],
                 }

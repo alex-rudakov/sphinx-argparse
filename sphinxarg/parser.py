@@ -14,7 +14,7 @@ def parser_navigate(parser_result, path, current_path=None):
     current_path = current_path or []
     if len(path) == 0:
         return parser_result
-    if not 'children' in parser_result:
+    if 'children' not in parser_result:
         raise NavigationException(
             'Current parser have no children elements.  (path: %s)' %
             ' '.join(current_path))
@@ -38,9 +38,25 @@ def _try_add_parser_attribute(data, parser, attribname):
         data[attribname] = attribval
 
 
+def _format_usage_without_prefix(parser):
+    """
+    Use private argparse APIs to get the usage string without
+    the 'usage: ' prefix.
+    """
+    fmt = parser._get_formatter()
+    fmt.add_usage(parser.usage, parser._actions,
+                  parser._mutually_exclusive_groups, prefix='')
+    return fmt.format_help().strip()
+
+
 def parse_parser(parser, data=None, **kwargs):
     if data is None:
-        data = {'name': '', 'usage': parser.format_usage().strip()}
+        data = {
+            'name': '',
+            'usage': parser.format_usage().strip(),
+            'bare_usage': _format_usage_without_prefix(parser),
+            'prog': parser.prog,
+        }
     _try_add_parser_attribute(data, parser, 'description')
     _try_add_parser_attribute(data, parser, 'epilog')
     for action in parser._get_positional_actions():
@@ -55,29 +71,31 @@ def parse_parser(parser, data=None, **kwargs):
                 subdata = {
                     'name': name,
                     'help': helps[name] if name in helps else '',
-                    'usage': subaction.format_usage().strip()
+                    'usage': subaction.format_usage().strip(),
+                    'bare_usage': _format_usage_without_prefix(subaction),
                 }
                 parse_parser(subaction, subdata, **kwargs)
-                if not 'children' in data:
+                if 'children' not in data:
                     data['children'] = []
                 data['children'].append(subdata)
             continue
-        if not 'args' in data:
+        if 'args' not in data:
             data['args'] = []
         arg = {
             'name': action.dest,
-            'help': action.help or ''
+            'help': action.help or '',
+            'metavar': action.metavar
         }
         if action.choices:
             arg['choices'] = action.choices
         data['args'].append(arg)
     show_defaults = (
-        (not 'skip_default_values' in kwargs)
+        ('skip_default_values' not in kwargs)
         or (kwargs['skip_default_values'] is False))
     for action in parser._get_optional_actions():
         if isinstance(action, _HelpAction):
             continue
-        if not 'options' in data:
+        if 'options' not in data:
             data['options'] = []
         option = {
             'name': action.option_strings,
@@ -86,5 +104,6 @@ def parse_parser(parser, data=None, **kwargs):
         }
         if action.choices:
             option['choices'] = action.choices
-        data['options'].append(option)
+        if "==SUPPRESS==" not in option['help']:
+            data['options'].append(option)
     return data
