@@ -8,20 +8,20 @@ Extension adds "argparse" directive::
 
     .. argparse::
        :module: my.module
-       :func: my_func_that_return_parser
+       :func: my_func_that_returns_a_parser
        :prog: fancytool
 
 `module`, `func` and `prog` options are required.
 
-func is function that return parser or just parser instance.
+func is function that returns an instance of the `argparse.ArgumentParser` class.
 
 Alternative syntax is to use :ref: like this::
 
     .. argparse::
-       :ref: my.module.my_func_that_return_parser
+       :ref: my.module.my_func_that_returns_a_parser
        :prog: fancytool
 
-in this case :ref: also may point directly to argument pareser instance.
+in this case :ref: also may point directly to argument parser instance.
 
 For this directive to work, you should point it to the function, that will return pre-filled `ArgumentParser`.
 Something like::
