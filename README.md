@@ -8,9 +8,11 @@ For installation and usage details see docs.
 Documnetation is here: 
 http://sphinx-argparse.readthedocs.org/en/latest/
 
-Changelog & contributors:
 
+Changelog & contributors
 ------------------------------
+
+
 master
 
 - Polished small mistakes in usage documentation (Dean Malmgren)
@@ -74,4 +76,4 @@ Fix issue with subcommands (by Tony Narlock - https://github.com/tony)
 0.1.1
 
 Initial version
-------------------------------
+
