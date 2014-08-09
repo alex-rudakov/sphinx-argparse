@@ -8,7 +8,13 @@ For installation and usage details see docs.
 Documnetation is here: 
 http://sphinx-argparse.readthedocs.org/en/latest/
 
-Changelog:
+Changelog & contributors:
+
+------------------------------
+master
+
+- Polished small mistakes in usage documentation (Dean Malmgren)
+- Started to improve man-pages support (Zygmunt Krynicki)
 
 ------------------------------
 0.1.12
