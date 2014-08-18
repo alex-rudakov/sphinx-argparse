@@ -13,8 +13,11 @@ Changelog & contributors
 ------------------------------
 
 
-master
+0.1.13
 
+-----------------------------
+
+- Bugfix: Choices are not always strings (Robert Langlois)
 - Polished small mistakes in usage documentation (Dean Malmgren)
 - Started to improve man-pages support (Zygmunt Krynicki)
 

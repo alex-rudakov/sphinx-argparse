@@ -17,3 +17,12 @@ for command line tools based on argparse library.
 
 
 
+References
+==================
+
+Similar projects
+-------------------
+
+ * https://pythonhosted.org/sphinxcontrib-autoprogram/ (See for comparison: https://github.com/ribozz/sphinx-argparse/issues/16)
+
+
