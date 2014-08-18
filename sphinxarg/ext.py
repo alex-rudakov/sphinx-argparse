@@ -56,7 +56,7 @@ def print_arg_list(data, nested_content):
                 my_def.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
                 my_def.append(nodes.paragraph(
-                    text=('Possible choices: %s' % ', '.join(arg['choices']))))
+                    text=('Possible choices: %s' % ', '.join([str(c) for c in arg['choices']]))))
             items.append(
                 nodes.option_list_item(
                     '', nodes.option_group('', nodes.option_string(text=name)),
@@ -83,7 +83,7 @@ def print_opt_list(data, nested_content):
                 my_def.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in opt:
                 my_def.append(nodes.paragraph(
-                    text=('Possible choices: %s' % ', '.join(opt['choices']))))
+                    text=('Possible choices: %s' % ', '.join([str(c) for c in opt['choices']]))))
             items.append(
                 nodes.option_list_item(
                     '', nodes.option_group('', *names),
