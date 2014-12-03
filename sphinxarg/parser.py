@@ -66,10 +66,26 @@ def parse_parser(parser, data=None, **kwargs):
             helps = {}
             for item in action._choices_actions:
                 helps[item.dest] = item.help
+
+            # commands which share an existing parser are an alias,
+            # don't duplicate docs
+            subsection_alias = {}
+            subsection_alias_names = set()
             for name, subaction in action._name_parser_map.items():
+                if subaction not in subsection_alias:
+                    subsection_alias[subaction] = []
+                else:
+                    subsection_alias[subaction].append(name)
+                    subsection_alias_names.add(name)
+
+            for name, subaction in action._name_parser_map.items():
+                if name in subsection_alias_names:
+                    continue
+                subalias = subsection_alias[subaction]
                 subaction.prog = '%s %s' % (parser.prog, name)
                 subdata = {
-                    'name': name,
+                    'name': name if not subalias else
+                            '%s (%s)' % (name, ', '.join(subalias)),
                     'help': helps[name] if name in helps else '',
                     'usage': subaction.format_usage().strip(),
                     'bare_usage': _format_usage_without_prefix(subaction),
