@@ -86,14 +86,12 @@ def parse_parser(parser, data=None, **kwargs):
                 subdata = {
                     'name': name if not subalias else
                             '%s (%s)' % (name, ', '.join(subalias)),
-                    'help': helps[name] if name in helps else '',
+                    'help': helps.get(name, ''),
                     'usage': subaction.format_usage().strip(),
                     'bare_usage': _format_usage_without_prefix(subaction),
                 }
                 parse_parser(subaction, subdata, **kwargs)
-                if 'children' not in data:
-                    data['children'] = []
-                data['children'].append(subdata)
+                data.setdefault('children', []).append(subdata)
             continue
         if 'args' not in data:
             data['args'] = []
