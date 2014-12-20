@@ -136,7 +136,8 @@ def print_subcommand_list(data, nested_content):
             my_def.append(nodes.literal_block(text=child['usage']))
             my_def.append(print_command_args_and_opts(
                 print_arg_list(child, nested_content),
-                print_opt_list(child, nested_content)
+                print_opt_list(child, nested_content),
+                print_subcommand_list(child, nested_content)
             ))
             items.append(
                 nodes.definition_list_item(
