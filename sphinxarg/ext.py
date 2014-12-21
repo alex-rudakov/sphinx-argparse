@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 import os
 
 from docutils import nodes
+from docutils.statemachine import StringList
 from docutils.parsers.rst.directives import flag, unchanged
 from sphinx.util.compat import Directive
 from sphinx.util.nodes import nested_parse_with_titles
@@ -297,6 +298,11 @@ class ArgParseDirective(Directive):
                     nodes.definition('', *subcmd_items)))
         return nodes.definition_list('', *items)
 
+    def _nested_parse_paragraph(self, text):
+        content = nodes.paragraph()
+        self.state.nested_parse(StringList(text.split("\n")), 0, content)
+        return content
+
     def run(self):
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
@@ -339,7 +345,7 @@ class ArgParseDirective(Directive):
             if not isinstance(item, nodes.definition_list):
                 items.append(item)
         if 'description' in result:
-            items.append(nodes.paragraph(text=result['description']))
+            items.append(self._nested_parse_paragraph(result['description']))
         items.append(nodes.literal_block(text=result['usage']))
         items.append(print_command_args_and_opts(
             print_arg_list(result, nested_content),
@@ -347,7 +353,7 @@ class ArgParseDirective(Directive):
             print_subcommand_list(result, nested_content)
         ))
         if 'epilog' in result:
-            items.append(nodes.paragraph(text=result['epilog']))
+            items.append(self._nested_parse_paragraph(result['epilog']))
         return items
 
 
