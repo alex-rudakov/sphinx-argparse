@@ -152,7 +152,7 @@ class ArgParseDirective(Directive):
     has_content = True
     option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
-                       manpage=unchanged, nosubcommands=unchanged)
+                       manpage=unchanged, nosubcommands=unchanged, passparser=flag)
 
     def _construct_manpage_specific_structure(self, parser_info):
         """
@@ -317,6 +317,9 @@ class ArgParseDirective(Directive):
         func = getattr(mod, attr_name)
         if isinstance(func, ArgumentParser):
             parser = func
+        elif 'passparser' in self.options:
+            parser = ArgumentParser()
+            func(parser)
         else:
             parser = func()
         if 'path' not in self.options:
