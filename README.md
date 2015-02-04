@@ -12,6 +12,15 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog & contributors
 ------------------------------
 
+0.1.14
+
+-----------------------------
+
+- Support for aliasing arguments #22 (Campbell Barton)
+- Support for nested arguments #23 (Campbell Barton)
+- Support for subcommand descriptions #24 (Campbell Barton)
+- Improved parsing of content of `epilog` and `description` #25 (Louis - https://github.com/paternal)
+- Added 'passparser' option (David Hoese)
 
 0.1.13
 
