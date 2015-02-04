@@ -133,10 +133,13 @@ def print_subcommand_list(data, nested_content):
             my_def = apply_definition(definitions, my_def, name)
             if len(my_def) == 0:
                 my_def.append(nodes.paragraph(text='Undocumented'))
+            if 'description' in child:
+                my_def.append(nodes.paragraph(text=child['description']))
             my_def.append(nodes.literal_block(text=child['usage']))
             my_def.append(print_command_args_and_opts(
                 print_arg_list(child, nested_content),
-                print_opt_list(child, nested_content)
+                print_opt_list(child, nested_content),
+                print_subcommand_list(child, nested_content)
             ))
             items.append(
                 nodes.definition_list_item(
