@@ -252,8 +252,12 @@ class ArgParseDirective(Directive):
                         text='Possible choices: ' + ', '.join(arg['choices'])))
             items.append(
                 nodes.option_list_item(
-                    '', nodes.option_group(
-                        '', nodes.description(text=arg['metavar'])),
+                    '',
+                    nodes.option_group(
+                        '', nodes.option(
+                            '', nodes.option_string(text=arg['metavar'])
+                        )
+                    ),
                     nodes.description('', *arg_items)))
         return nodes.option_list('', *items)
 

@@ -12,6 +12,13 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog & contributors
 ------------------------------
 
+0.1.15
+
+------------------------------
+
+- Fixed malformed docutils DOM in manpages (Matt Boyer)
+
+
 0.1.14
 
 -----------------------------
