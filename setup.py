@@ -9,7 +9,7 @@ if sys.version_info[:2] == (2, 6):
 
 setup(
     name='sphinx-argparse',
-    version='0.1.14',
+    version='0.1.15',
     packages=[
         'sphinxarg',
     ],
