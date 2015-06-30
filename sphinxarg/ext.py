@@ -154,7 +154,7 @@ def print_subcommand_list(data, nested_content):
 
 class ArgParseDirective(Directive):
     has_content = True
-    option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
+    option_spec = dict(module=unchanged, func=unchanged, ref=unchanged, file=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
                        manpage=unchanged, nosubcommands=unchanged, passparser=flag)
 
@@ -311,6 +311,7 @@ class ArgParseDirective(Directive):
         return content
 
     def run(self):
+        func = None
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
             attr_name = self.options['func']
@@ -318,16 +319,22 @@ class ArgParseDirective(Directive):
             _parts = self.options['ref'].split('.')
             module_name = '.'.join(_parts[0:-1])
             attr_name = _parts[-1]
+        elif 'file' in self.options and 'func' in self.options:
+            exec_scope = {}
+            execfile(self.options['file'], exec_scope)
+            attr_name = self.options['func']
+            func = exec_scope[attr_name]
         else:
             raise self.error(
-                ':module: and :func: should be specified, or :ref:')
-        mod = __import__(module_name, globals(), locals(), [attr_name])
-        if not hasattr(mod, attr_name):
-            raise self.error((
-                'Module "%s" has no attribute "%s"\n'
-                'Incorrect argparse :module: or :func: values?'
-            ) % (module_name, attr_name))
-        func = getattr(mod, attr_name)
+                ':module: and :func: should be specified, or :file: and :func:, or :ref:')
+        if not func:
+            mod = __import__(module_name, globals(), locals(), [attr_name])
+            if not hasattr(mod, attr_name):
+                raise self.error((
+                    'Module "%s" has no attribute "%s"\n'
+                    'Incorrect argparse :module: or :func: values?'
+                ) % (module_name, attr_name))
+            func = getattr(mod, attr_name)
         if isinstance(func, ArgumentParser):
             parser = func
         elif 'passparser' in self.options:
