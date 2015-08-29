@@ -4,7 +4,7 @@ Installation
 ------------
 
 This extension is tested on python 2.7. If you have successfully used it on any other version
-of python, then add this info to this doc please (through gihtub pull reuqest).
+of python, then add this info to this doc please (through gihtub pull request).
 
 Package is  available in the Python Package Index::
 
