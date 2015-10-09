@@ -12,6 +12,14 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog & contributors
 ------------------------------
 
+0.1.16
+
+------------------------------
+
+- Added support for argparse groups (Fidel Ramirez)
+
+------------------------------
+
 0.1.15
 
 ------------------------------
