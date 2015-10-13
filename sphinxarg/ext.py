@@ -1,6 +1,5 @@
 from argparse import ArgumentParser
 import os
-from collections import OrderedDict
 
 from docutils import nodes
 from docutils.statemachine import StringList
