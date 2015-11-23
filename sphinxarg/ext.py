@@ -69,34 +69,34 @@ def print_opt_list(data, nested_content):
     definitions = map_nested_definitions(nested_content)
     nodes_list = [] # dictionary to hold the group options
                     # the group title is used as key
-    for action_group in data['action_groups']:
-        items = []
-        if 'options' in action_group:
-            for opt in action_group['options']:
-                names = []
-                my_def = [nodes.paragraph(text=opt['help'])] if opt['help'] else []
-                for name in opt['name']:
-                    option_declaration = [nodes.option_string(text=name)]
-                    if opt['default'] is not None \
-                            and opt['default'] != '==SUPPRESS==':
-                        option_declaration += nodes.option_argument(
-                            '', text='=' + str(opt['default']))
-                    names.append(nodes.option('', *option_declaration))
-                    my_def = apply_definition(definitions, my_def, name)
-                if len(my_def) == 0:
-                    my_def.append(nodes.paragraph(text='Undocumented'))
-                if 'choices' in opt:
-                    my_def.append(nodes.paragraph(
-                        text=('Possible choices: %s' % ', '.join([str(c) for c in opt['choices']]))))
-                items.append(
-                    nodes.option_list_item(
-                        '', nodes.option_group('', *names),
-                        nodes.description('', *my_def)))
-        opts = nodes.option_list('', *items) if items else None
-        nodes_list.append({'options': opts,
-                      'title': action_group['title'],
-                      'description': action_group['description']})
-
+    if 'action_group' in data:
+        for action_group in data['action_groups']:
+            items = []
+            if 'options' in action_group:
+                for opt in action_group['options']:
+                    names = []
+                    my_def = [nodes.paragraph(text=opt['help'])] if opt['help'] else []
+                    for name in opt['name']:
+                        option_declaration = [nodes.option_string(text=name)]
+                        if opt['default'] is not None \
+                                and opt['default'] != '==SUPPRESS==':
+                            option_declaration += nodes.option_argument(
+                                '', text='=' + str(opt['default']))
+                        names.append(nodes.option('', *option_declaration))
+                        my_def = apply_definition(definitions, my_def, name)
+                    if len(my_def) == 0:
+                        my_def.append(nodes.paragraph(text='Undocumented'))
+                    if 'choices' in opt:
+                        my_def.append(nodes.paragraph(
+                            text=('Possible choices: %s' % ', '.join([str(c) for c in opt['choices']]))))
+                    items.append(
+                        nodes.option_list_item(
+                            '', nodes.option_group('', *names),
+                            nodes.description('', *my_def)))
+            opts = nodes.option_list('', *items) if items else None
+            nodes_list.append({'options': opts,
+                          'title': action_group['title'],
+                          'description': action_group['description']})
 
     return nodes_list
 
