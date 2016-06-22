@@ -1,6 +1,9 @@
 sphinx-argparse
 ===============
 
+:exclamation: **NB** :exclamation: New maintainer needed! Looking for person who actively use sphinx-argparse, love it and willing to help with it's development. Contact me by mail: ribozz@gmail.com
+
+
 Sphinx extension that automatically document argparse commands and options
 
 For installation and usage details see docs.
