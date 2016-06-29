@@ -1,6 +1,4 @@
 import argparse
-import json
-from pprint import pprint
 from sphinxarg.parser import parse_parser, parser_navigate
 
 
@@ -11,7 +9,7 @@ def test_parse_options():
 
     data = parse_parser(parser)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'name': ['--foo'],
             'default': False,
@@ -30,7 +28,7 @@ def test_parse_default():
 
     data = parse_parser(parser)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'name': ['--foo'],
             'default': '123',
@@ -61,7 +59,7 @@ def test_parse_opt_choices():
 
     data = parse_parser(parser)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'name': ['--move'],
             'default': None,
@@ -71,14 +69,13 @@ def test_parse_opt_choices():
     ]
 
 
-
 def test_parse_default_skip_default():
     parser = argparse.ArgumentParser()
     parser.add_argument('--foo', default='123')
 
     data = parse_parser(parser, skip_default_values=True)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'name': ['--foo'],
             'default': '==SUPPRESS==',
@@ -138,7 +135,7 @@ def test_parse_nested():
 
     subparsers = parser.add_subparsers()
 
-    subparser = subparsers.add_parser('install', help='install help')
+    subparser = subparsers.add_parser('install', help='install help', usage='program install [args]')
     subparser.add_argument('ref', type=str, help='foo1 help')
     subparser.add_argument('--upgrade', action='store_true', default=False, help='foo2 help')
 
@@ -160,8 +157,8 @@ def test_parse_nested():
         {
             'name': 'install',
             'help': 'install help',
-            'usage': 'usage: py.test install [-h] [--upgrade] ref',
-            'bare_usage': 'py.test install [-h] [--upgrade] ref',
+            'usage': 'usage: program install [args]',
+            'bare_usage': 'program install [args]',
             'args': [
                 {
                     'name': 'ref',
@@ -169,14 +166,20 @@ def test_parse_nested():
                     'metavar': None
                 },
             ],
-            'options': [
+            'action_groups': [
                 {
-                    'name': ['--upgrade'],
-                    'default': False,
-                    'help': 'foo2 help'
-                },
+                    'description': None,
+                    'title': 'optional arguments',
+                    'options': [
+                        {
+                            'default': False,
+                            'help': 'foo2 help',
+                            'name': ['--upgrade']
+                        }
+                    ]
+                }
             ]
-        },
+        }
     ]
 
 
@@ -234,3 +237,29 @@ def test_parse_nested_traversal():
             ]
 
     assert data == parser_navigate(data, '')
+
+
+def test_parse_groups():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--foo', action='store_true', default=False, help='foo help')
+    parser.add_argument('--bar', action='store_true', default=False)
+    optional = parser.add_argument_group('Group 1')
+    optional.add_argument("--option1", help='option #1')
+    optional.add_argument("--option2", help='option #2')
+
+    data = parse_parser(parser)
+    assert data['action_groups'] == [
+        {
+            'description': None,
+             'options': [
+                 {'default': False, 'help': 'foo help', 'name': ['--foo']},
+                 {'default': False, 'help': '', 'name': ['--bar']}],
+             'title': 'optional arguments'},
+        {
+            'description': None,
+             'options': [
+                 {'default': None, 'help': 'option #1', 'name': ['--option1']},
+                 {'default': None, 'help': 'option #2', 'name': ['--option2']}],
+             'title': 'Group 1'
+        }
+    ]

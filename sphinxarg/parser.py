@@ -106,18 +106,35 @@ def parse_parser(parser, data=None, **kwargs):
     show_defaults = (
         ('skip_default_values' not in kwargs)
         or (kwargs['skip_default_values'] is False))
-    for action in parser._get_optional_actions():
-        if isinstance(action, _HelpAction):
+
+    # argparse stores the different groups as a lint in parser._action_groups
+    # the first element of the list are the positional arguments, hence the
+    # parser._actions_groups[1:]
+    action_groups = []
+    for action_group in parser._action_groups[1:]:
+        options_list = []
+        for action in action_group._group_actions:
+            if isinstance(action, _HelpAction):
+                continue
+            option = {
+                'name': action.option_strings,
+                'default': action.default if show_defaults else '==SUPPRESS==',
+                'help': action.help or ''
+            }
+            if action.choices:
+                option['choices'] = action.choices
+            if "==SUPPRESS==" not in option['help']:
+                options_list.append(option)
+
+        if len(options_list) == 0:
             continue
-        if 'options' not in data:
-            data['options'] = []
-        option = {
-            'name': action.option_strings,
-            'default': action.default if show_defaults else '==SUPPRESS==',
-            'help': action.help or ''
-        }
-        if action.choices:
-            option['choices'] = action.choices
-        if "==SUPPRESS==" not in option['help']:
-            data['options'].append(option)
+
+        group = {'title': action_group.title,
+                 'description': action_group.description,
+                 'options': options_list}
+
+        action_groups.append(group)
+
+    if len(action_groups) > 0:
+        data['action_groups'] = action_groups
     return data
