@@ -1,4 +1,4 @@
-from argparse import _HelpAction, _SubParsersAction
+from argparse import _HelpAction, _SubParsersAction, _StoreConstAction
 import re
 
 
@@ -106,16 +106,26 @@ def parse_parser(parser, data=None, **kwargs):
     show_defaults = (
         ('skip_default_values' not in kwargs)
         or (kwargs['skip_default_values'] is False))
+    show_defaults_const = show_defaults
+    if 'skip_default_const_values' in kwargs and kwargs['skip_default_const_values'] is True:
+        show_defaults_const = False
     for action in parser._get_optional_actions():
         if isinstance(action, _HelpAction):
             continue
         if 'options' not in data:
             data['options'] = []
-        option = {
-            'name': action.option_strings,
-            'default': action.default if show_defaults else '==SUPPRESS==',
-            'help': action.help or ''
-        }
+        if isinstance(action, _StoreConstAction):
+            option = {
+                'name': action.option_strings,
+                'default': action.default if show_defaults_const else '==SUPPRESS==',
+                'help': action.help or ''
+            }
+        else:
+            option = {
+                'name': action.option_strings,
+                'default': action.default if show_defaults else '==SUPPRESS==',
+                'help': action.help or ''
+            }
         if action.choices:
             option['choices'] = action.choices
         if "==SUPPRESS==" not in option['help']:

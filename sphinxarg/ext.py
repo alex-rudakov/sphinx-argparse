@@ -156,6 +156,7 @@ class ArgParseDirective(Directive):
     has_content = True
     option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
+                       nodefaultconst=flag,
                        manpage=unchanged, nosubcommands=unchanged, passparser=flag)
 
     def _construct_manpage_specific_structure(self, parser_info):
@@ -341,7 +342,7 @@ class ArgParseDirective(Directive):
         if 'prog' in self.options:
             parser.prog = self.options['prog']
         result = parse_parser(
-            parser, skip_default_values='nodefault' in self.options)
+            parser, skip_default_values='nodefault' in self.options, skip_default_const_values='nodefaultconst' in self.options)
         result = parser_navigate(result, path)
         if 'manpage' in self.options:
             return self._construct_manpage_specific_structure(result)
