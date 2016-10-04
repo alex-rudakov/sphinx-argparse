@@ -6,6 +6,7 @@ Contribution
 
 Any help is welcome!
 Most wanted:
+
 * documentation correction (I am not native english speaker)
 * bugfixes
 * examples
@@ -18,6 +19,6 @@ https://github.com/ribozz/sphinx-argparse
 
 Don't forget to run tests before commit::
 
-    py.test`
+    py.test
 
 Any feedback is welcome: ribozz (a) gmail dot com
