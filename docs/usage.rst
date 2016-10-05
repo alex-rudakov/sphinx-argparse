@@ -78,3 +78,5 @@ Other useful directives
 -----------------------------------------
 
 :nodefault: will hide all default values of options.
+
+:nodefaultconst: Like nodefault:, expect it applies only to arguments of types `store_const`, `store_true` and `store_false`.

@@ -15,6 +15,12 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog & contributors
 ------------------------------
 
+0.1.16
+------------------------------
+
+- Added a `:nodefaultconst:` directive, which is similar to the `:nodefault:` directive, but applies only to `store_true`, `store_false`, and `store_const` (e.g., it will hide the "=True" part in the output, since that can be misleading to users).
+- Fixed various typos (thanks to users mikeantonacci, brondsem, and tony)
+
 0.1.15
 
 ------------------------------
