@@ -95,9 +95,20 @@ def parse_parser(parser, data=None, **kwargs):
             continue
         if 'args' not in data:
             data['args'] = []
+
+        # Fill in things like %(prog)s in the help section.
+        # Note that if any keyword is missing, then nothing is filled in.
+        formatDict = {k: v for k, v in action._get_kwargs()}
+        formatDict['prog'] = data.get('prog', '')
+        helpStr = action.help or ''  # Ensure we don't print None
+        try:
+            helpStr = helpStr % formatDict
+        except:
+            pass
+
         arg = {
             'name': action.dest,
-            'help': action.help or '',
+            'help': helpStr,
             'metavar': action.metavar
         }
         if action.choices:
