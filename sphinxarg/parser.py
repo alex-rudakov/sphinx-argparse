@@ -124,17 +124,30 @@ def parse_parser(parser, data=None, **kwargs):
             continue
         if 'options' not in data:
             data['options'] = []
+
+        # Quote default values for string/None types
+        if action.default not in ['', None, True, False] and " " in action.default:
+            action.default = '"%s"' % action.default
+
+        # fill in any formatters, like %(default)s
+        formatDict = dict(vars(action), prog=data.get('prog', ''))
+        helpStr = action.help or ''  # Ensure we don't print None
+        try:
+            helpStr = helpStr % formatDict
+        except:
+            pass
+
         if isinstance(action, _StoreConstAction):
             option = {
                 'name': action.option_strings,
                 'default': action.default if show_defaults_const else '==SUPPRESS==',
-                'help': action.help or ''
+                'help': helpStr
             }
         else:
             option = {
                 'name': action.option_strings,
                 'default': action.default if show_defaults else '==SUPPRESS==',
-                'help': action.help or ''
+                'help': helpStr
             }
         if action.choices:
             option['choices'] = action.choices

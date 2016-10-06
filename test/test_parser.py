@@ -251,3 +251,21 @@ def test_fill_in_default_prog():
             'help': 'test_fill_in_default_prog (default: foo)'
         }
     ]
+
+
+def test_string_quoting():
+    """
+    If an optional argument has a string type and a default, then the default should be in quotes.
+    This prevents things like '--optLSFConf=-q short' when '--optLSFConf="-q short"' is correct.
+    """
+    parser = argparse.ArgumentParser(prog='test_string_quoting_prog')
+    parser.add_argument('--bar', default='foo bar', help='%(prog)s (default: %(default)s)')
+    data = parse_parser(parser)
+
+    assert data['options'] == [
+        {   
+            'default': '"foo bar"',
+            'name': ['--bar'],
+            'help': 'test_string_quoting_prog (default: "foo bar")'
+        }
+    ]
