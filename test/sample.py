@@ -19,6 +19,7 @@ my_command1.add_argument('-r', '--rollback', action='store_true', default=False,
 my_command1.add_argument('--tree', action='store_true', default=False, help='Print resource tree')
 my_command1.add_argument('--dry', action='store_true', default=False, help='Just print changes list')
 my_command1.add_argument('--force', action='store_true', default=False, help='Apply without confirmation')
+my_command1.add_argument('default_string', default='I am a default', help='Ensure variables are filled in %(prog)s (default %(default)s)')
 
 
 my_command2 = subparsers.add_parser('game')

@@ -234,3 +234,20 @@ def test_parse_nested_traversal():
             ]
 
     assert data == parser_navigate(data, '')
+
+
+def test_fill_in_default_prog():
+    """
+    Ensure that %(default)s and %(prog)s are getting properly filled in inside help=''
+    """
+    parser = argparse.ArgumentParser(prog='test_fill_in_default_prog')
+    parser.add_argument('bar', default='foo', help='%(prog)s (default: %(default)s)')
+    data = parse_parser(parser)
+
+    assert data['args'] == [
+        {
+            'metavar': None,
+            'name': 'bar',
+            'help': 'test_fill_in_default_prog (default: foo)'
+        }
+    ]
