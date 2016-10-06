@@ -21,6 +21,7 @@ Changelog & contributors
 - Added a `:nodefaultconst:` directive, which is similar to the `:nodefault:` directive, but applies only to `store_true`, `store_false`, and `store_const` (e.g., it will hide the "=True" part in the output, since that can be misleading to users).
 - Fixed various typos (thanks to users mikeantonacci, brondsem, and tony)
 - Format specifiers (e.g., `%(prog)s` and `%(default)s`) are now filled in (if possible) in help sections. If there's a missing keyword, then nothing will be filled in. This was issue #27.
+- The package is now a bit more robust to incorrectly spelling module names (#39, courtesy of Gabriel Falcão)
 
 0.1.15
 
