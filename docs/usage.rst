@@ -42,11 +42,24 @@ Something like::
 .. note::
     We will use this example as a reference for every example in this doc.
 
+To document a file that is not a module, use :file: like this::
+
+    .. argparse::
+       :file: ../util/some-script.py
+       :func: my_func_that_returns_a_parser
+       :prog: some-script.py
+
 \:module\:
     Module name, where the function is located
 
+\:file\:
+    File name.  (Alternative to :module:)
+
 \:func\:
     Function name
+
+\:ref\:
+    Alternative to :module: and :func: together.
 
 \:prog\:
     It's just name of your tool (or how it's should appear in your documentation). Ex. if you run your script as
