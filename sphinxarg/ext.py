@@ -322,7 +322,12 @@ class ArgParseDirective(Directive):
         else:
             raise self.error(
                 ':module: and :func: should be specified, or :ref:')
-        mod = __import__(module_name, globals(), locals(), [attr_name])
+
+        try:
+            mod = __import__(module_name, globals(), locals(), [attr_name])
+        except:
+            raise self.error('Failed to import "%s" from "%s": %s' % (attr_name, module_name, e))
+
         if not hasattr(mod, attr_name):
             raise self.error((
                 'Module "%s" has no attribute "%s"\n'
