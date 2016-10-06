@@ -10,8 +10,3 @@ install:
 
 script:
 - py.test
-
-notifications:
-  email:
-    recipients:
-      - ribozz@gmail.com
