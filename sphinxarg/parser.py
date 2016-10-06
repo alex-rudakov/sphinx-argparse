@@ -98,8 +98,7 @@ def parse_parser(parser, data=None, **kwargs):
 
         # Fill in things like %(prog)s in the help section.
         # Note that if any keyword is missing, then nothing is filled in.
-        formatDict = {k: v for k, v in action._get_kwargs()}
-        formatDict['prog'] = data.get('prog', '')
+        formatDict = dict(vars(action), prog=data.get('prog', ''))
         helpStr = action.help or ''  # Ensure we don't print None
         try:
             helpStr = helpStr % formatDict
