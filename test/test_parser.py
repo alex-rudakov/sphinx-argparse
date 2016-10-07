@@ -1,6 +1,4 @@
 import argparse
-import json
-from pprint import pprint
 from sphinxarg.parser import parse_parser, parser_navigate
 
 
@@ -33,7 +31,7 @@ def test_parse_default():
     assert data['options'] == [
         {
             'name': ['--foo'],
-            'default': '123',
+            'default': '"123"',
             'help': ''
         }
     ]
@@ -69,7 +67,6 @@ def test_parse_opt_choices():
             'choices': ['rock', 'paper', 'scissors']
         }
     ]
-
 
 
 def test_parse_default_skip_default():
@@ -213,25 +210,25 @@ def test_parse_nested_traversal():
 
     data2 = parser_navigate(data, 'level1 level2')
     assert data2['children'] == [
+        {
+            'name': 'level3',
+            'help': '',
+            'usage': 'usage: py.test level1 level2 level3 [-h] foo bar',
+            'bare_usage': 'py.test level1 level2 level3 [-h] foo bar',
+            'args': [
                 {
-                    'name': 'level3',
+                    'name': 'foo',
+                    'help': 'foo help',
+                    'metavar': None
+                },
+                {
+                    'name': 'bar',
                     'help': '',
-                    'usage': 'usage: py.test level1 level2 level3 [-h] foo bar',
-                    'bare_usage': 'py.test level1 level2 level3 [-h] foo bar',
-                    'args': [
-                        {
-                            'name': 'foo',
-                            'help': 'foo help',
-                            'metavar': None
-                        },
-                        {
-                            'name': 'bar',
-                            'help': '',
-                            'metavar': None
-                        },
-                    ],
-                }
-            ]
+                    'metavar': None
+                },
+            ],
+        }
+    ]
 
     assert data == parser_navigate(data, '')
 
@@ -263,7 +260,7 @@ def test_string_quoting():
     data = parse_parser(parser)
 
     assert data['options'] == [
-        {   
+        {
             'default': '"foo bar"',
             'name': ['--bar'],
             'help': 'test_string_quoting_prog (default: "foo bar")'

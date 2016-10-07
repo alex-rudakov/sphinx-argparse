@@ -84,8 +84,7 @@ def parse_parser(parser, data=None, **kwargs):
                 subalias = subsection_alias[subaction]
                 subaction.prog = '%s %s' % (parser.prog, name)
                 subdata = {
-                    'name': name if not subalias else
-                            '%s (%s)' % (name, ', '.join(subalias)),
+                    'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
                     'help': helps.get(name, ''),
                     'usage': subaction.format_usage().strip(),
                     'bare_usage': _format_usage_without_prefix(subaction),
@@ -114,8 +113,8 @@ def parse_parser(parser, data=None, **kwargs):
             arg['choices'] = action.choices
         data['args'].append(arg)
     show_defaults = (
-        ('skip_default_values' not in kwargs)
-        or (kwargs['skip_default_values'] is False))
+        ('skip_default_values' not in kwargs) or
+        (kwargs['skip_default_values'] is False))
     show_defaults_const = show_defaults
     if 'skip_default_const_values' in kwargs and kwargs['skip_default_const_values'] is True:
         show_defaults_const = False
@@ -126,7 +125,7 @@ def parse_parser(parser, data=None, **kwargs):
             data['options'] = []
 
         # Quote default values for string/None types
-        if action.default not in ['', None, True, False] and " " in action.default:
+        if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
             action.default = '"%s"' % action.default
 
         # fill in any formatters, like %(default)s
