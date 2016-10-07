@@ -84,8 +84,7 @@ def parse_parser(parser, data=None, **kwargs):
                 subalias = subsection_alias[subaction]
                 subaction.prog = '%s %s' % (parser.prog, name)
                 subdata = {
-                    'name': name if not subalias else
-                            '%s (%s)' % (name, ', '.join(subalias)),
+                    'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
                     'help': helps.get(name, ''),
                     'usage': subaction.format_usage().strip(),
                     'bare_usage': _format_usage_without_prefix(subaction),
@@ -114,8 +113,8 @@ def parse_parser(parser, data=None, **kwargs):
             arg['choices'] = action.choices
         data['args'].append(arg)
     show_defaults = (
-        ('skip_default_values' not in kwargs)
-        or (kwargs['skip_default_values'] is False))
+        ('skip_default_values' not in kwargs) or
+        (kwargs['skip_default_values'] is False))
     show_defaults_const = show_defaults
     if 'skip_default_const_values' in kwargs and kwargs['skip_default_const_values'] is True:
         show_defaults_const = False
@@ -124,17 +123,30 @@ def parse_parser(parser, data=None, **kwargs):
             continue
         if 'options' not in data:
             data['options'] = []
+
+        # Quote default values for string/None types
+        if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
+            action.default = '"%s"' % action.default
+
+        # fill in any formatters, like %(default)s
+        formatDict = dict(vars(action), prog=data.get('prog', ''))
+        helpStr = action.help or ''  # Ensure we don't print None
+        try:
+            helpStr = helpStr % formatDict
+        except:
+            pass
+
         if isinstance(action, _StoreConstAction):
             option = {
                 'name': action.option_strings,
                 'default': action.default if show_defaults_const else '==SUPPRESS==',
-                'help': action.help or ''
+                'help': helpStr
             }
         else:
             option = {
                 'name': action.option_strings,
                 'default': action.default if show_defaults else '==SUPPRESS==',
-                'help': action.help or ''
+                'help': helpStr
             }
         if action.choices:
             option['choices'] = action.choices

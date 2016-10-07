@@ -1,12 +1,13 @@
 language: python
 python:
-  - "2.6"
   - "2.7"
   - "3.3"
   - "3.4"
   - "3.5"
 install:
-- "pip install -e .[dev]"
+ - pip install .
+ - pip install flake8
 
 script:
 - py.test
+- flake8 . --ignore=E501 --exclude=docs/conf.py
