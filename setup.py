@@ -1,11 +1,6 @@
-import sys
 from setuptools import setup
-# from tests import PyTest
 
 deps = ["sphinx"]
-
-if sys.version_info[:2] == (2, 6):
-    deps.append('argparse')
 
 setup(
     name='sphinx-argparse',
