@@ -9,5 +9,5 @@ install:
  - pip install flake8
 
 script:
-- py.test
-- flake8 . --ignore=E501 --exclude=docs/conf.py
+ - py.test
+ - flake8 . --ignore=E501 --exclude=docs/conf.py

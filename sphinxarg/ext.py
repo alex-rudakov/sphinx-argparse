@@ -326,7 +326,7 @@ class ArgParseDirective(Directive):
         try:
             mod = __import__(module_name, globals(), locals(), [attr_name])
         except:
-            raise self.error('Failed to import "%s" from "%s": %s' % (attr_name, module_name, e))
+            raise self.error('Failed to import "%s" from "%s"' % (attr_name, module_name))
 
         if not hasattr(mod, attr_name):
             raise self.error((
