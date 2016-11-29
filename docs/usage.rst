@@ -42,7 +42,7 @@ Something like::
 .. note::
     We will use this example as a reference for every example in this doc.
 
-To document a file that is not part of a module, use :filename:
+To document a file that is not part of a module, use :filename::
 
     .. argparse::
        :filename: script.py
