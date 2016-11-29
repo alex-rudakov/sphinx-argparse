@@ -9,7 +9,7 @@ def test_parse_options():
 
     data = parse_parser(parser)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'name': ['--foo'],
             'default': False,
@@ -18,7 +18,7 @@ def test_parse_options():
             'name': ['--bar'],
             'default': False,
             'help': ''
-        },
+        }
     ]
 
 
@@ -28,7 +28,7 @@ def test_parse_default():
 
     data = parse_parser(parser)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'name': ['--foo'],
             'default': '"123"',
@@ -59,7 +59,7 @@ def test_parse_opt_choices():
 
     data = parse_parser(parser)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'name': ['--move'],
             'default': None,
@@ -75,7 +75,7 @@ def test_parse_default_skip_default():
 
     data = parse_parser(parser, skip_default_values=True)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'name': ['--foo'],
             'default': '==SUPPRESS==',
@@ -100,7 +100,7 @@ def test_parse_positional():
             'name': 'bar',
             'help': '',
             'metavar': None
-        },
+        }
     ]
 
 
@@ -124,7 +124,7 @@ def test_parse_description():
             'name': 'bar',
             'help': '',
             'metavar': None
-        },
+        }
     ]
 
 
@@ -150,7 +150,7 @@ def test_parse_nested():
             'name': 'bar',
             'help': '',
             'metavar': None
-        },
+        }
     ]
 
     assert data['children'] == [
@@ -166,14 +166,20 @@ def test_parse_nested():
                     'metavar': None
                 },
             ],
-            'options': [
+            'action_groups': [
                 {
-                    'name': ['--upgrade'],
-                    'default': False,
-                    'help': 'foo2 help'
-                },
+                    'description': None,
+                    'title': 'optional arguments',
+                    'options': [
+                        {
+                            'name': ['--upgrade'],
+                            'default': False,
+                            'help': 'foo2 help'
+                        },
+                    ]
+                }
             ]
-        },
+        }
     ]
 
 
@@ -205,7 +211,7 @@ def test_parse_nested_traversal():
             'name': 'bar',
             'help': '',
             'metavar': None
-        },
+        }
     ]
 
     data2 = parser_navigate(data, 'level1 level2')
@@ -225,8 +231,8 @@ def test_parse_nested_traversal():
                     'name': 'bar',
                     'help': '',
                     'metavar': None
-                },
-            ],
+                }
+            ]
         }
     ]
 
@@ -259,10 +265,36 @@ def test_string_quoting():
     parser.add_argument('--bar', default='foo bar', help='%(prog)s (default: %(default)s)')
     data = parse_parser(parser)
 
-    assert data['options'] == [
+    assert data['action_groups'][0]['options'] == [
         {
             'default': '"foo bar"',
             'name': ['--bar'],
             'help': 'test_string_quoting_prog (default: "foo bar")'
+        }
+    ]
+
+
+def test_parse_groups():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--foo', action='store_true', default=False, help='foo help')
+    parser.add_argument('--bar', action='store_true', default=False)
+    optional = parser.add_argument_group('Group 1')
+    optional.add_argument("--option1", help='option #1')
+    optional.add_argument("--option2", help='option #2')
+
+    data = parse_parser(parser)
+    assert data['action_groups'] == [
+        {
+            'description': None,
+            'options': [
+                {'default': False, 'help': 'foo help', 'name': ['--foo']},
+                {'default': False, 'help': '', 'name': ['--bar']}],
+            'title': 'optional arguments'},
+        {
+            'description': None,
+            'options': [
+                {'default': None, 'help': 'option #1', 'name': ['--option1']},
+                {'default': None, 'help': 'option #2', 'name': ['--option2']}],
+            'title': 'Group 1'
         }
     ]

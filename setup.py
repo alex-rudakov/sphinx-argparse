@@ -4,7 +4,7 @@ deps = ["sphinx"]
 
 setup(
     name='sphinx-argparse',
-    version='0.1.15',
+    version='0.1.16',
     packages=[
         'sphinxarg',
     ],

@@ -118,38 +118,56 @@ def parse_parser(parser, data=None, **kwargs):
     show_defaults_const = show_defaults
     if 'skip_default_const_values' in kwargs and kwargs['skip_default_const_values'] is True:
         show_defaults_const = False
-    for action in parser._get_optional_actions():
-        if isinstance(action, _HelpAction):
+
+    # argparse stores the different groups as a lint in parser._action_groups
+    # the first element of the list are the positional arguments, hence the
+    # parser._actions_groups[1:]
+    action_groups = []
+    for action_group in parser._action_groups[1:]:
+        options_list = []
+        for action in action_group._group_actions:
+            if isinstance(action, _HelpAction):
+                continue
+
+            # Quote default values for string/None types
+            if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
+                action.default = '"%s"' % action.default
+
+            # fill in any formatters, like %(default)s
+            formatDict = dict(vars(action), prog=data.get('prog', ''))
+            helpStr = action.help or ''  # Ensure we don't print None
+            try:
+                helpStr = helpStr % formatDict
+            except:
+                pass
+
+            if isinstance(action, _StoreConstAction):
+                option = {
+                    'name': action.option_strings,
+                    'default': action.default if show_defaults_const else '==SUPPRESS==',
+                    'help': helpStr
+                }
+            else:
+                option = {
+                    'name': action.option_strings,
+                    'default': action.default if show_defaults else '==SUPPRESS==',
+                    'help': helpStr
+                }
+            if action.choices:
+                option['choices'] = action.choices
+            if "==SUPPRESS==" not in option['help']:
+                options_list.append(option)
+
+        if len(options_list) == 0:
             continue
-        if 'options' not in data:
-            data['options'] = []
 
-        # Quote default values for string/None types
-        if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
-            action.default = '"%s"' % action.default
+        group = {'title': action_group.title,
+                 'description': action_group.description,
+                 'options': options_list}
 
-        # fill in any formatters, like %(default)s
-        formatDict = dict(vars(action), prog=data.get('prog', ''))
-        helpStr = action.help or ''  # Ensure we don't print None
-        try:
-            helpStr = helpStr % formatDict
-        except:
-            pass
+        action_groups.append(group)
 
-        if isinstance(action, _StoreConstAction):
-            option = {
-                'name': action.option_strings,
-                'default': action.default if show_defaults_const else '==SUPPRESS==',
-                'help': helpStr
-            }
-        else:
-            option = {
-                'name': action.option_strings,
-                'default': action.default if show_defaults else '==SUPPRESS==',
-                'help': helpStr
-            }
-        if action.choices:
-            option['choices'] = action.choices
-        if "==SUPPRESS==" not in option['help']:
-            data['options'].append(option)
+    if len(action_groups) > 0:
+        data['action_groups'] = action_groups
+
     return data
