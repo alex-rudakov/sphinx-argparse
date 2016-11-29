@@ -42,17 +42,31 @@ Something like::
 .. note::
     We will use this example as a reference for every example in this doc.
 
+To document a file that is not part of a module, use :filename:
+
+    .. argparse::
+       :filename: script.py
+       :func: my_func_that_returns_a_parser
+       :prog: script.py
+        
+
 \:module\:
     Module name, where the function is located
 
 \:func\:
     Function name
 
+\:ref\:
+    A combination of :module: and :func:
+
+\:filename\:
+    A file name, in cases where the file to be documented is not part of a module.
+
 \:prog\:
-    It's just name of your tool (or how it's should appear in your documentation). Ex. if you run your script as
+    The name of your tool (or how it should appear in the documentation). For example, if you run your script as
     `./boo --some args` then \:prog\: will be "boo"
 
-That's it. Directive will render positional arguments, options and sub-commands.
+That's it. Directives will render positional arguments, options and sub-commands.
 
 Sub-commands are limited to one level. But, you always can output help for subcommands separately::
 

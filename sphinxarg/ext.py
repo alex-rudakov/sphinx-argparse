@@ -165,7 +165,7 @@ class ArgParseDirective(Directive):
     has_content = True
     option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
-                       nodefaultconst=flag,
+                       nodefaultconst=flag, filename=unchanged,
                        manpage=unchanged, nosubcommands=unchanged, passparser=flag)
 
     def _construct_manpage_specific_structure(self, parser_info):
@@ -329,21 +329,31 @@ class ArgParseDirective(Directive):
             _parts = self.options['ref'].split('.')
             module_name = '.'.join(_parts[0:-1])
             attr_name = _parts[-1]
+        elif 'filename' in self.options and 'func' in self.options:
+            mod = {}
+            f = open(self.options['filename'])
+            code = compile(f.read(), self.options['filename'], 'exec')
+            exec(code, mod)
+            attr_name = self.options['func']
+            func = mod[attr_name]
         else:
             raise self.error(
-                ':module: and :func: should be specified, or :ref:')
+                ':module: and :func: should be specified, or :ref:, or :filename: and :func:')
 
-        try:
-            mod = __import__(module_name, globals(), locals(), [attr_name])
-        except:
-            raise self.error('Failed to import "%s" from "%s"' % (attr_name, module_name))
+        # Skip this if we're dealing with a local file, since it obviously can't be imported
+        if 'filename' not in self.options:
+            try:
+                mod = __import__(module_name, globals(), locals(), [attr_name])
+            except:
+                raise self.error('Failed to import "%s" from "%s"' % (attr_name, module_name))
 
-        if not hasattr(mod, attr_name):
-            raise self.error((
-                'Module "%s" has no attribute "%s"\n'
-                'Incorrect argparse :module: or :func: values?'
-            ) % (module_name, attr_name))
-        func = getattr(mod, attr_name)
+            if not hasattr(mod, attr_name):
+                raise self.error((
+                    'Module "%s" has no attribute "%s"\n'
+                    'Incorrect argparse :module: or :func: values?'
+                ) % (module_name, attr_name))
+            func = getattr(mod, attr_name)
+
         if isinstance(func, ArgumentParser):
             parser = func
         elif 'passparser' in self.options:
