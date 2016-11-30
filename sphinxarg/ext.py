@@ -255,7 +255,7 @@ class ArgParseDirective(Directive):
             arg_items = []
             if arg['help']:
                 arg_items.append(nodes.paragraph(text=arg['help']))
-            else if 'choices' not in arg:
+            elif 'choices' not in arg:
                 arg_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
                 arg_items.append(
@@ -287,7 +287,7 @@ class ArgParseDirective(Directive):
                 names.append(nodes.option('', *option_declaration))
             if opt['help']:
                 opt_items.append(nodes.paragraph(text=opt['help']))
-            else if 'choices' not in opt:
+            elif 'choices' not in opt:
                 opt_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in opt:
                 opt_items.append(
