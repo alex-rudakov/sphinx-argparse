@@ -13,6 +13,7 @@ for command line tools based on argparse library.
    usage
    extend
    sample
+   misc
    contrib
 
 
