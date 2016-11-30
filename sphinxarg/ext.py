@@ -53,7 +53,7 @@ def print_arg_list(data, nested_content):
             my_def = [nodes.paragraph(text=arg['help'])] if arg['help'] else []
             name = arg['name']
             my_def = apply_definition(definitions, my_def, name)
-            if len(my_def) == 0:
+            if len(my_def) == 0 and 'choices' not in arg:
                 my_def.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
                 my_def.append(nodes.paragraph(
@@ -83,7 +83,7 @@ def print_opt_list(data, nested_content):
                                 '', text='=' + str(opt['default']))
                         names.append(nodes.option('', *option_declaration))
                         my_def = apply_definition(definitions, my_def, name)
-                    if len(my_def) == 0:
+                    if len(my_def) == 0 and 'choices' not in opt:
                         my_def.append(nodes.paragraph(text='Undocumented'))
                     if 'choices' in opt:
                         my_def.append(nodes.paragraph(
@@ -141,7 +141,7 @@ def print_subcommand_list(data, nested_content):
                 text=child['help'])] if child['help'] else []
             name = child['name']
             my_def = apply_definition(definitions, my_def, name)
-            if len(my_def) == 0:
+            if len(my_def) == 0 and 'description' not in child:
                 my_def.append(nodes.paragraph(text='Undocumented'))
             if 'description' in child:
                 my_def.append(nodes.paragraph(text=child['description']))
