@@ -1,29 +1,26 @@
-
-
-
 Basic usage
------------------
+===========
 
-Extension adds "argparse" directive::
+This extension adds the "argparse" directive::
 
     .. argparse::
        :module: my.module
        :func: my_func_that_returns_a_parser
        :prog: fancytool
 
-`module`, `func` and `prog` options are required.
+The `module`, `func` and `prog` options are required.
 
-func is function that returns an instance of the `argparse.ArgumentParser` class.
+`func` is a function that returns an instance of the `argparse.ArgumentParser` class.
 
-Alternative syntax is to use :ref: like this::
+Alternatively, one can instead use :ref: like this::
 
     .. argparse::
        :ref: my.module.my_func_that_returns_a_parser
        :prog: fancytool
 
-in this case :ref: also may point directly to argument parser instance.
+In this case :ref: also may point directly to argument parser instance.
 
-For this directive to work, you should point it to the function, that will return pre-filled `ArgumentParser`.
+For this directive to work, you should point it to the function that will return a pre-filled `ArgumentParser`.
 Something like::
 
     def my_func_that_return_parser():
@@ -68,8 +65,7 @@ To document a file that is not part of a module, use :filename::
 
 That's it. Directives will render positional arguments, options and sub-commands.
 
-Sub-commands are limited to one level. But, you always can output help for subcommands separately::
-
+Sub-commands are limited to one level. But, you can always output help for subcommands separately::
 
     .. argparse::
        :module: my.module
@@ -89,8 +85,8 @@ Nesting level is not limited::
 
 
 Other useful directives
------------------------------------------
+-----------------------
 
 :nodefault: will hide all default values of options.
 
-:nodefaultconst: Like nodefault:, expect it applies only to arguments of types `store_const`, `store_true` and `store_false`.
+:nodefaultconst: Like nodefault:, except it applies only to arguments of types `store_const`, `store_true` and `store_false`.
