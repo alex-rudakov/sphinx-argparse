@@ -1,15 +1,10 @@
-import sys
 from setuptools import setup
-# from tests import PyTest
 
 deps = ["sphinx"]
 
-if sys.version_info[:2] == (2, 6):
-    deps.append('argparse')
-
 setup(
     name='sphinx-argparse',
-    version='0.1.15',
+    version='0.1.16',
     packages=[
         'sphinxarg',
     ],
@@ -18,7 +13,7 @@ setup(
     license='MIT',
     author='Aleksandr Rudakov',
     author_email='ribozz@gmail.com',
-    description='Sphinx extension that automatically document argparse commands and options',
+    description='Sphinx extension that automatically documents argparse commands and options',
     long_description='',
     install_requires=deps,
 

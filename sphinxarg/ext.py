@@ -53,7 +53,7 @@ def print_arg_list(data, nested_content):
             my_def = [nodes.paragraph(text=arg['help'])] if arg['help'] else []
             name = arg['name']
             my_def = apply_definition(definitions, my_def, name)
-            if len(my_def) == 0:
+            if len(my_def) == 0 and 'choices' not in arg:
                 my_def.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
                 my_def.append(nodes.paragraph(
@@ -68,28 +68,35 @@ def print_arg_list(data, nested_content):
 def print_opt_list(data, nested_content):
     definitions = map_nested_definitions(nested_content)
     items = []
-    if 'options' in data:
-        for opt in data['options']:
-            names = []
-            my_def = [nodes.paragraph(text=opt['help'])] if opt['help'] else []
-            for name in opt['name']:
-                option_declaration = [nodes.option_string(text=name)]
-                if opt['default'] is not None \
-                        and opt['default'] != '==SUPPRESS==':
-                    option_declaration += nodes.option_argument(
-                        '', text='=' + str(opt['default']))
-                names.append(nodes.option('', *option_declaration))
-                my_def = apply_definition(definitions, my_def, name)
-            if len(my_def) == 0:
-                my_def.append(nodes.paragraph(text='Undocumented'))
-            if 'choices' in opt:
-                my_def.append(nodes.paragraph(
-                    text=('Possible choices: %s' % ', '.join([str(c) for c in opt['choices']]))))
-            items.append(
-                nodes.option_list_item(
-                    '', nodes.option_group('', *names),
-                    nodes.description('', *my_def)))
-    return nodes.option_list('', *items) if items else None
+    nodes_list = []  # dictionary to hold the group options, the group title is used as the key
+    if 'action_groups' in data:
+        for action_group in data['action_groups']:
+            if 'options' in action_group:
+                for opt in action_group['options']:
+                    names = []
+                    my_def = [nodes.paragraph(text=opt['help'])] if opt['help'] else []
+                    for name in opt['name']:
+                        option_declaration = [nodes.option_string(text=name)]
+                        if opt['default'] is not None \
+                                and opt['default'] != '==SUPPRESS==':
+                            option_declaration += nodes.option_argument(
+                                '', text='=' + str(opt['default']))
+                        names.append(nodes.option('', *option_declaration))
+                        my_def = apply_definition(definitions, my_def, name)
+                    if len(my_def) == 0 and 'choices' not in opt:
+                        my_def.append(nodes.paragraph(text='Undocumented'))
+                    if 'choices' in opt:
+                        my_def.append(nodes.paragraph(
+                            text=('Possible choices: %s' % ', '.join([str(c) for c in opt['choices']]))))
+                    items.append(
+                        nodes.option_list_item(
+                            '', nodes.option_group('', *names),
+                            nodes.description('', *my_def)))
+            opts = nodes.option_list('', *items) if items else None
+            nodes_list.append({'options': opts,
+                               'title': action_group['title'],
+                               'description': action_group['description']})
+    return nodes_list
 
 
 def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
@@ -98,10 +105,12 @@ def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
         items.append(nodes.definition_list_item(
             '', nodes.term(text='Positional arguments:'),
             nodes.definition('', arg_list)))
-    if opt_list:
-        items.append(nodes.definition_list_item(
-            '', nodes.term(text='Options:'),
-            nodes.definition('', opt_list)))
+    for opt_dict in opt_list:
+        opts = opt_dict['options']
+        if opts is not None:
+            items.append(nodes.definition_list_item(
+                '', nodes.term(text=opt_dict['title']),
+                nodes.definition('', opts)))
     if sub_list and len(sub_list):
         items.append(nodes.definition_list_item(
             '', nodes.term(text='Sub-commands:'),
@@ -128,14 +137,16 @@ def print_subcommand_list(data, nested_content):
     items = []
     if 'children' in data:
         for child in data['children']:
-            my_def = [nodes.paragraph(
-                text=child['help'])] if child['help'] else []
+            if 'description' in child and child['description']:
+                my_def = [nodes.paragraph(text=child['description'])]
+            elif child['help']:
+                my_def = [nodes.paragraph(text=child['help'])]
+            else:
+                my_def = []
             name = child['name']
             my_def = apply_definition(definitions, my_def, name)
-            if len(my_def) == 0:
+            if len(my_def) == 0 and 'description' not in child:
                 my_def.append(nodes.paragraph(text='Undocumented'))
-            if 'description' in child:
-                my_def.append(nodes.paragraph(text=child['description']))
             my_def.append(nodes.literal_block(text=child['usage']))
             my_def.append(print_command_args_and_opts(
                 print_arg_list(child, nested_content),
@@ -156,7 +167,7 @@ class ArgParseDirective(Directive):
     has_content = True
     option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
-                       nodefaultconst=flag,
+                       nodefaultconst=flag, filename=unchanged,
                        manpage=unchanged, nosubcommands=unchanged, passparser=flag)
 
     def _construct_manpage_specific_structure(self, parser_info):
@@ -202,10 +213,11 @@ class ArgParseDirective(Directive):
             options_section += nodes.paragraph()
             options_section += nodes.subtitle(text='Positional arguments:')
             options_section += self._format_positional_arguments(parser_info)
-        if 'options' in parser_info:
-            options_section += nodes.paragraph()
-            options_section += nodes.subtitle(text='Optional arguments:')
-            options_section += self._format_optional_arguments(parser_info)
+        for action_group in parser_info['action_groups']:
+            if 'options' in parser_info:
+                options_section += nodes.paragraph()
+                options_section += nodes.subtitle(text=action_group['title'])
+                options_section += self._format_optional_arguments(action_group)
         items = [
             # NOTE: we cannot generate NAME ourselves. It is generated by
             # docutils.writers.manpage
@@ -245,7 +257,7 @@ class ArgParseDirective(Directive):
             arg_items = []
             if arg['help']:
                 arg_items.append(nodes.paragraph(text=arg['help']))
-            else:
+            elif 'choices' not in arg:
                 arg_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in arg:
                 arg_items.append(
@@ -277,7 +289,7 @@ class ArgParseDirective(Directive):
                 names.append(nodes.option('', *option_declaration))
             if opt['help']:
                 opt_items.append(nodes.paragraph(text=opt['help']))
-            else:
+            elif 'choices' not in opt:
                 opt_items.append(nodes.paragraph(text='Undocumented'))
             if 'choices' in opt:
                 opt_items.append(
@@ -319,16 +331,31 @@ class ArgParseDirective(Directive):
             _parts = self.options['ref'].split('.')
             module_name = '.'.join(_parts[0:-1])
             attr_name = _parts[-1]
+        elif 'filename' in self.options and 'func' in self.options:
+            mod = {}
+            f = open(self.options['filename'])
+            code = compile(f.read(), self.options['filename'], 'exec')
+            exec(code, mod)
+            attr_name = self.options['func']
+            func = mod[attr_name]
         else:
             raise self.error(
-                ':module: and :func: should be specified, or :ref:')
-        mod = __import__(module_name, globals(), locals(), [attr_name])
-        if not hasattr(mod, attr_name):
-            raise self.error((
-                'Module "%s" has no attribute "%s"\n'
-                'Incorrect argparse :module: or :func: values?'
-            ) % (module_name, attr_name))
-        func = getattr(mod, attr_name)
+                ':module: and :func: should be specified, or :ref:, or :filename: and :func:')
+
+        # Skip this if we're dealing with a local file, since it obviously can't be imported
+        if 'filename' not in self.options:
+            try:
+                mod = __import__(module_name, globals(), locals(), [attr_name])
+            except:
+                raise self.error('Failed to import "%s" from "%s"' % (attr_name, module_name))
+
+            if not hasattr(mod, attr_name):
+                raise self.error((
+                    'Module "%s" has no attribute "%s"\n'
+                    'Incorrect argparse :module: or :func: values?'
+                ) % (module_name, attr_name))
+            func = getattr(mod, attr_name)
+
         if isinstance(func, ArgumentParser):
             parser = func
         elif 'passparser' in self.options:

@@ -84,8 +84,7 @@ def parse_parser(parser, data=None, **kwargs):
                 subalias = subsection_alias[subaction]
                 subaction.prog = '%s %s' % (parser.prog, name)
                 subdata = {
-                    'name': name if not subalias else
-                            '%s (%s)' % (name, ', '.join(subalias)),
+                    'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
                     'help': helps.get(name, ''),
                     'usage': subaction.format_usage().strip(),
                     'bare_usage': _format_usage_without_prefix(subaction),
@@ -95,39 +94,80 @@ def parse_parser(parser, data=None, **kwargs):
             continue
         if 'args' not in data:
             data['args'] = []
+
+        # Fill in things like %(prog)s in the help section.
+        # Note that if any keyword is missing, then nothing is filled in.
+        formatDict = dict(vars(action), prog=data.get('prog', ''))
+        helpStr = action.help or ''  # Ensure we don't print None
+        try:
+            helpStr = helpStr % formatDict
+        except:
+            pass
+
         arg = {
             'name': action.dest,
-            'help': action.help or '',
+            'help': helpStr,
             'metavar': action.metavar
         }
         if action.choices:
             arg['choices'] = action.choices
         data['args'].append(arg)
     show_defaults = (
-        ('skip_default_values' not in kwargs)
-        or (kwargs['skip_default_values'] is False))
+        ('skip_default_values' not in kwargs) or
+        (kwargs['skip_default_values'] is False))
     show_defaults_const = show_defaults
     if 'skip_default_const_values' in kwargs and kwargs['skip_default_const_values'] is True:
         show_defaults_const = False
-    for action in parser._get_optional_actions():
-        if isinstance(action, _HelpAction):
+
+    # argparse stores the different groups as a lint in parser._action_groups
+    # the first element of the list are the positional arguments, hence the
+    # parser._actions_groups[1:]
+    action_groups = []
+    for action_group in parser._action_groups[1:]:
+        options_list = []
+        for action in action_group._group_actions:
+            if isinstance(action, _HelpAction):
+                continue
+
+            # Quote default values for string/None types
+            if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
+                action.default = '"%s"' % action.default
+
+            # fill in any formatters, like %(default)s
+            formatDict = dict(vars(action), prog=data.get('prog', ''))
+            helpStr = action.help or ''  # Ensure we don't print None
+            try:
+                helpStr = helpStr % formatDict
+            except:
+                pass
+
+            if isinstance(action, _StoreConstAction):
+                option = {
+                    'name': action.option_strings,
+                    'default': action.default if show_defaults_const else '==SUPPRESS==',
+                    'help': helpStr
+                }
+            else:
+                option = {
+                    'name': action.option_strings,
+                    'default': action.default if show_defaults else '==SUPPRESS==',
+                    'help': helpStr
+                }
+            if action.choices:
+                option['choices'] = action.choices
+            if "==SUPPRESS==" not in option['help']:
+                options_list.append(option)
+
+        if len(options_list) == 0:
             continue
-        if 'options' not in data:
-            data['options'] = []
-        if isinstance(action, _StoreConstAction):
-            option = {
-                'name': action.option_strings,
-                'default': action.default if show_defaults_const else '==SUPPRESS==',
-                'help': action.help or ''
-            }
-        else:
-            option = {
-                'name': action.option_strings,
-                'default': action.default if show_defaults else '==SUPPRESS==',
-                'help': action.help or ''
-            }
-        if action.choices:
-            option['choices'] = action.choices
-        if "==SUPPRESS==" not in option['help']:
-            data['options'].append(option)
+
+        group = {'title': action_group.title,
+                 'description': action_group.description,
+                 'options': options_list}
+
+        action_groups.append(group)
+
+    if len(action_groups) > 0:
+        data['action_groups'] = action_groups
+
     return data
