@@ -137,14 +137,16 @@ def print_subcommand_list(data, nested_content):
     items = []
     if 'children' in data:
         for child in data['children']:
-            my_def = [nodes.paragraph(
-                text=child['help'])] if child['help'] else []
+            if 'description' in child and child['description']:
+                my_def = [nodes.paragraph(text=child['description'])]
+            elif child['help']:
+                my_def = [nodes.paragraph(text=child['help'])]
+            else:
+                my_def = []
             name = child['name']
             my_def = apply_definition(definitions, my_def, name)
             if len(my_def) == 0 and 'description' not in child:
                 my_def.append(nodes.paragraph(text='Undocumented'))
-            if 'description' in child:
-                my_def.append(nodes.paragraph(text=child['description']))
             my_def.append(nodes.literal_block(text=child['usage']))
             my_def.append(print_command_args_and_opts(
                 print_arg_list(child, nested_content),
