@@ -52,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'sphinx-argparse'
-copyright = u'2013, Alex Rudakov'
+copyright = u'2016, Alex Rudakov, Devon Ryan and contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

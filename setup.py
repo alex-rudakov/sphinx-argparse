@@ -13,7 +13,7 @@ setup(
     license='MIT',
     author='Aleksandr Rudakov',
     author_email='ribozz@gmail.com',
-    description='Sphinx extension that automatically document argparse commands and options',
+    description='Sphinx extension that automatically documents argparse commands and options',
     long_description='',
     install_requires=deps,
 

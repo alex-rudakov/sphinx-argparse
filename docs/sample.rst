@@ -1,11 +1,10 @@
-==============
 Examples
-==============
+========
 
-Example structure of pages
-=============================
+Example documentation structure
+-------------------------------
 
-Here is example structure of documentation for complex commands with lots of subcommands.
+Here is an example structure for the documentation of a complex command with many subcommands. 
 You are free to use any structure, but this may be a good starting point.
 
 File "index.rst"::
@@ -36,7 +35,7 @@ File "cmd_main.rst"::
 
     .. argparse::
        :module: my.module
-       :func: my_func_that_return_parser
+       :func: my_func_that_returns_a_parser
        :prog: fancytool
 
        subcommand
@@ -57,7 +56,7 @@ File "cmd_subcommand.rst"::
 
 
 Source of example file
-===========================
+----------------------
 
 This file will be used in all generated examples.
 
@@ -65,10 +64,10 @@ This file will be used in all generated examples.
 
 
 Generated sample 1 - command with subcommands
-================================================
+---------------------------------------------
 
 Directive
-----------------
+~~~~~~~~~
 
 Source::
 
@@ -77,7 +76,7 @@ Source::
        :prog: sample
 
 Output
-----------------
+~~~~~~
 
 .. argparse::
    :ref: test.sample.parser
@@ -85,10 +84,10 @@ Output
 
 
 Generated sample 2 - subcommand
-==================================
+-------------------------------
 
 Directive
-----------------
+~~~~~~~~~
 
 Source::
 
@@ -99,7 +98,7 @@ Source::
        :path: game
 
 Output
-----------------
+~~~~~~
 
 .. argparse::
    :module: test.sample
