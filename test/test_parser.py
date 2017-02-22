@@ -149,7 +149,7 @@ def test_parse_nested():
         }, {
             'name': ['bar'],
             'help': '',
-            'default': False 
+            'default': False
         }
     ]
 
@@ -312,7 +312,7 @@ def test_parse_groups():
 def test_action_groups_with_subcommands():
     """
     This is a somewhat overly complicated example incorporating both action
-    groups (with optional AND positional arguments) and subcommands (again 
+    groups (with optional AND positional arguments) and subcommands (again
     with both optional and positional arguments)
     """
     parser = argparse.ArgumentParser('foo')
