@@ -60,70 +60,50 @@ def parse_parser(parser, data=None, **kwargs):
     _try_add_parser_attribute(data, parser, 'description')
     _try_add_parser_attribute(data, parser, 'epilog')
     for action in parser._get_positional_actions():
-        if isinstance(action, _HelpAction):
+        if not isinstance(action, _SubParsersAction):
             continue
-        if isinstance(action, _SubParsersAction):
-            helps = {}
-            for item in action._choices_actions:
-                helps[item.dest] = item.help
+        helps = {}
+        for item in action._choices_actions:
+            helps[item.dest] = item.help
 
-            # commands which share an existing parser are an alias,
-            # don't duplicate docs
-            subsection_alias = {}
-            subsection_alias_names = set()
-            for name, subaction in action._name_parser_map.items():
-                if subaction not in subsection_alias:
-                    subsection_alias[subaction] = []
-                else:
-                    subsection_alias[subaction].append(name)
-                    subsection_alias_names.add(name)
+        # commands which share an existing parser are an alias,
+        # don't duplicate docs
+        subsection_alias = {}
+        subsection_alias_names = set()
+        for name, subaction in action._name_parser_map.items():
+            if subaction not in subsection_alias:
+                subsection_alias[subaction] = []
+            else:
+                subsection_alias[subaction].append(name)
+                subsection_alias_names.add(name)
 
-            for name, subaction in action._name_parser_map.items():
-                if name in subsection_alias_names:
-                    continue
-                subalias = subsection_alias[subaction]
-                subaction.prog = '%s %s' % (parser.prog, name)
-                subdata = {
-                    'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
-                    'help': helps.get(name, ''),
-                    'usage': subaction.format_usage().strip(),
-                    'bare_usage': _format_usage_without_prefix(subaction),
-                }
-                parse_parser(subaction, subdata, **kwargs)
-                data.setdefault('children', []).append(subdata)
-            continue
-        if 'args' not in data:
-            data['args'] = []
+        for name, subaction in action._name_parser_map.items():
+            if name in subsection_alias_names:
+                continue
+            subalias = subsection_alias[subaction]
+            subaction.prog = '%s %s' % (parser.prog, name)
+            subdata = {
+                'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
+                'help': helps.get(name, ''),
+                'usage': subaction.format_usage().strip(),
+                'bare_usage': _format_usage_without_prefix(subaction),
+            }
+            parse_parser(subaction, subdata, **kwargs)
+            data.setdefault('children', []).append(subdata)
 
-        # Fill in things like %(prog)s in the help section.
-        # Note that if any keyword is missing, then nothing is filled in.
-        formatDict = dict(vars(action), prog=data.get('prog', ''))
-        helpStr = action.help or ''  # Ensure we don't print None
-        try:
-            helpStr = helpStr % formatDict
-        except:
-            pass
-
-        arg = {
-            'name': action.dest,
-            'help': helpStr,
-            'metavar': action.metavar
-        }
-        if action.choices:
-            arg['choices'] = action.choices
-        data['args'].append(arg)
-    show_defaults = (
-        ('skip_default_values' not in kwargs) or
-        (kwargs['skip_default_values'] is False))
+    show_defaults = True
+    if 'skip_default_values' in kwargs and kwargs['skip_default_values'] is True:
+        show_defaults = False
     show_defaults_const = show_defaults
     if 'skip_default_const_values' in kwargs and kwargs['skip_default_const_values'] is True:
         show_defaults_const = False
 
-    # argparse stores the different groups as a lint in parser._action_groups
-    # the first element of the list are the positional arguments, hence the
-    # parser._actions_groups[1:]
+    # argparse stores the different groups as a list in parser._action_groups
+    # the first element of the list holds the positional arguments, the
+    # second the option arguments not in groups, and subsequent elements
+    # argument groups with positional and optional parameters
     action_groups = []
-    for action_group in parser._action_groups[1:]:
+    for action_group in parser._action_groups:
         options_list = []
         for action in action_group._group_actions:
             if isinstance(action, _HelpAction):
@@ -141,15 +121,26 @@ def parse_parser(parser, data=None, **kwargs):
             except:
                 pass
 
+            # Options have the option_strings set, positional arguments don't
+            name = action.option_strings
+            if name == []:
+                if action.metavar is None:
+                    name = [action.dest]
+                else:
+                    name = [action.metavar]
+            # Skip lines for subcommands
+            if name == ['==SUPPRESS==']:
+                continue
+
             if isinstance(action, _StoreConstAction):
                 option = {
-                    'name': action.option_strings,
+                    'name': name,
                     'default': action.default if show_defaults_const else '==SUPPRESS==',
                     'help': helpStr
                 }
             else:
                 option = {
-                    'name': action.option_strings,
+                    'name': name,
                     'default': action.default if show_defaults else '==SUPPRESS==',
                     'help': helpStr
                 }
@@ -160,6 +151,10 @@ def parse_parser(parser, data=None, **kwargs):
 
         if len(options_list) == 0:
             continue
+
+        # Upper case "Positional Arguments" and "Optional Arguments" titles
+        if action_group.title in ['positional arguments', 'optional arguments']:
+            action_group.title = action_group.title.title()
 
         group = {'title': action_group.title,
                  'description': action_group.description,
