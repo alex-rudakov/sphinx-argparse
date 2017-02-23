@@ -153,8 +153,10 @@ def parse_parser(parser, data=None, **kwargs):
             continue
 
         # Upper case "Positional Arguments" and "Optional Arguments" titles
-        if action_group.title in ['positional arguments', 'optional arguments']:
-            action_group.title = action_group.title.title()
+        if action_group.title == 'optional arguments':
+            action_group.title = 'Optional Arguments'
+        if action_group.title == 'positional arguments':
+            action_group.title = 'Required Arguments'
 
         group = {'title': action_group.title,
                  'description': action_group.description,

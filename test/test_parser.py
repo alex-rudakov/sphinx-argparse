@@ -161,7 +161,7 @@ def test_parse_nested():
             'bare_usage': 'py.test install [-h] [--upgrade] ref',
             'action_groups': [
                 {
-                    'title': 'Positional Arguments',
+                    'title': 'Required Arguments',
                     'description': None,
                     'options': [
                         {
@@ -227,7 +227,7 @@ def test_parse_nested_traversal():
             'bare_usage': 'py.test level1 level2 level3 [-h] foo bar',
             'action_groups': [
                 {
-                    'title': 'Positional Arguments',
+                    'title': 'Required Arguments',
                     'description': None,
                     'options': [
                         {
@@ -334,13 +334,13 @@ def test_action_groups_with_subcommands():
     data = parse_parser(parser)
 
     assert data['action_groups'] == [
-        {'options': [{'default': None, 'name': ['foo2 metavar'], 'help': 'foo2 help'}], 'description': None, 'title': 'Positional Arguments'},
+        {'options': [{'default': None, 'name': ['foo2 metavar'], 'help': 'foo2 help'}], 'description': None, 'title': 'Required Arguments'},
         {'options': [{'default': None, 'name': ['--foo'], 'help': 'foo help'}], 'description': None, 'title': 'Optional Arguments'},
         {'options': [{'default': None, 'name': ['--bar'], 'help': 'bar help'}, {'default': None, 'name': ['quux'], 'help': 'quux help'}], 'description': None, 'title': 'bar options'},
         {'options': [{'default': None, 'name': ['--blah'], 'help': 'blah help'}, {'default': None, 'name': ['sniggly'], 'help': 'sniggly help'}], 'description': None, 'title': 'bla options'}
     ]
 
     assert data['children'] == [
-        {'usage': 'usage: foo A [-h] baz', 'action_groups': [{'options': [{'default': None, 'name': ['baz'], 'help': 'An integer'}], 'description': None, 'title': 'Positional Arguments'}], 'bare_usage': 'foo A [-h] baz', 'name': 'A', 'help': 'A subparser'},
+        {'usage': 'usage: foo A [-h] baz', 'action_groups': [{'options': [{'default': None, 'name': ['baz'], 'help': 'An integer'}], 'description': None, 'title': 'Required Arguments'}], 'bare_usage': 'foo A [-h] baz', 'name': 'A', 'help': 'A subparser'},
         {'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]', 'action_groups': [{'options': [{'default': None, 'choices': 'XYZ', 'name': ['--barg'], 'help': 'A list of choices'}], 'description': None, 'title': 'Optional Arguments'}], 'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]', 'name': 'B', 'help': 'B subparser'}
     ]
