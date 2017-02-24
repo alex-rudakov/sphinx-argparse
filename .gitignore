@@ -37,3 +37,4 @@ nosetests.xml
 .env/
 
 docs/_build/
+.cache/

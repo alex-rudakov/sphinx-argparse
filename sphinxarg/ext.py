@@ -67,10 +67,10 @@ def print_arg_list(data, nested_content):
 
 def print_opt_list(data, nested_content):
     definitions = map_nested_definitions(nested_content)
-    items = []
     nodes_list = []  # dictionary to hold the group options, the group title is used as the key
     if 'action_groups' in data:
         for action_group in data['action_groups']:
+            items = []
             if 'options' in action_group:
                 for opt in action_group['options']:
                     names = []
