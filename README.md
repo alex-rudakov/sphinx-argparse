@@ -14,6 +14,11 @@ http://sphinx-argparse.readthedocs.org/en/latest/
 Changelog & contributors
 ========================
 
+0.1.17
+------
+
+- Fixed handling of argument groups (this was bug #49). Thanks to @croth1 for reporting this bug. Note that now position arguments (also known as required arguments) within argument groups are now also handled correctly.
+
 0.1.16
 ------
 
