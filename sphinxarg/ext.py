@@ -50,7 +50,7 @@ def print_action_groups(data, nested_content):
     Process all 'action groups', which are also include 'Options' and 'Required
     arguments'. A list of nodes is returned.
     """
-    definitions = map_nested_definitions(nested_content)
+    # definitions = map_nested_definitions(nested_content)
     nodes_list = []
     if 'action_groups' in data:
         for action_group in data['action_groups']:
@@ -78,10 +78,10 @@ def print_action_groups(data, nested_content):
                     arg += entry['help']
                 if entry['default'] is not None and entry['default'] != '==SUPPRESS==':
                     arg += 'Default: {}'.format(entry['default'])
-                
+
                 n = nodes.option_list_item('',
-                    nodes.option_group('', nodes.option_string(text=', '.join(entry['name']))),
-                    nodes.description('', nodes.paragraph(text=arg)))
+                                           nodes.option_group('', nodes.option_string(text=', '.join(entry['name']))),
+                                           nodes.description('', nodes.paragraph(text=arg)))
                 items.append(n)
 
             section += nodes.option_list('', *items)
@@ -117,7 +117,7 @@ def print_subcommands(data, nested_content):
     Apparently there can also be a 'description' entry.
     """
 
-    definitions = map_nested_definitions(nested_content)
+    # definitions = map_nested_definitions(nested_content)
     items = []
     if 'children' in data:
         subCommands = nodes.section(ids=["Sub-commands:"])
