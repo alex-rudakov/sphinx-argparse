@@ -45,80 +45,55 @@ def map_nested_definitions(nested_content):
     return definitions
 
 
-def print_arg_list(data, nested_content):
+def print_action_groups(data, nested_content):
+    """
+    Process all 'action groups', which are also include 'Options' and 'Required
+    arguments'. A list of nodes is returned.
+    """
     definitions = map_nested_definitions(nested_content)
-    items = []
-    if 'args' in data:
-        for arg in data['args']:
-            my_def = [nodes.paragraph(text=arg['help'])] if arg['help'] else []
-            name = arg['name']
-            my_def = apply_definition(definitions, my_def, name)
-            if len(my_def) == 0 and 'choices' not in arg:
-                my_def.append(nodes.paragraph(text='Undocumented'))
-            if 'choices' in arg:
-                my_def.append(nodes.paragraph(
-                    text=('Possible choices: %s' % ', '.join([str(c) for c in arg['choices']]))))
-            items.append(
-                nodes.option_list_item(
-                    '', nodes.option_group('', nodes.option_string(text=name)),
-                    nodes.description('', *my_def)))
-    return nodes.option_list('', *items) if items else None
-
-
-def print_opt_list(data, nested_content):
-    definitions = map_nested_definitions(nested_content)
-    nodes_list = []  # dictionary to hold the group options, the group title is used as the key
+    nodes_list = []
     if 'action_groups' in data:
         for action_group in data['action_groups']:
+            # Every action group is comprised of a section, holding a title, the description, and the option group (members)
+            section = nodes.section(ids=[action_group['title']])
+            section += nodes.title(action_group['title'], action_group['title'])
+            if action_group['description']:
+                section += nodes.paragraph(text=action_group['description'])
+
             items = []
-            if 'options' in action_group:
-                for opt in action_group['options']:
-                    names = []
-                    my_def = [nodes.paragraph(text=opt['help'])] if opt['help'] else []
-                    for name in opt['name']:
-                        option_declaration = [nodes.option_string(text=name)]
-                        if opt['default'] is not None \
-                                and opt['default'] != '==SUPPRESS==':
-                            option_declaration += nodes.option_argument(
-                                '', text='=' + str(opt['default']))
-                        names.append(nodes.option('', *option_declaration))
-                        my_def = apply_definition(definitions, my_def, name)
-                    if len(my_def) == 0 and 'choices' not in opt:
-                        my_def.append(nodes.paragraph(text='Undocumented'))
-                    if 'choices' in opt:
-                        my_def.append(nodes.paragraph(
-                            text=('Possible choices: %s' % ', '.join([str(c) for c in opt['choices']]))))
-                    items.append(
-                        nodes.option_list_item(
-                            '', nodes.option_group('', *names),
-                            nodes.description('', *my_def)))
-            opts = nodes.option_list('', *items) if items else None
-            nodes_list.append({'options': opts,
-                               'title': action_group['title'],
-                               'description': action_group['description']})
+            # Iterate over action group members
+            for entry in action_group['options']:
+                """
+                Members will include:
+                    default	The default value. This may be ==SUPPRESS==
+                    name	A list of option names (e.g., ['-h', '--help']
+                    help	The help message string
+                There may also be a 'choices' member.
+                """
+                # Build the help text
+                arg = ''
+                if 'choices' in entry:
+                    arg += 'Possible choices: {}\n'.format(", ".join([str(c) for c in entry['choices']]))
+                if 'help' in entry:
+                    arg += entry['help']
+                if entry['default'] is not None and entry['default'] != '==SUPPRESS==':
+                    arg += 'Default: {}'.format(entry['default'])
+                
+                n = nodes.option_list_item('',
+                    nodes.option_group('', nodes.option_string(text=', '.join(entry['name']))),
+                    nodes.description('', nodes.paragraph(text=arg)))
+                items.append(n)
+
+            section += nodes.option_list('', *items)
+            nodes_list.append(section)
+
     return nodes_list
 
 
-def print_command_args_and_opts(arg_list, opt_list, sub_list=None):
-    items = []
-    if arg_list:
-        items.append(nodes.definition_list_item(
-            '', nodes.term(text='Positional arguments:'),
-            nodes.definition('', arg_list)))
-    for opt_dict in opt_list:
-        opts = opt_dict['options']
-        if opts is not None:
-            items.append(nodes.definition_list_item(
-                '', nodes.term(text=opt_dict['title']),
-                nodes.definition('', opts)))
-    if sub_list and len(sub_list):
-        items.append(nodes.definition_list_item(
-            '', nodes.term(text='Sub-commands:'),
-            nodes.definition('', sub_list)))
-    return nodes.definition_list('', *items)
-
-
 def apply_definition(definitions, my_def, name):
+    """
+    Currently unused
+    """
     if name in definitions:
         definition = definitions[name]
         classifier = definition['classifier']
@@ -132,35 +107,44 @@ def apply_definition(definitions, my_def, name):
     return my_def
 
 
-def print_subcommand_list(data, nested_content):
+def print_subcommands(data, nested_content):
+    """
+    Each subcommand is a dictionary with the following keys:
+
+    ['usage', 'action_groups', 'bare_usage', 'name', 'help']
+
+    In essence, this is all tossed in a new section with the title 'name'.
+    Apparently there can also be a 'description' entry.
+    """
+
     definitions = map_nested_definitions(nested_content)
     items = []
     if 'children' in data:
+        subCommands = nodes.section(ids=["Sub-commands:"])
+        subCommands += nodes.title('Sub-commands:', 'Sub-commands:')
+
         for child in data['children']:
+            sec = nodes.section(ids=[child['name']])
+            sec += nodes.title(child['name'], child['name'])
+
             if 'description' in child and child['description']:
-                my_def = [nodes.paragraph(text=child['description'])]
+                sec += nodes.paragraph(text=child['description'])
             elif child['help']:
-                my_def = [nodes.paragraph(text=child['help'])]
+                sec += nodes.paragraph(text=child['help'])
             else:
-                my_def = []
-            name = child['name']
-            my_def = apply_definition(definitions, my_def, name)
-            if len(my_def) == 0 and 'description' not in child:
-                my_def.append(nodes.paragraph(text='Undocumented'))
-            my_def.append(nodes.literal_block(text=child['usage']))
-            my_def.append(print_command_args_and_opts(
-                print_arg_list(child, nested_content),
-                print_opt_list(child, nested_content),
-                print_subcommand_list(child, nested_content)
-            ))
-            items.append(
-                nodes.definition_list_item(
-                    '',
-                    nodes.term('', '', nodes.strong(text=name)),
-                    nodes.definition('', *my_def)
-                )
-            )
-    return nodes.definition_list('', *items)
+                sec += nodes.paragraph(text='Undocumented')
+
+            sec += nodes.literal_block(text=child['bare_usage'])
+            for x in print_action_groups(child, nested_content):
+                sec += x
+
+            for x in print_subcommands(child, nested_content):
+                sec += x
+
+            subCommands += sec
+        items.append(subCommands)
+
+    return items
 
 
 class ArgParseDirective(Directive):
@@ -385,13 +369,11 @@ class ArgParseDirective(Directive):
         if 'description' in result:
             items.append(self._nested_parse_paragraph(result['description']))
         items.append(nodes.literal_block(text=result['usage']))
-        items.append(print_command_args_and_opts(
-            print_arg_list(result, nested_content),
-            print_opt_list(result, nested_content),
-            print_subcommand_list(result, nested_content)
-        ))
+        items.extend(print_action_groups(result, nested_content))
+        items.extend(print_subcommands(result, nested_content))
         if 'epilog' in result:
             items.append(self._nested_parse_paragraph(result['epilog']))
+
         return items
 
 
