@@ -12,7 +12,6 @@ The short synopsis is below:
  2. In that CSS file, add the following code::
 
 .. code:: CSS
-
     .wy-table-responsive table td {
         white-space: normal !important;
     }
