@@ -9,7 +9,7 @@ A common issue with the default html output is that the table within which optio
 The short synopsis is below:
 
  1. Create a new CSS file (likely under `_static`) and point to it in `html_static_path` and `html_context` (or a template in the `templates_path`) in `conf.py`.
- 2. In that CSS file, add the following code
+ 2. In that CSS file, add the following code:
 
     .. code:: CSS
 
