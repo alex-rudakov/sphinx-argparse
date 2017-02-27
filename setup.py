@@ -3,7 +3,7 @@ from setuptools import setup
 deps = ["sphinx"]
 
 setup(
-    name='sphinx-argparse',
+    name='sphinx_argparse',
     version='0.1.17',
     packages=[
         'sphinxarg',
@@ -11,7 +11,7 @@ setup(
 
     url='',
     license='MIT',
-    author='Aleksandr Rudakov',
+    author='Aleksandr Rudakov and Devon Ryan',
     author_email='ribozz@gmail.com',
     description='Sphinx extension that automatically documents argparse commands and options',
     long_description='',

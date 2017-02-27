@@ -17,8 +17,8 @@ File "index.rst"::
 File "cmd.rst"::
 
 
-    Command line utitlites
-    ***********************
+    Command line utilities
+    **********************
 
     .. toctree::
        :maxdepth: 1
@@ -39,7 +39,7 @@ File "cmd_main.rst"::
        :prog: fancytool
 
        subcommand
-            Here we add reference to subcommand, to simplify navigation.
+            Here we add a reference to subcommand, to simplify navigation.
             See :doc:`cmd_subcommand`
 
 

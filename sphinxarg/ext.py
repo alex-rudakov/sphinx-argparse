@@ -34,14 +34,17 @@ def map_nested_definitions(nested_content):
                 raise Exception('Unknown classifier: %s' % classifier)
             idx = subitem.first_child_matching_class(nodes.term)
             if idx is not None:
-                ch = subitem[idx]
-                if len(ch.children) > 0:
-                    term = ch.children[0].astext()
+                term = subitem[idx]
+                if len(term.children) > 0:
+                    term = term.children[0].astext()
                     idx = subitem.first_child_matching_class(nodes.definition)
                     if idx is not None:
-                        def_node = subitem[idx]
-                        def_node.attributes['classifier'] = classifier
-                        definitions[term] = def_node
+                        subContent = []
+                        for _ in subitem[idx]:
+                            if isinstance(_, nodes.definition_list):
+                                subContent.append(_)
+                        definitions[term] = (classifier, subitem[idx].astext(), subContent)
+
     return definitions
 
 
@@ -50,15 +53,38 @@ def print_action_groups(data, nested_content):
     Process all 'action groups', which are also include 'Options' and 'Required
     arguments'. A list of nodes is returned.
     """
-    # definitions = map_nested_definitions(nested_content)
+    definitions = map_nested_definitions(nested_content)
     nodes_list = []
     if 'action_groups' in data:
         for action_group in data['action_groups']:
             # Every action group is comprised of a section, holding a title, the description, and the option group (members)
             section = nodes.section(ids=[action_group['title']])
             section += nodes.title(action_group['title'], action_group['title'])
+
+            desc = ''
             if action_group['description']:
-                section += nodes.paragraph(text=action_group['description'])
+                desc = action_group['description']
+            # Replace/append/prepend content to the description according to nested content
+            subContent = []
+            if action_group['title'] in definitions:
+                classifier, s, subContent = definitions[action_group['title']]
+                if classifier == '@replace':
+                    section += nodes.paragraph(text=s)
+                elif classifier == '@after':
+                    section += nodes.paragraph(text=desc)
+                    section += nodes.paragraph(text=s)
+                elif classifier == '@before':
+                    section += nodes.paragraph(text=s)
+                    section += nodes.paragraph(text=desc)
+                for k, v in subContent.items():
+                    definitions[k] = v
+            elif desc != '':
+                section += nodes.paragraph(text=desc)
+            localDefinitions = definitions
+            if len(subContent) > 0:
+                localDefinitions = {k: v for k, v in definitions.items()}
+                for k, v in map_nested_definitions(subContent):
+                    localDefinitions[k] = v
 
             items = []
             # Iterate over action group members
@@ -79,32 +105,28 @@ def print_action_groups(data, nested_content):
                 if entry['default'] is not None and entry['default'] != '==SUPPRESS==':
                     arg += 'Default: {}'.format(entry['default'])
 
+                # Handle nested content, the term used in the dict has the comma removed for simplicity
+                desc = [nodes.paragraph(text=arg)]
+                term = ' '.join(entry['name'])
+                if term in localDefinitions:
+                    classifier, s, subContent = localDefinitions[term]
+                    if classifier == '@replace':
+                        desc = [nodes.paragraph(text=s)]
+                    elif classifier == '@after':
+                        desc.append(nodes.paragraph(text=s))
+                    elif classifier == '@before':
+                        desc.insert(0, nodes.paragraph(text=s))
+                term = ', '.join(entry['name'])
+
                 n = nodes.option_list_item('',
-                                           nodes.option_group('', nodes.option_string(text=', '.join(entry['name']))),
-                                           nodes.description('', nodes.paragraph(text=arg)))
+                                           nodes.option_group('', nodes.option_string(text=term)),
+                                           nodes.description('', *desc))
                 items.append(n)
 
             section += nodes.option_list('', *items)
             nodes_list.append(section)
 
     return nodes_list
-
-
-def apply_definition(definitions, my_def, name):
-    """
-    Currently unused
-    """
-    if name in definitions:
-        definition = definitions[name]
-        classifier = definition['classifier']
-        if classifier == '@replace':
-            return definition.children
-        if classifier == '@after':
-            return my_def + definition.children
-        if classifier == '@before':
-            return definition.children + my_def
-        raise Exception('Unknown classifier: %s' % classifier)
-    return my_def
 
 
 def print_subcommands(data, nested_content):
@@ -117,7 +139,7 @@ def print_subcommands(data, nested_content):
     Apparently there can also be a 'description' entry.
     """
 
-    # definitions = map_nested_definitions(nested_content)
+    definitions = map_nested_definitions(nested_content)
     items = []
     if 'children' in data:
         subCommands = nodes.section(ids=["Sub-commands:"])
@@ -128,17 +150,29 @@ def print_subcommands(data, nested_content):
             sec += nodes.title(child['name'], child['name'])
 
             if 'description' in child and child['description']:
-                sec += nodes.paragraph(text=child['description'])
+                desc = child['description']
             elif child['help']:
-                sec += nodes.paragraph(text=child['help'])
+                desc = child['help']
             else:
-                sec += nodes.paragraph(text='Undocumented')
+                desc = 'Undocumented'
 
+            # Handle nested content
+            subContent = []
+            if child['name'] in definitions:
+                classifier, s, subContent = definitions[child['name']]
+                if classifier == '@replace':
+                    desc = s
+                elif classifier == '@after':
+                    desc += ' ' + s
+                elif classifier == '@before':
+                    desc = s + ' ' + desc
+
+            sec += nodes.paragraph(text=desc)
             sec += nodes.literal_block(text=child['bare_usage'])
-            for x in print_action_groups(child, nested_content):
+            for x in print_action_groups(child, nested_content + subContent):
                 sec += x
 
-            for x in print_subcommands(child, nested_content):
+            for x in print_subcommands(child, nested_content + subContent):
                 sec += x
 
             subCommands += sec
