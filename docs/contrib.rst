@@ -1,21 +1,16 @@
-Contribution
-============
+Contribute
+==========
 
 Any help is welcome!
+
 Most wanted:
 
-* documentation correction (I am not native english speaker)
-* bugfixes
-* examples
-* ports for other libraries (optparse, what else?)
+ * Additional features
+ * Bug fixes
+ * Examples
 
-Contributions are accepted through github pull-request.
-Bug reports are also through bug-tracker on github.
+Contributions are gratefully accepted through `github <https://github.com/ribozz/sphinx-argparse>`_ pull-request. Please report bugs as issues on github.
 
-https://github.com/ribozz/sphinx-argparse
-
-Don't forget to run tests before commit::
+Don't forget to run tests before committing::
 
     py.test
-
-Any feedback is welcome: ribozz (a) gmail dot com
