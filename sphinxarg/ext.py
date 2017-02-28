@@ -6,6 +6,8 @@ from docutils.statemachine import StringList
 from docutils.parsers.rst.directives import flag, unchanged
 from sphinx.util.compat import Directive
 from sphinx.util.nodes import nested_parse_with_titles
+from CommonMark import DocParser
+from recommonmark.parser import CommonMarkParser
 
 from sphinxarg.parser import parse_parser, parser_navigate
 
@@ -213,7 +215,8 @@ class ArgParseDirective(Directive):
     option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
                        nodefaultconst=flag, filename=unchanged,
-                       manpage=unchanged, nosubcommands=unchanged, passparser=flag)
+                       manpage=unchanged, nosubcommands=unchanged, passparser=flag,
+                       markdown=flag)
 
     def _construct_manpage_specific_structure(self, parser_info):
         """
@@ -418,7 +421,17 @@ class ArgParseDirective(Directive):
         result = parser_navigate(result, path)
         if 'manpage' in self.options:
             return self._construct_manpage_specific_structure(result)
+
+        # Handle nested content, where markdown needs to be preprocessed
         nested_content = nodes.paragraph()
+        if 'markdown' in self.options:
+            mdParser = CommonMarkParser()
+            doc = DocParser()
+            print("initial content {}".format(str(self.content)))
+            cont = doc.parse(str(self.content))
+            print("parsed content {}".format(cont))
+            mdParser.convert_block(cont)
+            print("modified content {}".format(doc.children))
         self.state.nested_parse(
             self.content, self.content_offset, nested_content)
         nested_content = nested_content.children
