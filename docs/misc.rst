@@ -19,3 +19,9 @@ The short synopsis is below:
         .wy-table-responsive {
             overflow: visible !important;
         }
+
+
+Linking to action groups
+------------------------
+
+As of version 0.2.0, action groups (e.g., "Optional arguments", "Required arguments", and subcommands) can be included in tables of contents and external links. The anchor name is the same as the title name (e.g., "Optional arguments"). In cases where titles are duplicated, as is often the case when subcommands are used, `_repeatX`, where `X` is a number, is prepended to duplicate anchor names to ensure that they can all be uniquely linked.
