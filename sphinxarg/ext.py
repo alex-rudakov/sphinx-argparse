@@ -181,6 +181,33 @@ def print_subcommands(data, nested_content):
     return items
 
 
+def ensureUniqueIDs(items):
+    """
+    If action groups are repeated, then links in the table of contents will
+    just go to the first of the repeats. This may not be desirable, particularly
+    in the case of subcommands where the option groups have different members.
+    This function updates the title IDs by adding _repeatX, where X is a number
+    so that the links are then unique.
+    """
+    s = set()
+    for item in items:
+        for n in item.traverse(descend=True, siblings=True, ascend=False):
+            if isinstance(n, nodes.section):
+                ids = n['ids']
+                for idx, id in enumerate(ids):
+                    if id not in s:
+                        s.add(id)
+                    else:
+                        print("already have {}".format(id))
+                        i = 1
+                        while "{}_repeat{}".format(id, i) in s:
+                            i += 1
+                        ids[idx] = "{}_repeat{}".format(id, i)
+                        s.add(ids[idx])
+                        print("adding {}".format(ids[idx]))
+                n['ids'] = ids
+
+
 class ArgParseDirective(Directive):
     has_content = True
     option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
@@ -407,6 +434,9 @@ class ArgParseDirective(Directive):
         items.extend(print_subcommands(result, nested_content))
         if 'epilog' in result:
             items.append(self._nested_parse_paragraph(result['epilog']))
+
+        # Traverse the returned nodes, modifying the title IDs as necessary to avoid repeats
+        ensureUniqueIDs(items)
 
         return items
 
