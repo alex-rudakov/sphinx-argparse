@@ -14,7 +14,7 @@ setup(
     long_description='',
     install_requires=[
         'sphinx',
-        'recommonmark'
+        'CommonMark>=0.5.6'
     ],
     extras_require={
         'dev': ['pytest', 'sphinx_rtd_theme'],

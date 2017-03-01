@@ -6,8 +6,7 @@ from docutils.statemachine import StringList
 from docutils.parsers.rst.directives import flag, unchanged
 from sphinx.util.compat import Directive
 from sphinx.util.nodes import nested_parse_with_titles
-from CommonMark import DocParser
-from recommonmark.parser import CommonMarkParser
+from CommonMark import Parser  # >= 0.5.6
 
 from sphinxarg.parser import parse_parser, parser_navigate
 
@@ -48,6 +47,105 @@ def map_nested_definitions(nested_content):
                         definitions[term] = (classifier, subitem[idx].astext(), subContent)
 
     return definitions
+
+
+def MarkDown(node):
+    """
+    Returns a list of nodes, containing the markdown converted to docutils nodes
+    node types: linebreak, emph, strong, html_inline, image, code, block_quote, item, list, heading, code_block, html_block, thematic_break
+    """
+    root = node
+    cur = node.first_child
+    last = node.last_child
+
+    # Go into each child, in turn
+    output = []
+    if cur is not None:
+        while True:
+            t = cur.t
+            print(t)
+            if t == 'paragraph':
+                output.append(paragraph(cur))
+            elif t == 'text':
+                output.append(text(cur))
+            elif t == 'softbreak':
+                output.append(softbreak(cur))
+            elif t == 'link':
+                output.append(target(cur))
+            elif t == 'heading':
+                output.append(section(cur))  # This cycles to the end, since CommonMark doesn't return actual sections!
+                break
+            else:
+                print('Received unhandled type: {}. Full print of node:'.format(t))
+                cur.pretty()
+                cur.first_child.pretty()
+                return output
+                    
+            if cur == last:
+                break
+            cur = cur.nxt
+             
+    return output
+
+
+def paragraph(node):
+    """
+    Process a paragraph, which includes all content under it
+    """
+    text = ''
+    if node.string_content is not None:
+        text = node.string_content
+    o = nodes.paragraph('', ' '.join(text))
+    o.line = node.sourcepos[0][0]
+    for n in MarkDown(node):
+        o.append(n)
+
+    return o
+
+
+def text(node):
+    """
+    Text in a paragraph
+    """
+    return nodes.Text(node.literal)
+
+
+def softbreak(node):
+    """
+    A <br /> in html or "\n" in ascii
+    """
+    return nodes.Text('\n')
+
+
+def target(node):
+    """
+    A hyperlink
+    """
+    o = nodes.target()
+    if node.title:
+        o['name'] = node.title
+    o['refuri'] = node.destination
+    o['refid'] = node.destination
+    for n in MarkDown(node):
+        o += n
+    return o
+
+
+def section(node):
+    """
+    A section, with header. The first child is the header text.
+    If there's a nxt, then it's really the child!
+    """
+    sec = nodes.section(ids=[node.first_child.literal], names=[node.first_child.literal])
+    sec.line = node.sourcepos[0][0]
+    sec.level = node.level
+    sec += nodes.title(node.first_child.literal, node.first_child.literal)
+    cur = node.nxt
+    while cur is not None:
+        sec += MarkDown(cur)
+        cur = cur.nxt
+
+    return sec
 
 
 def print_action_groups(data, nested_content):
@@ -200,13 +298,11 @@ def ensureUniqueIDs(items):
                     if id not in s:
                         s.add(id)
                     else:
-                        print("already have {}".format(id))
                         i = 1
                         while "{}_repeat{}".format(id, i) in s:
                             i += 1
                         ids[idx] = "{}_repeat{}".format(id, i)
                         s.add(ids[idx])
-                        print("adding {}".format(ids[idx]))
                 n['ids'] = ids
 
 
@@ -423,19 +519,15 @@ class ArgParseDirective(Directive):
             return self._construct_manpage_specific_structure(result)
 
         # Handle nested content, where markdown needs to be preprocessed
+        items = []
         nested_content = nodes.paragraph()
         if 'markdown' in self.options:
-            mdParser = CommonMarkParser()
-            doc = DocParser()
-            print("initial content {}".format(str(self.content)))
-            cont = doc.parse(str(self.content))
-            print("parsed content {}".format(cont))
-            mdParser.convert_block(cont)
-            print("modified content {}".format(doc.children))
-        self.state.nested_parse(
-            self.content, self.content_offset, nested_content)
-        nested_content = nested_content.children
-        items = []
+            cont = Parser().parse('\n'.join(self.content) + '\n')
+            items.extend(MarkDown(cont))  # Start at the document node
+        else:
+            self.state.nested_parse(
+                self.content, self.content_offset, nested_content)
+            nested_content = nested_content.children
         # add common content between
         for item in nested_content:
             if not isinstance(item, nodes.definition_list):
