@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='sphinx_argparse',
-    version='0.1.17',
+    version='0.2.0',
     packages=[
         'sphinxarg',
     ],
