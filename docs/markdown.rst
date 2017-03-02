@@ -13,6 +13,8 @@ As of version 0.2.0, markdown (rather than only reStructuredText) can be include
 
        [I'm a link to google](http://www.google.com)
 
+       ## Sub-heading
+
        ```
        This
         is
@@ -34,9 +36,9 @@ The above example renders as follows:
     Heading 1
     =========
 
-    ## Sub heading
-
     [I'm a link to google](http://www.google.com)
+
+    ## Sub heading
 
     ```
     This
@@ -54,7 +56,7 @@ You must explicitly use the `:markdown:` flag, otherwise all content inside dire
 A note on headers
 -----------------
 
-If the Markdown you nest includes headings, then the first one **MUST** be level 1. Subsequent headings can be at lower levels and then rendered correctly. As of this writing, only `setext-style headers <http://daringfireball.net/projects/markdown/syntax#header>`__ are supported by CommonMark-py.
+If the Markdown you nest includes headings, then the first one **MUST** be level 1. Subsequent headings can be at `lower levels <http://daringfireball.net/projects/markdown/syntax#header>`__ and then rendered correctly.
 
 Hard line breaks
 ----------------

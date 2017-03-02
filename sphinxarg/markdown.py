@@ -218,13 +218,6 @@ def listNode(node):
 def MarkDown(node):
     """
     Returns a list of nodes, containing CommonMark nodes converted to docutils nodes
-
-    CommonMark isn't parsing the following:
-
-      - hard line breaks (hard_break)
-      - ATX headings (ATX_header)
-      - Setext headings (Setext_header)
-      - header levels are ignored or reset for some reason
     """
     cur = node.first_child
 
