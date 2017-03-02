@@ -11,10 +11,10 @@ def customWalker(node, space=''):
 
     >>> content = Parser().parse('Some big text block\n===================\n\nwith content\n')
     >>> customWalker(content)
-    document	
-        heading	
+    document
+        heading
             text	Some big text block
-        paragraph	
+        paragraph
             text	with content
 
     Spaces are used to convey nesting
@@ -25,10 +25,11 @@ def customWalker(node, space=''):
     except:
         pass
 
-    if txt is None:
-        txt = ''
+    if txt is None or txt == '':
+        print('{}{}'.format(space, node.t))
+    else:
+        print('{}{}\t{}'.format(space, node.t, txt))
 
-    print('{}{}\t{}'.format(space, node.t, txt))
     cur = node.first_child
     if cur:
         while cur is not None:
@@ -225,9 +226,7 @@ def MarkDown(node):
       - Setext headings (Setext_header)
       - header levels are ignored or reset for some reason
     """
-    root = node
     cur = node.first_child
-    last = node.last_child
 
     # Go into each child, in turn
     output = []
