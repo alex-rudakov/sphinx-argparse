@@ -1,8 +1,17 @@
 from setuptools import setup
 
+
+def getVersion():
+    f = open("sphinxarg/__init__.py")
+    _ = f.read()
+    ver = _.split("'")[1]
+    f.close()
+    return ver
+
+
 setup(
-    name='sphinx_argparse',
-    version='0.2.0',
+    name='sphinx-argparse',
+    version=getVersion(),
     packages=[
         'sphinxarg',
     ],
@@ -17,6 +26,6 @@ setup(
         'CommonMark>=0.5.6'
     ],
     extras_require={
-        'dev': ['pytest', 'sphinx_rtd_theme'],
+        'dev': ['pytest', 'sphinx_rtd_theme']
     }
 )
