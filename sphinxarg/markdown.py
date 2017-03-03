@@ -1,6 +1,7 @@
 from CommonMark import Parser  # >= 0.5.6
 from CommonMark.node import Node
 from docutils import nodes
+from docutils.utils.code_analyzer import Lexer
 
 
 def customWalker(node, space=''):
@@ -110,7 +111,25 @@ def literal(node):
     """
     Inline code
     """
-    o = nodes.literal(text=node.literal)
+    rendered = []
+    try:
+        if node.info is not None:
+            l = Lexer(node.literal, node.info, tokennames="long")
+            for _ in l:
+                rendered.append(node.inline(classes=_[0], text=_[1]))
+    except:
+        pass
+
+    classes = ['code']
+    if node.info is not None:
+        classes.append(node.info)
+    if len(rendered) > 0:
+        o = nodes.literal(classes=classes)
+        for element in rendered:
+            o += element
+    else:
+        o = nodes.literal(text=node.literal, classes=classes)
+
     for n in MarkDown(node):
         o += n
     return o
@@ -120,7 +139,25 @@ def literal_block(node):
     """
     A block of code
     """
-    o = nodes.literal_block(text=node.literal)
+    rendered = []
+    try:
+        if node.info is not None:
+            l = Lexer(node.literal, node.info, tokennames="long")
+            for _ in l:
+                rendered.append(node.inline(classes=_[0], text=_[1]))
+    except:
+        pass
+
+    classes = ['code']
+    if node.info is not None:
+        classes.append(node.info)
+    if len(rendered) > 0:
+        o = nodes.literal_block(classes=classes)
+        for element in rendered:
+            o += element
+    else:
+        o = nodes.literal_block(text=node.literal, classes=classes)
+
     o.line = node.sourcepos[0][0]
     for n in MarkDown(node):
         o += n
