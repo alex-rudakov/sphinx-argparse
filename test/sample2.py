@@ -1,5 +1,6 @@
 import argparse
 
+
 def blah():
     parser = argparse.ArgumentParser(description="""
 ### Example of MarkDown inside programs
