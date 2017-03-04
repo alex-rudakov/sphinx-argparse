@@ -121,7 +121,7 @@ def print_action_groups(data, nested_content, markDownHelp=False):
                     arg.append('Possible choices: {}\n'.format(", ".join([str(c) for c in entry['choices']])))
                 if 'help' in entry:
                     arg.append(entry['help'])
-                if entry['default'] is not None and entry['default'] != '"==SUPPRESS=="':
+                if entry['default'] is not None and entry['default'] not in ['"==SUPPRESS=="', '==SUPPRESS==']:
                     if entry['default'] == '':
                         entry['default'] == '""'
                     arg.append('Default: {}'.format(entry['default']))
@@ -349,7 +349,7 @@ class ArgParseDirective(Directive):
             for name in opt['name']:
                 option_declaration = [nodes.option_string(text=name)]
                 if opt['default'] is not None \
-                        and opt['default'] != '==SUPPRESS==':
+                        and opt['default'] not in ['"==SUPPRESS=="', '==SUPPRESS==']:
                     option_declaration += nodes.option_argument(
                         '', text='=' + str(opt['default']))
                 names.append(nodes.option('', *option_declaration))
