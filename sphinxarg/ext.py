@@ -123,8 +123,9 @@ def print_action_groups(data, nested_content, markDownHelp=False):
                     arg.append(entry['help'])
                 if entry['default'] is not None and entry['default'] not in ['"==SUPPRESS=="', '==SUPPRESS==']:
                     if entry['default'] == '':
-                        entry['default'] == '""'
-                    arg.append('Default: {}'.format(entry['default']))
+                        arg.append('Default: ""')
+                    else:
+                        arg.append('Default: {}'.format(entry['default']))
 
                 # Handle nested content, the term used in the dict has the comma removed for simplicity
                 desc = arg
