@@ -67,3 +67,34 @@ Replacing/appending/prepending content
 --------------------------------------
 
 When markdown is used as nested content, it's not possible to create dictionary entries like in reStructuredText to `modify program option descriptions <extend.html>`__. This is because CommonMark-py does not support dictionary entries.
+
+MarkDown in program descriptions and option help
+------------------------------------------------
+
+In addition to using MarkDown in nested content, one can also use MarkDown directly in program descriptions and option help messages. For example::
+
+    import argparse
+
+    def blah():
+        parser = argparse.ArgumentParser(description="""
+    ### Example of MarkDown inside programs
+    
+    [I'm a link](http://www.google.com)
+    """)
+        parser.add_argument('cmd', help='execute a `command`')
+        return parser
+
+To render this as MarkDown rather than reStructuredText, use the `markdownhelp` option::
+
+    .. argparse::
+        :ref: test.sample2.blah
+        :prog: sample
+        :markdownhelp:
+
+This will then be rendered as:
+
+.. argparse::
+    :ref: test.sample2.blah
+    :prog: sample
+    :markdownhelp:
+
