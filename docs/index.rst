@@ -13,6 +13,7 @@
    extend
    sample
    misc
+   markdown
    contrib
 
 

@@ -2,9 +2,6 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_subparsers()
-parser = argparse.ArgumentParser()
-
 subparsers = parser.add_subparsers()
 
 my_command1 = subparsers.add_parser('apply', help='Execute provision script, collect all resources and apply them.')

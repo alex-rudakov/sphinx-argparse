@@ -4,10 +4,14 @@ import os
 from docutils import nodes
 from docutils.statemachine import StringList
 from docutils.parsers.rst.directives import flag, unchanged
+from docutils.parsers.rst import Parser
+from docutils.utils import new_document
+from docutils.frontend import OptionParser
 from sphinx.util.compat import Directive
 from sphinx.util.nodes import nested_parse_with_titles
 
 from sphinxarg.parser import parse_parser, parser_navigate
+from sphinxarg.markdown import parseMarkDownBlock
 
 
 def map_nested_definitions(nested_content):
@@ -48,7 +52,22 @@ def map_nested_definitions(nested_content):
     return definitions
 
 
-def print_action_groups(data, nested_content):
+def renderList(l, markDownHelp):
+    """
+    Given a list of reStructuredText or MarkDown sections, return a docutils node list
+    """
+    if len(l) == 0:
+        return []
+    if markDownHelp:
+        return parseMarkDownBlock('\n\n'.join(l) + '\n')
+    else:
+        settings = OptionParser(components=(Parser,)).get_default_values()
+        document = new_document(None, settings)
+        Parser().parse('\n\n'.join(l) + '\n', document)
+        return document.children
+
+
+def print_action_groups(data, nested_content, markDownHelp=False):
     """
     Process all 'action groups', which are also include 'Options' and 'Required
     arguments'. A list of nodes is returned.
@@ -61,25 +80,25 @@ def print_action_groups(data, nested_content):
             section = nodes.section(ids=[action_group['title']])
             section += nodes.title(action_group['title'], action_group['title'])
 
-            desc = ''
+            desc = []
             if action_group['description']:
-                desc = action_group['description']
+                desc.append(action_group['description'])
             # Replace/append/prepend content to the description according to nested content
             subContent = []
             if action_group['title'] in definitions:
                 classifier, s, subContent = definitions[action_group['title']]
                 if classifier == '@replace':
-                    section += nodes.paragraph(text=s)
+                    desc = [s]
                 elif classifier == '@after':
-                    section += nodes.paragraph(text=desc)
-                    section += nodes.paragraph(text=s)
+                    desc.append(s)
                 elif classifier == '@before':
-                    section += nodes.paragraph(text=s)
-                    section += nodes.paragraph(text=desc)
+                    desc.insert(0, s)
                 for k, v in subContent.items():
                     definitions[k] = v
-            elif desc != '':
-                section += nodes.paragraph(text=desc)
+            # Render appropriately
+            for element in renderList(desc, markDownHelp):
+                section += element
+
             localDefinitions = definitions
             if len(subContent) > 0:
                 localDefinitions = {k: v for k, v in definitions.items()}
@@ -97,30 +116,32 @@ def print_action_groups(data, nested_content):
                 There may also be a 'choices' member.
                 """
                 # Build the help text
-                arg = ''
+                arg = []
                 if 'choices' in entry:
-                    arg += 'Possible choices: {}\n'.format(", ".join([str(c) for c in entry['choices']]))
+                    arg.append('Possible choices: {}\n'.format(", ".join([str(c) for c in entry['choices']])))
                 if 'help' in entry:
-                    arg += entry['help']
-                if entry['default'] is not None and entry['default'] != '==SUPPRESS==':
-                    arg += 'Default: {}'.format(entry['default'])
+                    arg.append(entry['help'])
+                if entry['default'] is not None and entry['default'] not in ['"==SUPPRESS=="', '==SUPPRESS==']:
+                    if entry['default'] == '':
+                        entry['default'] == '""'
+                    arg.append('Default: {}'.format(entry['default']))
 
                 # Handle nested content, the term used in the dict has the comma removed for simplicity
-                desc = [nodes.paragraph(text=arg)]
+                desc = arg
                 term = ' '.join(entry['name'])
                 if term in localDefinitions:
                     classifier, s, subContent = localDefinitions[term]
                     if classifier == '@replace':
-                        desc = [nodes.paragraph(text=s)]
+                        desc = [s]
                     elif classifier == '@after':
-                        desc.append(nodes.paragraph(text=s))
+                        desc.append(s)
                     elif classifier == '@before':
-                        desc.insert(0, nodes.paragraph(text=s))
+                        desc.insert(0, s)
                 term = ', '.join(entry['name'])
 
                 n = nodes.option_list_item('',
                                            nodes.option_group('', nodes.option_string(text=term)),
-                                           nodes.description('', *desc))
+                                           nodes.description('', *renderList(desc, markDownHelp)))
                 items.append(n)
 
             section += nodes.option_list('', *items)
@@ -129,7 +150,7 @@ def print_action_groups(data, nested_content):
     return nodes_list
 
 
-def print_subcommands(data, nested_content):
+def print_subcommands(data, nested_content, markDownHelp=False):
     """
     Each subcommand is a dictionary with the following keys:
 
@@ -150,29 +171,30 @@ def print_subcommands(data, nested_content):
             sec += nodes.title(child['name'], child['name'])
 
             if 'description' in child and child['description']:
-                desc = child['description']
+                desc = [child['description']]
             elif child['help']:
-                desc = child['help']
+                desc = [child['help']]
             else:
-                desc = 'Undocumented'
+                desc = ['Undocumented']
 
             # Handle nested content
             subContent = []
             if child['name'] in definitions:
                 classifier, s, subContent = definitions[child['name']]
                 if classifier == '@replace':
-                    desc = s
+                    desc = [s]
                 elif classifier == '@after':
-                    desc += ' ' + s
+                    desc.append(s)
                 elif classifier == '@before':
-                    desc = s + ' ' + desc
+                    desc.insert(0, s)
 
-            sec += nodes.paragraph(text=desc)
+            for element in renderList(desc, markDownHelp):
+                sec += element
             sec += nodes.literal_block(text=child['bare_usage'])
-            for x in print_action_groups(child, nested_content + subContent):
+            for x in print_action_groups(child, nested_content + subContent, markDownHelp):
                 sec += x
 
-            for x in print_subcommands(child, nested_content + subContent):
+            for x in print_subcommands(child, nested_content + subContent, markDownHelp):
                 sec += x
 
             subCommands += sec
@@ -198,13 +220,11 @@ def ensureUniqueIDs(items):
                     if id not in s:
                         s.add(id)
                     else:
-                        print("already have {}".format(id))
                         i = 1
                         while "{}_repeat{}".format(id, i) in s:
                             i += 1
                         ids[idx] = "{}_repeat{}".format(id, i)
                         s.add(ids[idx])
-                        print("adding {}".format(ids[idx]))
                 n['ids'] = ids
 
 
@@ -213,7 +233,8 @@ class ArgParseDirective(Directive):
     option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
                        nodefaultconst=flag, filename=unchanged,
-                       manpage=unchanged, nosubcommands=unchanged, passparser=flag)
+                       manpage=unchanged, nosubcommands=unchanged, passparser=flag,
+                       markdown=flag, markdownhelp=flag)
 
     def _construct_manpage_specific_structure(self, parser_info):
         """
@@ -328,7 +349,7 @@ class ArgParseDirective(Directive):
             for name in opt['name']:
                 option_declaration = [nodes.option_string(text=name)]
                 if opt['default'] is not None \
-                        and opt['default'] != '==SUPPRESS==':
+                        and opt['default'] not in ['"==SUPPRESS=="', '==SUPPRESS==']:
                     option_declaration += nodes.option_argument(
                         '', text='=' + str(opt['default']))
                 names.append(nodes.option('', *option_declaration))
@@ -418,20 +439,32 @@ class ArgParseDirective(Directive):
         result = parser_navigate(result, path)
         if 'manpage' in self.options:
             return self._construct_manpage_specific_structure(result)
-        nested_content = nodes.paragraph()
-        self.state.nested_parse(
-            self.content, self.content_offset, nested_content)
-        nested_content = nested_content.children
+
+        # Handle nested content, where markdown needs to be preprocessed
         items = []
+        nested_content = nodes.paragraph()
+        if 'markdown' in self.options:
+            items.extend(parseMarkDownBlock('\n'.join(self.content) + '\n'))
+        else:
+            self.state.nested_parse(
+                self.content, self.content_offset, nested_content)
+            nested_content = nested_content.children
         # add common content between
         for item in nested_content:
             if not isinstance(item, nodes.definition_list):
                 items.append(item)
+
+        markDownHelp = False
+        if 'markdownhelp' in self.options:
+            markDownHelp = True
         if 'description' in result:
-            items.append(self._nested_parse_paragraph(result['description']))
+            if markDownHelp:
+                items.extend(renderList([result['description']], True))
+            else:
+                items.append(self._nested_parse_paragraph(result['description']))
         items.append(nodes.literal_block(text=result['usage']))
-        items.extend(print_action_groups(result, nested_content))
-        items.extend(print_subcommands(result, nested_content))
+        items.extend(print_action_groups(result, nested_content, markDownHelp))
+        items.extend(print_subcommands(result, nested_content, markDownHelp))
         if 'epilog' in result:
             items.append(self._nested_parse_paragraph(result['epilog']))
 
