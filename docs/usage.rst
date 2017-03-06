@@ -45,7 +45,9 @@ To document a file that is not part of a module, use :filename::
        :filename: script.py
        :func: my_func_that_returns_a_parser
        :prog: script.py
-        
+
+The 'filename' option could be absolute path or a relative path under current
+working dir.
 
 \:module\:
     Module name, where the function is located
