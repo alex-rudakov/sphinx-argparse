@@ -211,10 +211,9 @@ class ArgParseDirective(Directive):
                 description_section += nodes.paragraph(
                     text=parser_info['epilog'])
             else:
-                description_section += nodes.paragraph(
+                description_section = nodes.paragraph(
                     text=parser_info['epilog'])
                 items.append(description_section)
-                
         # OPTIONS section
         options_section = nodes.section(
             '',
