@@ -168,7 +168,7 @@ class ArgParseDirective(Directive):
     option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
                        nodefaultconst=flag, filename=unchanged,
-                       manpage=unchanged, nosubcommands=unchanged, passparser=flag)
+                       manpage=unchanged, nosubcommands=unchanged, passparser=flag, noepilog=unchanged)
 
     def _construct_manpage_specific_structure(self, parser_info):
         """
@@ -390,7 +390,7 @@ class ArgParseDirective(Directive):
             print_opt_list(result, nested_content),
             print_subcommand_list(result, nested_content)
         ))
-        if 'epilog' in result:
+        if 'epilog' in result and 'noepilog' not in self.options:
             items.append(self._nested_parse_paragraph(result['epilog']))
         return items
 
