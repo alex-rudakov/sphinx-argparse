@@ -1,18 +1,19 @@
-[![Build Status](https://travis-ci.org/ribozz/sphinx-argparse.svg?branch=master)](https://travis-ci.org/ribozz/sphinx-argparse) [![Documentation Status](https://readthedocs.org/projects/sphinx-argparse/badge/)](http://sphinx-argparse.readthedocs.org/) [![PyPI version](https://badge.fury.io/py/sphinx-argparse.svg)](https://badge.fury.io/py/sphinx-argparse)
+[![Build Status](https://travis-ci.org/ribozz/sphinx-argparse.svg?branch=master)](https://travis-ci.org/ribozz/sphinx-argparse) [![Documentation Status](https://readthedocs.org/projects/sphinx-argparse/badge/?version=stable)](http://sphinx-argparse.readthedocs.org/) [![PyPI version](https://badge.fury.io/py/sphinx-argparse.svg)](https://badge.fury.io/py/sphinx-argparse) [Install with conda](https://anaconda.org/conda-forge/sphinx-argparse/badges/installer/conda.svg) [Conda downloads](https://anaconda.org/conda-forge/sphinx-argparse/badges/downloads.svg)
 
 sphinx-argparse
 ===============
 
-Sphinx extension that automatically documents argparse commands and options
+A sphinx extension that automatically documents argparse commands and options.
 
-For installation and usage details see docs.
-
-Documentation is here: 
-http://sphinx-argparse.readthedocs.org/en/latest/
-
+For installation and usage details see the [documentation](http://sphinx-argparse.readthedocs.org/en/latest/).
 
 Changelog & contributors
 ========================
+
+0.2.0
+-----
+
+- Section titles can now be used in tables of contents and linked to. The title itself is also used as the anchor. In the case of repeated names `_replicateX`, where `X` is a number, is prepended to ensure that all titles are uniquely linkable. This was bug #46.
 
 0.1.17
 ------

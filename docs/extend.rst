@@ -20,14 +20,14 @@ You can add extra content or even replace some parts of the documentation genera
             any directives you usually use.
 
 
-Also, there is an option to insert custom content into a specific argument/option/subcommand description. Just create name:definition pair, where the name is an argument/option/subcommand name and the definition is any reStructured markup::
+Also, there is an option to insert custom content into a specific argument/option/subcommand/argument-group description. Just create a name:definition pair, where the name is an argument/option/subcommand/argument-group name and the definition is any reStructured markup. Changes to options/arguments appearing in multiple action groups can either be targetted (i.e., only one instance of the argument is changed) or general (i.e., all instances are modified).::
 
    .. argparse::
        :module: my.module
        :func: my_func_that_return_parser
        :prog: fancytool
 
-       My content here that will be inserted as extra right before argument list.
+       My content here that will be inserted right before the argument list.
 
        foo
             This text will go right after the "foo" positional argument help.
@@ -35,8 +35,13 @@ Also, there is an option to insert custom content into a specific argument/optio
        install
             This text will go right after the "install" subcommand help and before its arguments.
 
-            --upgrade
+            --upgrade -u
                 This text will go after the upgrade option of the install subcommand. Nesting is unlimited.
+                Note the space between --upgrade and -u, which differs from the comma that would normally
+                be used.
+
+        --output -o
+            Content appended to the --output option, regardless of the argument group.
 
 
 You can also add classifiers, which will change how these definitions are incorporated::
@@ -59,10 +64,10 @@ You can also add classifiers, which will change how these definitions are incorp
 
 
 @before
-    Insert content before parsed help/description message of argument/option/subcommand.
+    Insert content before the parsed help/description message of the argument/option/subcommand/argument-group.
 
 @after
-    Insert content after parsed help/description message of argument/option/subcommand. This is the default.
+    Insert content after the parsed help/description message of argument/option/subcommand/argument-group. This is the default.
 
 @replace
-    Replace content of help/description message of argument/option/subcommand.
+    Replace content of help/description message of argument/option/subcommand/argument-group.

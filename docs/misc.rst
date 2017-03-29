@@ -9,13 +9,19 @@ A common issue with the default html output is that the table within which optio
 The short synopsis is below:
 
  1. Create a new CSS file (likely under `_static`) and point to it in `html_static_path` and `html_context` (or a template in the `templates_path`) in `conf.py`.
- 2. In that CSS file, add the following code::
+ 2. In that CSS file, add the following code:
 
-.. code:: CSS
+    .. code:: CSS
 
-    .wy-table-responsive table td {
-        white-space: normal !important;
-    }
-    .wy-table-responsive {
-        overflow: visible !important;
-    }
+        .wy-table-responsive table td {
+            white-space: normal !important;
+        }
+        .wy-table-responsive {
+            overflow: visible !important;
+        }
+
+
+Linking to action groups
+------------------------
+
+As of version 0.2.0, action groups (e.g., "Optional arguments", "Required arguments", and subcommands) can be included in tables of contents and external links. The anchor name is the same as the title name (e.g., "Optional arguments"). In cases where titles are duplicated, as is often the case when subcommands are used, `_repeatX`, where `X` is a number, is prepended to duplicate anchor names to ensure that they can all be uniquely linked.
