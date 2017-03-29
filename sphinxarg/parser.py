@@ -110,11 +110,13 @@ def parse_parser(parser, data=None, **kwargs):
                 continue
 
             # Quote default values for string/None types
+            default = action.default
             if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
-                action.default = '"%s"' % action.default
+                default = '"%s"' % default
 
             # fill in any formatters, like %(default)s
-            formatDict = dict(vars(action), prog=data.get('prog', ''))
+            formatDict = dict(vars(action), prog=data.get('prog', ''), default=default)
+            formatDict['default'] = default
             helpStr = action.help or ''  # Ensure we don't print None
             try:
                 helpStr = helpStr % formatDict
@@ -135,13 +137,13 @@ def parse_parser(parser, data=None, **kwargs):
             if isinstance(action, _StoreConstAction):
                 option = {
                     'name': name,
-                    'default': action.default if show_defaults_const else '==SUPPRESS==',
+                    'default': default if show_defaults_const else '==SUPPRESS==',
                     'help': helpStr
                 }
             else:
                 option = {
                     'name': name,
-                    'default': action.default if show_defaults else '==SUPPRESS==',
+                    'default': default if show_defaults else '==SUPPRESS==',
                     'help': helpStr
                 }
             if action.choices:

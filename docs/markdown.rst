@@ -4,7 +4,8 @@ Markdown
 As of version 0.2.0, markdown (rather than only reStructuredText) can be included inside directives as nested content. While markdown is much easier to write, please note that it is also less powerful. An example is below::
 
    .. argparse::
-       :ref: test.sample.parser
+       :filename: ../test/sample.py
+       :func: parser
        :prog: sample
        :markdown:
 
@@ -27,7 +28,8 @@ As of version 0.2.0, markdown (rather than only reStructuredText) can be include
 The above example renders as follows:
 
 .. argparse::
-    :ref: test.sample.parser
+    :filename: ../test/sample.py
+    :func: parser
     :prog: sample
     :markdown:
 
@@ -87,14 +89,16 @@ In addition to using MarkDown in nested content, one can also use MarkDown direc
 To render this as MarkDown rather than reStructuredText, use the `markdownhelp` option::
 
     .. argparse::
-        :ref: test.sample2.blah
+        :filename: ../test/sample2.py
+        :func: blah
         :prog: sample
         :markdownhelp:
 
 This will then be rendered as:
 
 .. argparse::
-    :ref: test.sample2.blah
+    :filename: ../test/sample2.py
+    :func: blah
     :prog: sample
     :markdownhelp:
 
