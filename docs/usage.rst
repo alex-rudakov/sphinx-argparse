@@ -89,6 +89,12 @@ Nesting level is unlimited::
 Other useful directives
 -----------------------
 
-:nodefault: will hide all default values of options.
+:nodefault: Do not show any default values.
 
 :nodefaultconst: Like nodefault:, except it applies only to arguments of types `store_const`, `store_true` and `store_false`.
+
+:nosubcommands: Do not show subcommands.
+
+:noepilogue: Do not parse the epilogue, which can be useful if it contains text that could be incorrectly parse as reStructuredText.
+
+:nodescription: Do not parse the description, which can be useful if it contains text that could be incorrectly parse as reStructuredText.
