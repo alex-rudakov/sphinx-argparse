@@ -18,7 +18,7 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 
-sys.path.insert(0, os.path.abspath('..'))
+#sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -52,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'sphinx-argparse'
-copyright = u'2016, Alex Rudakov, Devon Ryan and contributors'
+copyright = u'2017, Alex Rudakov, Devon Ryan and contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -134,7 +134,7 @@ pygments_style = 'sphinx'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -198,7 +198,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'sphinx-argparse.tex', u'sphinx-argparse Documentation',
-   u'Alex Rudakov', 'manual'),
+   u'Alex Rudakov and Devon Ryan', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -228,7 +228,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'sphinx-argparse', u'sphinx-argparse Documentation',
-     [u'Alex Rudakov'], 1)
+     [u'Alex Rudakov', u'Devon Ryan'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -242,7 +242,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'sphinx-argparse', u'sphinx-argparse Documentation',
-   u'Alex Rudakov', 'sphinx-argparse', 'One line description of project.',
+   u'Alex Rudakov and Devon Ryan', 'sphinx-argparse', 'One line description of project.',
    'Miscellaneous'),
 ]
 

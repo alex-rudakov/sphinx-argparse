@@ -1,8 +1,7 @@
 `sphinx-argparse`
 =================
 
-`sphinx-argparse` is extension for sphinx that allows easily generate documentation
-for command line tools based on argparse library.
+`sphinx-argparse` is an extension for sphinx that allows for easy generation of documentation for command line tools using the python argparse library.
 
 
 
@@ -14,6 +13,7 @@ for command line tools based on argparse library.
    extend
    sample
    misc
+   markdown
    contrib
 
 

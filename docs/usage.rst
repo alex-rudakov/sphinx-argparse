@@ -12,13 +12,13 @@ The `module`, `func` and `prog` options are required.
 
 `func` is a function that returns an instance of the `argparse.ArgumentParser` class.
 
-Alternatively, one can instead use :ref: like this::
+Alternatively, one can use :ref: like this::
 
     .. argparse::
        :ref: my.module.my_func_that_returns_a_parser
        :prog: fancytool
 
-In this case :ref: also may point directly to argument parser instance.
+In this case :ref: points directly to argument parser instance.
 
 For this directive to work, you should point it to the function that will return a pre-filled `ArgumentParser`.
 Something like::
@@ -37,7 +37,7 @@ Something like::
         return parser
 
 .. note::
-    We will use this example as a reference for every example in this doc.
+    We will use this example as a reference for every example in this document.
 
 To document a file that is not part of a module, use :filename::
 
@@ -45,7 +45,9 @@ To document a file that is not part of a module, use :filename::
        :filename: script.py
        :func: my_func_that_returns_a_parser
        :prog: script.py
-        
+
+The 'filename' option could be absolute path or a relative path under current
+working dir.
 
 \:module\:
     Module name, where the function is located
@@ -75,7 +77,7 @@ Sub-commands are limited to one level. But, you can always output help for subco
 
 This will render same doc for "install" subcommand.
 
-Nesting level is not limited::
+Nesting level is unlimited::
 
     .. argparse::
        :module: my.module
