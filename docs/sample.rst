@@ -72,15 +72,17 @@ Directive
 Source::
 
     .. argparse::
-       :ref: test.sample.parser
+       :filename: ../test/sample.py
+       :func: parser
        :prog: sample
 
 Output
 ~~~~~~
 
 .. argparse::
-   :ref: test.sample.parser
-   :prog: sample
+    :filename: ../test/sample.py
+    :func: parser
+    :prog: sample
 
 
 Generated sample 2 - subcommand
@@ -92,7 +94,7 @@ Directive
 Source::
 
     .. argparse::
-       :module: test.sample
+       :filename../test/sample.py
        :func: parser
        :prog: sample
        :path: game
@@ -101,7 +103,7 @@ Output
 ~~~~~~
 
 .. argparse::
-   :module: test.sample
+   :filename: ../test/sample.py
    :func: parser
    :prog: sample
    :path: game
