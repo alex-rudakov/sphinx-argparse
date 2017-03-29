@@ -477,7 +477,8 @@ class ArgParseDirective(Directive):
                 items.append(self._nested_parse_paragraph(result['description']))
         items.append(nodes.literal_block(text=result['usage']))
         items.extend(print_action_groups(result, nested_content, markDownHelp))
-        items.extend(print_subcommands(result, nested_content, markDownHelp))
+        if 'nosubcommands' not in self.options:
+            items.extend(print_subcommands(result, nested_content, markDownHelp))
         if 'epilog' in result and 'noepilog' not in self.options:
             items.append(self._nested_parse_paragraph(result['epilog']))
 
