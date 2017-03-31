@@ -17,8 +17,8 @@ File "index.rst"::
 File "cmd.rst"::
 
 
-    Command line utitlites
-    ***********************
+    Command line utilities
+    **********************
 
     .. toctree::
        :maxdepth: 1
@@ -39,7 +39,7 @@ File "cmd_main.rst"::
        :prog: fancytool
 
        subcommand
-            Here we add reference to subcommand, to simplify navigation.
+            Here we add a reference to subcommand, to simplify navigation.
             See :doc:`cmd_subcommand`
 
 
@@ -72,15 +72,17 @@ Directive
 Source::
 
     .. argparse::
-       :ref: test.sample.parser
+       :filename: ../test/sample.py
+       :func: parser
        :prog: sample
 
 Output
 ~~~~~~
 
 .. argparse::
-   :ref: test.sample.parser
-   :prog: sample
+    :filename: ../test/sample.py
+    :func: parser
+    :prog: sample
 
 
 Generated sample 2 - subcommand
@@ -92,7 +94,7 @@ Directive
 Source::
 
     .. argparse::
-       :module: test.sample
+       :filename../test/sample.py
        :func: parser
        :prog: sample
        :path: game
@@ -101,7 +103,7 @@ Output
 ~~~~~~
 
 .. argparse::
-   :module: test.sample
+   :filename: ../test/sample.py
    :func: parser
    :prog: sample
    :path: game
