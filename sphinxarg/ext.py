@@ -52,7 +52,7 @@ def map_nested_definitions(nested_content):
     return definitions
 
 
-def renderList(l, markDownHelp):
+def renderList(l, markDownHelp, settings=None):
     """
     Given a list of reStructuredText or MarkDown sections, return a docutils node list
     """
@@ -61,13 +61,14 @@ def renderList(l, markDownHelp):
     if markDownHelp:
         return parseMarkDownBlock('\n\n'.join(l) + '\n')
     else:
-        settings = OptionParser(components=(Parser,)).get_default_values()
+        if settings is None:
+            settings = OptionParser(components=(Parser,)).get_default_values()
         document = new_document(None, settings)
         Parser().parse('\n\n'.join(l) + '\n', document)
         return document.children
 
 
-def print_action_groups(data, nested_content, markDownHelp=False):
+def print_action_groups(data, nested_content, markDownHelp=False, settings=None):
     """
     Process all 'action groups', which are also include 'Options' and 'Required
     arguments'. A list of nodes is returned.
@@ -142,7 +143,7 @@ def print_action_groups(data, nested_content, markDownHelp=False):
 
                 n = nodes.option_list_item('',
                                            nodes.option_group('', nodes.option_string(text=term)),
-                                           nodes.description('', *renderList(desc, markDownHelp)))
+                                           nodes.description('', *renderList(desc, markDownHelp, settings)))
                 items.append(n)
 
             section += nodes.option_list('', *items)
@@ -476,7 +477,8 @@ class ArgParseDirective(Directive):
             else:
                 items.append(self._nested_parse_paragraph(result['description']))
         items.append(nodes.literal_block(text=result['usage']))
-        items.extend(print_action_groups(result, nested_content, markDownHelp))
+        items.extend(print_action_groups(result, nested_content, markDownHelp,
+                                         settings=self.state.document.settings))
         if 'nosubcommands' not in self.options:
             items.extend(print_subcommands(result, nested_content, markDownHelp))
         if 'epilog' in result and 'noepilog' not in self.options:
