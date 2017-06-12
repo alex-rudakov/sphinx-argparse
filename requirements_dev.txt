@@ -1,4 +1,4 @@
 pytest
 sphinx_rtd_theme
-sphinx
+sphinx>=1.1.0
 CommonMark>=0.5.6
