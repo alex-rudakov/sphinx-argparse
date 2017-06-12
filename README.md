@@ -10,6 +10,11 @@ For installation and usage details see the [documentation](http://sphinx-argpars
 Changelog & contributors
 ========================
 
+0.2.1
+-----
+
+ * Stopped importing `sphinx.util.compat`, which was causing issues like that seen in [#65](https://github.com/ribozz/sphinx-argparse/issues/65)
+
 0.2.0
 -----
 
