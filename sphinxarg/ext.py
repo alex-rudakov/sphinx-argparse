@@ -4,10 +4,9 @@ import os
 from docutils import nodes
 from docutils.statemachine import StringList
 from docutils.parsers.rst.directives import flag, unchanged
-from docutils.parsers.rst import Parser
+from docutils.parsers.rst import Parser, Directive
 from docutils.utils import new_document
 from docutils.frontend import OptionParser
-from sphinx.util.compat import Directive
 from sphinx.util.nodes import nested_parse_with_titles
 
 from sphinxarg.parser import parse_parser, parser_navigate
