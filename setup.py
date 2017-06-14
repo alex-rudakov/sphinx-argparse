@@ -22,7 +22,7 @@ setup(
     description='Sphinx extension that automatically documents argparse commands and options',
     long_description='',
     install_requires=[
-        'sphinx>=1.1.0',
+        'sphinx>=1.2.0',
         'CommonMark>=0.5.6'
     ],
     extras_require={
