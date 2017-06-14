@@ -15,12 +15,14 @@ setup(
     packages=[
         'sphinxarg',
     ],
-    url='',
+    url='https://github.com/ribozz/sphinx-argparse',
     license='MIT',
     author='Aleksandr Rudakov and Devon Ryan',
     author_email='ribozz@gmail.com',
-    description='Sphinx extension that automatically documents argparse commands and options',
-    long_description='',
+    description='A sphinx extension that automatically documents argparse commands and options',
+    long_description="""A sphinx extension that automatically documents argparse commands and options.
+
+For installation and usage details, see the `documentation <http://sphinx-argparse.readthedocs.org/en/latest/>`_.""",
     install_requires=[
         'sphinx>=1.2.0',
         'CommonMark>=0.5.6'

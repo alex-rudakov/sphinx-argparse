@@ -14,6 +14,7 @@
    sample
    misc
    markdown
+   changelog
    contrib
 
 
