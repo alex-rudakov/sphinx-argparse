@@ -9,4 +9,4 @@ sphinx-argparse
 
 A sphinx extension that automatically documents argparse commands and options.
 
-For installation and usage details see the [documentation](http://sphinx-argparse.readthedocs.org/en/latest/).
+For installation and usage details see the [documentation](http://sphinx-argparse.readthedocs.org/en/latest/). The changelog is also [found there](http://sphinx-argparse.readthedocs.org/en/latest/changelog.html).
