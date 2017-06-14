@@ -15,12 +15,27 @@ setup(
     packages=[
         'sphinxarg',
     ],
-    url='',
+    url='https://github.com/ribozz/sphinx-argparse',
     license='MIT',
     author='Aleksandr Rudakov and Devon Ryan',
     author_email='ribozz@gmail.com',
-    description='Sphinx extension that automatically documents argparse commands and options',
-    long_description='',
+    description='A sphinx extension that automatically documents argparse commands and options',
+    long_description="""A sphinx extension that automatically documents argparse commands and options.
+
+For installation and usage details, see the `documentation <http://sphinx-argparse.readthedocs.org/en/latest/>`_.""",
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Topic :: Documentation :: Sphinx',
+        'Topic :: Software Development :: Documentation'
+    ],
     install_requires=[
         'sphinx>=1.2.0',
         'CommonMark>=0.5.6'
