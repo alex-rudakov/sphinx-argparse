@@ -57,6 +57,7 @@ def renderList(l, markDownHelp, settings=None):
     if len(l) == 0:
         return []
     if markDownHelp:
+        from sphinxarg.markdown import parseMarkDownBlock
         return parseMarkDownBlock('\n\n'.join(l) + '\n')
     else:
         if settings is None:
