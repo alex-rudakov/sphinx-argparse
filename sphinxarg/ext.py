@@ -150,7 +150,7 @@ def print_action_groups(data, nested_content, markDownHelp=False, settings=None)
     return nodes_list
 
 
-def print_subcommands(data, nested_content, markDownHelp=False):
+def print_subcommands(data, nested_content, markDownHelp=False, settings=None):
     """
     Each subcommand is a dictionary with the following keys:
 
@@ -191,10 +191,12 @@ def print_subcommands(data, nested_content, markDownHelp=False):
             for element in renderList(desc, markDownHelp):
                 sec += element
             sec += nodes.literal_block(text=child['bare_usage'])
-            for x in print_action_groups(child, nested_content + subContent, markDownHelp):
+            for x in print_action_groups(child, nested_content + subContent, markDownHelp,
+                                         settings=settings):
                 sec += x
 
-            for x in print_subcommands(child, nested_content + subContent, markDownHelp):
+            for x in print_subcommands(child, nested_content + subContent, markDownHelp,
+                                       settings=settings):
                 sec += x
 
             subCommands += sec
@@ -479,7 +481,8 @@ class ArgParseDirective(Directive):
         items.extend(print_action_groups(result, nested_content, markDownHelp,
                                          settings=self.state.document.settings))
         if 'nosubcommands' not in self.options:
-            items.extend(print_subcommands(result, nested_content, markDownHelp))
+            items.extend(print_subcommands(result, nested_content, markDownHelp,
+                                           settings=self.state.document.settings))
         if 'epilog' in result and 'noepilog' not in self.options:
             items.append(self._nested_parse_paragraph(result['epilog']))
 
