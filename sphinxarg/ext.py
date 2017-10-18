@@ -10,7 +10,6 @@ from docutils.frontend import OptionParser
 from sphinx.util.nodes import nested_parse_with_titles
 
 from sphinxarg.parser import parse_parser, parser_navigate
-from sphinxarg.markdown import parseMarkDownBlock
 
 
 def map_nested_definitions(nested_content):
@@ -457,6 +456,7 @@ class ArgParseDirective(Directive):
         items = []
         nested_content = nodes.paragraph()
         if 'markdown' in self.options:
+            from sphinxarg.markdown import parseMarkDownBlock
             items.extend(parseMarkDownBlock('\n'.join(self.content) + '\n'))
         else:
             self.state.nested_parse(
