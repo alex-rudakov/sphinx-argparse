@@ -46,7 +46,7 @@ def map_nested_definitions(nested_content):
                         for _ in subitem[idx]:
                             if isinstance(_, nodes.definition_list):
                                 subContent.append(_)
-                        definitions[term] = (classifier, subitem[idx].astext(), subContent)
+                        definitions[term] = (classifier, subitem[idx], subContent)
 
     return definitions
 
@@ -60,11 +60,18 @@ def renderList(l, markDownHelp, settings=None):
     if markDownHelp:
         return parseMarkDownBlock('\n\n'.join(l) + '\n')
     else:
-        if settings is None:
-            settings = OptionParser(components=(Parser,)).get_default_values()
-        document = new_document(None, settings)
-        Parser().parse('\n\n'.join(l) + '\n', document)
-        return document.children
+        all_children = []
+        for element in l:
+            if isinstance(element, str):
+                if settings is None:
+                    settings = OptionParser(components=(Parser,)).get_default_values()
+                document = new_document(None, settings)
+                Parser().parse(element + '\n', document)
+                all_children += document.children
+            elif isinstance(element, nodes.definition):
+                all_children += element
+
+        return all_children
 
 
 def print_action_groups(data, nested_content, markDownHelp=False, settings=None):
