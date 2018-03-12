@@ -20,7 +20,7 @@ You can add extra content or even replace some parts of the documentation genera
             any directives you usually use.
 
 
-Also, there is an option to insert custom content into a specific argument/option/subcommand/argument-group description. Just create a name:definition pair, where the name is an argument/option/subcommand/argument-group name and the definition is any reStructured markup. Changes to options/arguments appearing in multiple action groups can either be targetted (i.e., only one instance of the argument is changed) or general (i.e., all instances are modified).::
+Also, there is an option to insert custom content into a specific argument/option/subcommand/argument-group description. Just create a name:definition pair, where the name is an argument/option/subcommand/argument-group name and the definition is any reStructured markup. Changes to options/arguments appearing in multiple action groups can either be targeted (i.e., only one instance of the argument is changed) or general (i.e., all instances are modified).::
 
    .. argparse::
        :module: my.module

@@ -37,10 +37,10 @@ For installation and usage details, see the `documentation <http://sphinx-argpar
         'Topic :: Software Development :: Documentation'
     ],
     install_requires=[
-        'sphinx>=1.2.0',
-        'CommonMark'
+        'sphinx>=1.2.0'
     ],
     extras_require={
-        'dev': ['pytest', 'sphinx_rtd_theme']
+        'dev': ['pytest', 'sphinx_rtd_theme'],
+        'markdown': ['CommonMark>=0.5.6']
     }
 )
