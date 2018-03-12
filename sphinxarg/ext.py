@@ -10,7 +10,6 @@ from docutils.frontend import OptionParser
 from sphinx.util.nodes import nested_parse_with_titles
 
 from sphinxarg.parser import parse_parser, parser_navigate
-from sphinxarg.markdown import parseMarkDownBlock
 
 
 def map_nested_definitions(nested_content):
@@ -58,6 +57,7 @@ def renderList(l, markDownHelp, settings=None):
     if len(l) == 0:
         return []
     if markDownHelp:
+        from sphinxarg.markdown import parseMarkDownBlock
         return parseMarkDownBlock('\n\n'.join(l) + '\n')
     else:
         if settings is None:
@@ -151,7 +151,7 @@ def print_action_groups(data, nested_content, markDownHelp=False, settings=None)
     return nodes_list
 
 
-def print_subcommands(data, nested_content, markDownHelp=False):
+def print_subcommands(data, nested_content, markDownHelp=False, settings=None):
     """
     Each subcommand is a dictionary with the following keys:
 
@@ -192,10 +192,12 @@ def print_subcommands(data, nested_content, markDownHelp=False):
             for element in renderList(desc, markDownHelp):
                 sec += element
             sec += nodes.literal_block(text=child['bare_usage'])
-            for x in print_action_groups(child, nested_content + subContent, markDownHelp):
+            for x in print_action_groups(child, nested_content + subContent, markDownHelp,
+                                         settings=settings):
                 sec += x
 
-            for x in print_subcommands(child, nested_content + subContent, markDownHelp):
+            for x in print_subcommands(child, nested_content + subContent, markDownHelp,
+                                       settings=settings):
                 sec += x
 
             subCommands += sec
@@ -457,6 +459,7 @@ class ArgParseDirective(Directive):
         items = []
         nested_content = nodes.paragraph()
         if 'markdown' in self.options:
+            from sphinxarg.markdown import parseMarkDownBlock
             items.extend(parseMarkDownBlock('\n'.join(self.content) + '\n'))
         else:
             self.state.nested_parse(
@@ -479,7 +482,8 @@ class ArgParseDirective(Directive):
         items.extend(print_action_groups(result, nested_content, markDownHelp,
                                          settings=self.state.document.settings))
         if 'nosubcommands' not in self.options:
-            items.extend(print_subcommands(result, nested_content, markDownHelp))
+            items.extend(print_subcommands(result, nested_content, markDownHelp,
+                                           settings=self.state.document.settings))
         if 'epilog' in result and 'noepilog' not in self.options:
             items.append(self._nested_parse_paragraph(result['epilog']))
 

@@ -38,7 +38,7 @@ For installation and usage details, see the `documentation <http://sphinx-argpar
     ],
     install_requires=[
         'sphinx>=1.2.0',
-        'CommonMark>=0.5.6'
+        'CommonMark'
     ],
     extras_require={
         'dev': ['pytest', 'sphinx_rtd_theme']
