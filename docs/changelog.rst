@@ -2,6 +2,11 @@
 Change log
 **********
 
+0.2.2
+#####
+
+ * CommonMark is now only imported if absolutely required. This should fix failures on read the docs. Thanks to @Chilipp for fixing this!
+
 0.2.1
 #####
 
