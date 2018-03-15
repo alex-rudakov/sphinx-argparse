@@ -18,7 +18,7 @@ Change log
  * Section titles can now be used in tables of contents and linked to. The title itself is also used as the anchor. In the case of repeated names `_replicateX`, where `X` is a number, is prepended to ensure that all titles are uniquely linkable. This was bug `#46 <https://github.com/ribozz/sphinx-argparse/issues/46>`_.
  * The positional (aka required) and named (aka optional) option sections are now named "Positional Arguments" and "Named Arguments", for the sake of clarity (e.g., named arguments can be required). This was issue `#58 <https://github.com/ribozz/sphinx-argparse/issues/58>`_.
  * Fixed quoting of default strings (issue `#59 <https://github.com/ribozz/sphinx-argparse/issues/59>`_).
- * Added the `:noepilogue:` and `:nodescription:` options, thanks to @arewm.
+ * Added the `:noepilog:` and `:nodescription:` options, thanks to @arewm.
  * Added the `:nosubcommand:` option, thanks to @arewm.
 
 0.1.17

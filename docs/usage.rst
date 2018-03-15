@@ -95,6 +95,6 @@ Other useful directives
 
 :nosubcommands: Do not show subcommands.
 
-:noepilogue: Do not parse the epilogue, which can be useful if it contains text that could be incorrectly parse as reStructuredText.
+:noepilog: Do not parse the epilogue, which can be useful if it contains text that could be incorrectly parse as reStructuredText.
 
 :nodescription: Do not parse the description, which can be useful if it contains text that could be incorrectly parse as reStructuredText.
