@@ -1,5 +1,11 @@
-from CommonMark import Parser  # >= 0.5.6
-from CommonMark.node import Node
+try:
+    from commonmark import Parser
+except ImportError:
+    from CommonMark import Parser  # >= 0.5.6
+try:
+    from commonmark.node import Node
+except ImportError:
+    from CommonMark.node import Node
 from docutils import nodes
 from docutils.utils.code_analyzer import Lexer
 
