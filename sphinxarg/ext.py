@@ -200,6 +200,10 @@ def print_subcommands(data, nested_content, markDownHelp=False, settings=None):
                                        settings=settings):
                 sec += x
 
+            if 'epilog' in child and child['epilog']:
+                for element in renderList([child['epilog']], markDownHelp):
+                    sec += element
+
             subCommands += sec
         items.append(subCommands)
 
