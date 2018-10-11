@@ -32,7 +32,7 @@ def map_nested_definitions(nested_content):
                 if len(ci.children) > 0:
                     classifier = ci.children[0].astext()
             if classifier is not None and classifier not in (
-                    '@replace', '@before', '@after'):
+                    '@replace', '@before', '@after', '@skip'):
                 raise Exception('Unknown classifier: %s' % classifier)
             idx = subitem.first_child_matching_class(nodes.term)
             if idx is not None:
@@ -93,6 +93,8 @@ def print_action_groups(data, nested_content, markDownHelp=False, settings=None)
                     desc.append(s)
                 elif classifier == '@before':
                     desc.insert(0, s)
+                elif classifier == '@skip':
+                    continue
                 if len(subContent) > 0:
                     for k, v in map_nested_definitions(subContent).items():
                         definitions[k] = v

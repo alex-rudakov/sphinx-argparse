@@ -62,6 +62,9 @@ You can also add classifiers, which will change how these definitions are incorp
             --upgrade : @after
                 The after directive is the default, so you needn't specify it.
 
+       advanced arguments : @skip
+            skip advanced arguments
+
 
 @before
     Insert content before the parsed help/description message of the argument/option/subcommand/argument-group.
@@ -71,3 +74,6 @@ You can also add classifiers, which will change how these definitions are incorp
 
 @replace
     Replace content of help/description message of argument/option/subcommand/argument-group.
+
+@skip
+    Skip the content of help/description message of subcommand/argument-group.
