@@ -93,8 +93,9 @@ def print_action_groups(data, nested_content, markDownHelp=False, settings=None)
                     desc.append(s)
                 elif classifier == '@before':
                     desc.insert(0, s)
-                for k, v in subContent.items():
-                    definitions[k] = v
+                if len(subContent) > 0:
+                    for k, v in map_nested_definitions(subContent).items():
+                        definitions[k] = v
             # Render appropriately
             for element in renderList(desc, markDownHelp):
                 section += element
@@ -102,7 +103,7 @@ def print_action_groups(data, nested_content, markDownHelp=False, settings=None)
             localDefinitions = definitions
             if len(subContent) > 0:
                 localDefinitions = {k: v for k, v in definitions.items()}
-                for k, v in map_nested_definitions(subContent):
+                for k, v in map_nested_definitions(subContent).items():
                     localDefinitions[k] = v
 
             items = []
