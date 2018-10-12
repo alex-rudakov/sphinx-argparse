@@ -11,4 +11,4 @@ install:
 
 script:
  - py.test
- - flake8 . --ignore=E501 --exclude=docs/conf.py
+ - flake8 . --ignore=E501,E722,E741 --exclude=docs/conf.py
