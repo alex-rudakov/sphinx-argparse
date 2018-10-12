@@ -2,6 +2,13 @@
 Change log
 **********
 
+0.2.3
+#####
+
+ * Fixed a variety of issues, such as with `@replace` (issue #99). Thanks to @evgeni
+ * You can now skip sections with `@skip`. Thanks to @evgeni
+ * Fixed handling of the epilog
+
 0.2.2
 #####
 
