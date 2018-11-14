@@ -2,6 +2,11 @@
 Change log
 **********
 
+0.2.5
+#####
+
+ * A more verbose error message is now printed if there's an issue during importing a script (issue #102).
+
 0.2.4
 #####
 
