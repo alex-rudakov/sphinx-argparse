@@ -1,3 +1,4 @@
+import sys
 from argparse import ArgumentParser
 import os
 
@@ -442,7 +443,7 @@ class ArgParseDirective(Directive):
             try:
                 mod = __import__(module_name, globals(), locals(), [attr_name])
             except:
-                raise self.error('Failed to import "%s" from "%s"' % (attr_name, module_name))
+                raise self.error('Failed to import "%s" from "%s".\n%s' % (attr_name, module_name, sys.exc_info()[1]))
 
             if not hasattr(mod, attr_name):
                 raise self.error((
