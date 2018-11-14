@@ -2,6 +2,11 @@
 Change log
 **********
 
+0.2.4
+#####
+
+ * Various bug fixes and documentation updates.
+
 0.2.3
 #####
 
