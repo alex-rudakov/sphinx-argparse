@@ -98,3 +98,5 @@ Other useful directives
 :noepilog: Do not parse the epilogue, which can be useful if it contains text that could be incorrectly parse as reStructuredText.
 
 :nodescription: Do not parse the description, which can be useful if it contains text that could be incorrectly parse as reStructuredText.
+
+:passparser: This can be used if you don't have a function that returns an argument parser, but rather adds commands to it (`:func:` is then that function).

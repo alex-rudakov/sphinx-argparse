@@ -20,6 +20,11 @@ The short synopsis is below:
             overflow: visible !important;
         }
 
+Alternatively, you can create a `docutil.conf` file with the following contents::
+
+    [writers]
+    option-limit=1
+
 
 Linking to action groups
 ------------------------

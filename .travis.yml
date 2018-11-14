@@ -1,8 +1,6 @@
 language: python
 python:
   - "2.7"
-  - "3.3"
-  - "3.4"
   - "3.5"
   - "3.6"
 install:
@@ -11,4 +9,4 @@ install:
 
 script:
  - py.test
- - flake8 . --ignore=E501,E722,E741 --exclude=docs/conf.py
+ - flake8 . --ignore=E501,E722,E741,W605 --exclude=docs/conf.py
