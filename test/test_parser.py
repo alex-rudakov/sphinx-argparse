@@ -186,6 +186,7 @@ def test_parse_nested():
         }
     ]
 
+
 def test_parse_nested_with_alias():
     parser = argparse.ArgumentParser()
     parser.add_argument('foo', default=False, help='foo help')
@@ -245,6 +246,7 @@ def test_parse_nested_with_alias():
         }
     ]
 
+
 def test_aliased_traversal():
     parser = argparse.ArgumentParser()
 
@@ -261,6 +263,7 @@ def test_aliased_traversal():
         'usage': 'usage: py.test level1 [-h]',
         'name': 'level1 (l1)',
         'identifier': 'level1'})
+
 
 def test_parse_nested_traversal():
     parser = argparse.ArgumentParser()
