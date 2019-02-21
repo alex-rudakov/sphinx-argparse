@@ -186,6 +186,79 @@ def test_parse_nested():
         }
     ]
 
+def test_parse_nested_with_alias():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('foo', default=False, help='foo help')
+    parser.add_argument('bar', default=False)
+
+    subparsers = parser.add_subparsers()
+
+    subparser = subparsers.add_parser('install', aliases=['i'], help='install help')
+    subparser.add_argument('ref', type=str, help='foo1 help')
+    subparser.add_argument('--upgrade', action='store_true', default=False, help='foo2 help')
+
+    data = parse_parser(parser)
+
+    assert data['action_groups'][0]['options'] == [
+        {
+            'name': ['foo'],
+            'help': 'foo help',
+            'default': False
+        }, {
+            'name': ['bar'],
+            'help': '',
+            'default': False
+        }
+    ]
+
+    assert data['children'] == [
+        {
+            'name': 'install (i)',
+            'help': 'install help',
+            'usage': 'usage: py.test install [-h] [--upgrade] ref',
+            'bare_usage': 'py.test install [-h] [--upgrade] ref',
+            'action_groups': [
+                {
+                    'title': 'Positional Arguments',
+                    'description': None,
+                    'options': [
+                        {
+                            'name': ['ref'],
+                            'help': 'foo1 help',
+                            'default': None
+                        }
+                    ]
+                },
+                {
+                    'description': None,
+                    'title': 'Named Arguments',
+                    'options': [
+                        {
+                            'name': ['--upgrade'],
+                            'default': False,
+                            'help': 'foo2 help'
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+
+def test_aliased_traversal():
+    parser = argparse.ArgumentParser()
+
+    subparsers1 = parser.add_subparsers()
+    subparsers1.add_parser('level1', aliases=['l1'])
+
+    data = parse_parser(parser)
+
+    data2 = parser_navigate(data, 'level1')
+
+    assert(data2 == {
+        'bare_usage': 'py.test level1 [-h]',
+        'help': '',
+        'usage': 'usage: py.test level1 [-h]',
+        'name': 'level1'})
 
 def test_parse_nested_traversal():
     parser = argparse.ArgumentParser()
