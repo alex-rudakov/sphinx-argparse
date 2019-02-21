@@ -20,7 +20,9 @@ def parser_navigate(parser_result, path, current_path=None):
             ' '.join(current_path))
     next_hop = path.pop(0)
     for child in parser_result['children']:
-        if child['name'] == next_hop:
+        # identifer is only used for aliased subcommands
+        identifier = child['identifier'] if 'identifier' in child else child['name']
+        if identifier == next_hop:
             current_path.append(next_hop)
             return parser_navigate(child, path, current_path)
     raise NavigationException(
@@ -88,6 +90,8 @@ def parse_parser(parser, data=None, **kwargs):
                 'usage': subaction.format_usage().strip(),
                 'bare_usage': _format_usage_without_prefix(subaction),
             }
+            if subalias:
+                subdata['identifier'] = name
             parse_parser(subaction, subdata, **kwargs)
             data.setdefault('children', []).append(subdata)
 

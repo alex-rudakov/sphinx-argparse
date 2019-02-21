@@ -214,6 +214,7 @@ def test_parse_nested_with_alias():
     assert data['children'] == [
         {
             'name': 'install (i)',
+            'identifier': 'install',
             'help': 'install help',
             'usage': 'usage: py.test install [-h] [--upgrade] ref',
             'bare_usage': 'py.test install [-h] [--upgrade] ref',
@@ -258,7 +259,8 @@ def test_aliased_traversal():
         'bare_usage': 'py.test level1 [-h]',
         'help': '',
         'usage': 'usage: py.test level1 [-h]',
-        'name': 'level1'})
+        'name': 'level1 (l1)',
+        'identifier': 'level1'})
 
 def test_parse_nested_traversal():
     parser = argparse.ArgumentParser()
