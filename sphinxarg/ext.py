@@ -248,7 +248,7 @@ def ensureUniqueIDs(items):
 
 class ArgParseDirective(Directive):
     has_content = True
-    option_spec = dict(module=unchanged, func=unchanged, ref=unchanged,
+    option_spec = dict(module=unchanged, func=unchanged, klass=unchanged, ref=unchanged,
                        prog=unchanged, path=unchanged, nodefault=flag,
                        nodefaultconst=flag, filename=unchanged,
                        manpage=unchanged, nosubcommands=unchanged, passparser=flag,
@@ -419,6 +419,8 @@ class ArgParseDirective(Directive):
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
             attr_name = self.options['func']
+            if 'klass' in self.options:
+                klass_name = self.options['klass']
         elif 'ref' in self.options:
             _parts = self.options['ref'].split('.')
             module_name = '.'.join(_parts[0:-1])
@@ -444,6 +446,15 @@ class ArgParseDirective(Directive):
                 mod = __import__(module_name, globals(), locals(), [attr_name])
             except:
                 raise self.error('Failed to import "%s" from "%s".\n%s' % (attr_name, module_name, sys.exc_info()[1]))
+
+            if 'klass' in self.options:
+                if not hasattr(mod, klass_name):
+                    raise self.error((
+                        'Module "%s" has no attribute "%s"\n'
+                        'Incorrect argparse :module: or :klass: values?'
+                    ) % (module_name, klass_name))
+
+                mod = getattr(mod, klass_name)
 
             if not hasattr(mod, attr_name):
                 raise self.error((
