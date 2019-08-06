@@ -344,6 +344,20 @@ def test_fill_in_default_prog():
     ]
 
 
+def test_fill_in_description_epilog():
+    """
+    Ensure that %(prog)s gets filled in inside description and epilog.
+    """
+    parser = argparse.ArgumentParser(
+        prog='test_fill_in_description',
+        description='Welcome to %(prog)s',
+        epilog='%(prog)s salutes you')
+    data = parse_parser(parser)
+
+    assert data['description'] == 'Welcome to test_fill_in_description'
+    assert data['epilog'] == 'test_fill_in_description salutes you'
+
+
 def test_string_quoting():
     """
     If an optional argument has a string type and a default, then the default should be in quotes.
