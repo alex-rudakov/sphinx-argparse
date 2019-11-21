@@ -149,6 +149,8 @@ def print_action_groups(data, nested_content, markDownHelp=False, settings=None)
                         desc.append(s)
                     elif classifier == '@before':
                         desc.insert(0, s)
+                    elif classifier == '@skip':
+                        continue
                 term = ', '.join(entry['name'])
 
                 n = nodes.option_list_item('',
@@ -199,6 +201,8 @@ def print_subcommands(data, nested_content, markDownHelp=False, settings=None):
                     desc.append(s)
                 elif classifier == '@before':
                     desc.insert(0, s)
+                elif classifier == '@skip':
+                    continue
 
             for element in renderList(desc, markDownHelp):
                 sec += element
