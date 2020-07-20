@@ -12,6 +12,8 @@ from sphinx.util.nodes import nested_parse_with_titles
 
 from sphinxarg.parser import parse_parser, parser_navigate
 
+from . import __version__
+
 
 def map_nested_definitions(nested_content):
     if nested_content is None:
@@ -510,3 +512,7 @@ class ArgParseDirective(Directive):
 
 def setup(app):
     app.add_directive('argparse', ArgParseDirective)
+    return {
+        'parallel_read_safe': True,
+        'version': __version__
+    }
