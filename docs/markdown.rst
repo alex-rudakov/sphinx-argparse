@@ -33,8 +33,6 @@ The above example renders as follows:
     :prog: sample
     :markdown:
 
-    A random paragraph
-
     Heading 1
     =========
 

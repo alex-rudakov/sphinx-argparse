@@ -13,4 +13,4 @@ Contributions are gratefully accepted through `github <https://github.com/ribozz
 
 Don't forget to run tests before committing::
 
-    py.test
+    tox

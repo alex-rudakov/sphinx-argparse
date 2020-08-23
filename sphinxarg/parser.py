@@ -21,7 +21,8 @@ def parser_navigate(parser_result, path, current_path=None):
     next_hop = path.pop(0)
     for child in parser_result['children']:
         # identifer is only used for aliased subcommands
-        identifier = child['identifier'] if 'identifier' in child else child['name']
+        identifier = child['identifier'] if 'identifier' in child \
+            else child['name']
         if identifier == next_hop:
             current_path.append(next_hop)
             return parser_navigate(child, path, current_path)
@@ -85,7 +86,8 @@ def parse_parser(parser, data=None, **kwargs):
             subalias = subsection_alias[subaction]
             subaction.prog = '%s %s' % (parser.prog, name)
             subdata = {
-                'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
+                'name': name if not subalias else '%s (%s)' % (
+                    name, ', '.join(subalias)),
                 'help': helps.get(name, ''),
                 'usage': subaction.format_usage().strip(),
                 'bare_usage': _format_usage_without_prefix(subaction),
@@ -96,10 +98,12 @@ def parse_parser(parser, data=None, **kwargs):
             data.setdefault('children', []).append(subdata)
 
     show_defaults = True
-    if 'skip_default_values' in kwargs and kwargs['skip_default_values'] is True:
+    if 'skip_default_values' in kwargs and \
+            kwargs['skip_default_values'] is True:
         show_defaults = False
     show_defaults_const = show_defaults
-    if 'skip_default_const_values' in kwargs and kwargs['skip_default_const_values'] is True:
+    if 'skip_default_const_values' in kwargs and \
+            kwargs['skip_default_const_values'] is True:
         show_defaults_const = False
 
     # argparse stores the different groups as a list in parser._action_groups
@@ -115,16 +119,20 @@ def parse_parser(parser, data=None, **kwargs):
 
             # Quote default values for string/None types
             default = action.default
-            if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
+            if action.default not in ['', None, True, False] and \
+                    action.type in [None, str] and \
+                    isinstance(action.default, str):
                 default = '"%s"' % default
 
             # fill in any formatters, like %(default)s
-            formatDict = dict(vars(action), prog=data.get('prog', ''), default=default)
+            formatDict = dict(vars(action),
+                              prog=data.get('prog', ''),
+                              default=default)
             formatDict['default'] = default
             helpStr = action.help or ''  # Ensure we don't print None
             try:
                 helpStr = helpStr % formatDict
-            except:
+            except Exception:
                 pass
 
             # Options have the option_strings set, positional arguments don't
@@ -139,9 +147,10 @@ def parse_parser(parser, data=None, **kwargs):
                 continue
 
             if isinstance(action, _StoreConstAction):
+                _default = default if show_defaults_const else '==SUPPRESS=='
                 option = {
                     'name': name,
-                    'default': default if show_defaults_const else '==SUPPRESS==',
+                    'default': _default,
                     'help': helpStr
                 }
             else:

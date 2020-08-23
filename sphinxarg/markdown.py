@@ -1,3 +1,5 @@
+import sys
+
 try:
     from commonmark import Parser
 except ImportError:
@@ -12,11 +14,13 @@ from docutils.utils.code_analyzer import Lexer
 
 def customWalker(node, space=''):
     """
-    A convenience function to ease debugging. It will print the node structure that's returned from CommonMark
+    A convenience function to ease debugging.
+    It will print the node structure that's returned from CommonMark.
 
     The usage would be something like:
 
-    >>> content = Parser().parse('Some big text block\n===================\n\nwith content\n')
+    >>> content = Parser().parse(
+    ...     'Some big text block\n===================\n\nwith content\n')
     >>> customWalker(content)
     document
         heading
@@ -29,13 +33,13 @@ def customWalker(node, space=''):
     txt = ''
     try:
         txt = node.literal
-    except:
+    except Exception:
         pass
 
     if txt is None or txt == '':
-        print('{}{}'.format(space, node.t))
+        sys.stdout.write('{}{}\n'.format(space, node.t))
     else:
-        print('{}{}\t{}'.format(space, node.t, txt))
+        sys.stdout.write('{}{}\t{}\n'.format(space, node.t, txt))
 
     cur = node.first_child
     if cur:
@@ -82,7 +86,8 @@ def softbreak(node):
 
 def reference(node):
     """
-    A hyperlink. Note that alt text doesn't work, since there's no apparent way to do that in docutils
+    A hyperlink. Note that alt text doesn't work, since there's
+    no apparent way to do that in docutils
     """
     o = nodes.reference()
     o['refuri'] = node.destination
@@ -120,10 +125,10 @@ def literal(node):
     rendered = []
     try:
         if node.info is not None:
-            l = Lexer(node.literal, node.info, tokennames="long")
-            for _ in l:
+            lexer = Lexer(node.literal, node.info, tokennames="long")
+            for _ in lexer:
                 rendered.append(node.inline(classes=_[0], text=_[1]))
-    except:
+    except Exception:
         pass
 
     classes = ['code']
@@ -148,10 +153,10 @@ def literal_block(node):
     rendered = []
     try:
         if node.info is not None:
-            l = Lexer(node.literal, node.info, tokennames="long")
-            for _ in l:
+            lexer = Lexer(node.literal, node.info, tokennames="long")
+            for _ in lexer:
                 rendered.append(node.inline(classes=_[0], text=_[1]))
-    except:
+    except Exception:
         pass
 
     classes = ['code']
@@ -252,7 +257,9 @@ def listNode(node):
     if node.list_data['type'] == u'bullet':
         o = nodes.bullet_list(bullet=node.list_data['bullet_char'])
     else:
-        o = nodes.enumerated_list(suffix=node.list_data['delimiter'], enumtype='arabic', start=node.list_data['start'])
+        o = nodes.enumerated_list(suffix=node.list_data['delimiter'],
+                                  enumtype='arabic',
+                                  start=node.list_data['start'])
     for n in MarkDown(node):
         o += n
     return o
@@ -260,7 +267,8 @@ def listNode(node):
 
 def MarkDown(node):
     """
-    Returns a list of nodes, containing CommonMark nodes converted to docutils nodes
+    Returns a list of nodes, containing CommonMark nodes
+    converted to docutils nodes.
     """
     cur = node.first_child
 
@@ -303,7 +311,8 @@ def MarkDown(node):
         elif t == 'MDsection':
             output.append(section(cur))
         else:
-            print('Received unhandled type: {}. Full print of node:'.format(t))
+            msg_schema = 'Received unhandled type: {}. Full print of node:\n'
+            sys.stdout.write(msg_schema.format(t))
             cur.pretty()
 
         cur = cur.nxt
@@ -329,8 +338,10 @@ def nestSections(block, level=1):
     """
     Sections aren't handled by CommonMark at the moment.
     This function adds sections to a block of nodes.
-    'title' nodes with an assigned level below 'level' will be put in a child section.
-    If there are no child nodes with titles of level 'level' then nothing is done
+    'title' nodes with an assigned level below 'level'
+    will be put in a child section.
+    If there are no child nodes with titles of level 'level'
+    then nothing is done.
     """
     cur = block.first_child
     if cur is not None:
@@ -394,7 +405,8 @@ def parseMarkDownBlock(text):
     """
     Parses a block of text, returning a list of docutils nodes
 
-    >>> parseMarkdownBlock("Some\n====\n\nblock of text\n\nHeader\n======\n\nblah\n")
+    >>> parseMarkdownBlock(
+    ...     "Some\n====\n\nblock of text\n\nHeader\n======\n\nblah\n")
     []
     """
     block = Parser().parse(text)
