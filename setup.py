@@ -17,6 +17,7 @@ setup(
     ],
     url='https://github.com/ribozz/sphinx-argparse',
     license='MIT',
+    data_files=[("", ["LICENSE"])],
     author='Aleksandr Rudakov and Devon Ryan',
     author_email='ribozz@gmail.com',
     description='A sphinx extension that automatically documents argparse commands and options',
