@@ -167,8 +167,12 @@ def parse_parser(parser, data=None, **kwargs):
         if action_group.title == 'positional arguments':
             action_group.title = 'Positional Arguments'
 
+        description = action_group.description
+        if description is not None:
+            description = description % {'prog': data.get('prog', '') }
+
         group = {'title': action_group.title,
-                 'description': action_group.description % {'prog': data.get('prog', '') },
+                 'description': description,
                  'options': options_list}
 
         action_groups.append(group)
