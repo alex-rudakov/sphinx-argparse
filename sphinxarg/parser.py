@@ -165,7 +165,7 @@ def parse_parser(parser, data=None, **kwargs):
             action_group.title = 'Positional Arguments'
 
         group = {'title': action_group.title,
-                 'description': action_group.description,
+                 'description': action_group.description % {'prog': data.get('prog', '') },
                  'options': options_list}
 
         action_groups.append(group)
