@@ -107,7 +107,7 @@ def print_action_groups(data, nested_content, markDownHelp=False, settings=None)
                     for k, v in map_nested_definitions(subContent).items():
                         definitions[k] = v
             # Render appropriately
-            for element in renderList(desc, markDownHelp):
+            for element in renderList(desc, markDownHelp, settings=settings):
                 section += element
 
             localDefinitions = definitions
