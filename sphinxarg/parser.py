@@ -59,6 +59,9 @@ def parse_parser(parser, data=None, **kwargs):
             'bare_usage': _format_usage_without_prefix(parser),
             'prog': parser.prog,
         }
+    if 'prog' not in data:
+        data['prog'] = parser.prog
+
     _try_add_parser_attribute(data, parser, 'description')
     _try_add_parser_attribute(data, parser, 'epilog')
     for action in parser._get_positional_actions():
