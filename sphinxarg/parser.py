@@ -120,7 +120,9 @@ def parse_parser(parser, data=None, **kwargs):
                 default = '"%s"' % default
 
             # fill in any formatters, like %(default)s
-            formatDict = dict(vars(action), prog=data.get('prog', ''), default=default)
+            formatDict = dict(vars(action),
+                              prog=data.get('prog', ''),
+                              default=default)
             helpStr = action.help or ''  # Ensure we don't print None
             try:
                 helpStr = helpStr % formatDict
