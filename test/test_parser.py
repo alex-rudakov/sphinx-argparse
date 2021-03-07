@@ -355,18 +355,21 @@ def test_fill_in_help_specifiers_incl_prog():
     ]
 
 
-def test_fill_in_description_epilog():
+def test_fill_in_usage_description_epilog():
     """
-    Ensure that %(prog)s gets filled in inside description and epilog.
+    Ensure that %(prog)s gets filled in inside usage, description and epilog.
     """
     parser = argparse.ArgumentParser(
-        prog='test_fill_in_description_epilog',
+        prog='test_fill_in_usage_description_epilog',
+        usage='%(prog)s [options]',
         description='Welcome to %(prog)s',
         epilog='%(prog)s salutes you')
     data = parse_parser(parser)
 
-    assert data['description'] == 'Welcome to test_fill_in_description_epilog'
-    assert data['epilog'] == 'test_fill_in_description_epilog salutes you'
+    assert data['usage'] == 'usage: test_fill_in_usage_description_epilog [options]'
+    assert data['bare_usage'] == 'test_fill_in_usage_description_epilog [options]'
+    assert data['description'] == 'Welcome to test_fill_in_usage_description_epilog'
+    assert data['epilog'] == 'test_fill_in_usage_description_epilog salutes you'
 
 
 def test_string_quoting():
