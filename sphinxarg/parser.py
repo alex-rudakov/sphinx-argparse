@@ -118,11 +118,16 @@ def parse_parser(parser, data=None, **kwargs):
             default = action.default
             if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
                 default = '"%s"' % default
+            # Don't use repr of types
+            typename = None
+            if action.type is not None:
+                typename = action.type.__name__
 
             # fill in any formatters, like %(default)s
             formatDict = dict(vars(action),
                               prog=data.get('prog', ''),
-                              default=default)
+                              default=default,
+                              type=typename)
             helpStr = action.help or ''  # Ensure we don't print None
             try:
                 helpStr = helpStr % formatDict
