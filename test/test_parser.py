@@ -448,6 +448,23 @@ def test_action_groups_with_subcommands():
     ]
 
     assert data['children'] == [
-        {'usage': 'usage: foo A [-h] baz', 'action_groups': [{'options': [{'default': None, 'name': ['baz'], 'help': 'An integer'}], 'description': None, 'title': 'Positional Arguments'}], 'bare_usage': 'foo A [-h] baz', 'name': 'A', 'help': 'A subparser'},
-        {'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]', 'action_groups': [{'options': [{'default': None, 'choices': 'XYZ', 'name': ['--barg'], 'help': 'A list of choices'}], 'description': None, 'title': 'Named Arguments'}], 'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]', 'name': 'B', 'help': 'B subparser'}
+        {'usage': 'usage: foo A [-h] baz',
+         'action_groups': [{'options': [{'default': None,
+                                         'name': ['baz'],
+                                         'help': 'An integer'}],
+                            'description': None,
+                            'title': 'Positional Arguments'}],
+         'bare_usage': 'foo A [-h] baz',
+         'name': 'A',
+         'help': 'A subparser'},
+        {'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]',
+         'action_groups': [{'options': [{'default': None,
+                                         'choices': 'XYZ',
+                                         'name': ['--barg'],
+                                         'help': 'A list of choices'}],
+                            'description': None,
+                            'title': 'Named Arguments'}],
+         'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]',
+         'name': 'B',
+         'help': 'B subparser'}
     ]
