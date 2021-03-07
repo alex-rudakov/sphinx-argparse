@@ -88,6 +88,7 @@ def parse_parser(parser, data=None, **kwargs):
                 'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
                 'usage': subaction.format_usage().strip(),
                 'bare_usage': _format_usage_without_prefix(subaction),
+                'prog': parser.prog,
             }
             subdata['help'] = helps.get(name, '') % {'prog': parser.prog}
 

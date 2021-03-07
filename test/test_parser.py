@@ -157,6 +157,7 @@ def test_parse_nested():
     assert data['children'] == [
         {
             'name': 'install',
+            'prog': 'test_parse_nested',
             'help': 'install help',
             'usage': 'usage: test_parse_nested install [-h] [--upgrade] ref',
             'bare_usage': 'test_parse_nested install [-h] [--upgrade] ref',
@@ -217,6 +218,7 @@ if six.PY3:
         assert data['children'] == [
             {
                 'name': 'install (i)',
+                'prog': 'test_parse_nested_with_alias',
                 'identifier': 'install',
                 'help': 'install help',
                 'usage': 'usage: test_parse_nested_with_alias install [-h] [--upgrade] ref',
@@ -263,6 +265,7 @@ if six.PY3:
             'help': '',
             'usage': 'usage: test_aliased_traversal level1 [-h]',
             'name': 'level1 (l1)',
+            'prog': 'test_aliased_traversal',
             'identifier': 'level1'})
 
 
@@ -301,6 +304,7 @@ def test_parse_nested_traversal():
     assert data2['children'] == [
         {
             'name': 'level3',
+            'prog': 'test_parse_nested_traversal level1 level2',
             'help': '',
             'usage': 'usage: test_parse_nested_traversal level1 level2 level3 [-h] foo bar',
             'bare_usage': 'test_parse_nested_traversal level1 level2 level3 [-h] foo bar',
@@ -462,6 +466,7 @@ def test_action_groups_with_subcommands():
          'bare_usage': 'foo A [options] baz',
          'description': 'Perform action a from within foo.',
          'name': 'A',
+         'prog': 'foo',
          'help': 'A subparser for foo'},
         {'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]',
          'action_groups': [{'options': [{'default': None,
@@ -473,5 +478,6 @@ def test_action_groups_with_subcommands():
          'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]',
          'epilog': 'Action b is expensive when performed by foo.',
          'name': 'B',
+         'prog': 'foo',
          'help': 'B subparser'}
     ]
