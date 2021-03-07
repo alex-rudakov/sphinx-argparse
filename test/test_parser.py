@@ -327,19 +327,30 @@ def test_parse_nested_traversal():
     assert data == parser_navigate(data, '')
 
 
-def test_fill_in_default_prog():
+def test_fill_in_help_specifiers_incl_prog():
     """
-    Ensure that %(default)s and %(prog)s are getting properly filled in inside help=''
+    Ensure that format specifiers get filled in inside help.
+
+    Specifiers are %(prog)s and most keyword arguments to add_argument().
     """
-    parser = argparse.ArgumentParser(prog='test_fill_in_default_prog')
+    parser = argparse.ArgumentParser(prog='test_fill_in_help_specifiers_incl_prog')
     parser.add_argument('bar', default='foo', help='%(prog)s (default: %(default)s)')
+    parser.add_argument('-p', type=int, metavar='passes',
+                        help='number of %(metavar)s (%(type)s)')
     data = parse_parser(parser)
 
     assert data['action_groups'][0]['options'] == [
         {
             'default': '"foo"',
             'name': ['bar'],
-            'help': 'test_fill_in_default_prog (default: "foo")'
+            'help': 'test_fill_in_help_specifiers_incl_prog (default: "foo")'
+        }
+    ]
+    assert data['action_groups'][1]['options'] == [
+        {
+            'default': None,
+            'name': ['-p'],
+            'help': 'number of passes (int)'
         }
     ]
 
