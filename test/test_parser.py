@@ -424,9 +424,14 @@ def test_action_groups_with_subcommands():
     """
     parser = argparse.ArgumentParser('foo')
     subparsers = parser.add_subparsers()
-    parserA = subparsers.add_parser('A', help='A subparser')
+    parserA = subparsers.add_parser('A', help='A subparser for %(prog)s',
+                                    usage='%(prog)s [options] baz',
+                                    description='Perform action a from'
+                                    ' within %(prog)s.')
     parserA.add_argument('baz', type=int, help='An integer')
-    parserB = subparsers.add_parser('B', help='B subparser')
+    parserB = subparsers.add_parser('B', help='B subparser',
+                                    epilog='Action b is expensive when'
+                                    ' performed by %(prog)s.')
     parserB.add_argument('--barg', choices='XYZ', help='A list of choices')
 
     parser.add_argument('--foo', help='foo help')
@@ -448,15 +453,16 @@ def test_action_groups_with_subcommands():
     ]
 
     assert data['children'] == [
-        {'usage': 'usage: foo A [-h] baz',
+        {'usage': 'usage: foo A [options] baz',
          'action_groups': [{'options': [{'default': None,
                                          'name': ['baz'],
                                          'help': 'An integer'}],
                             'description': None,
                             'title': 'Positional Arguments'}],
-         'bare_usage': 'foo A [-h] baz',
+         'bare_usage': 'foo A [options] baz',
+         'description': 'Perform action a from within foo.',
          'name': 'A',
-         'help': 'A subparser'},
+         'help': 'A subparser for foo'},
         {'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]',
          'action_groups': [{'options': [{'default': None,
                                          'choices': 'XYZ',
@@ -465,6 +471,7 @@ def test_action_groups_with_subcommands():
                             'description': None,
                             'title': 'Named Arguments'}],
          'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]',
+         'epilog': 'Action b is expensive when performed by foo.',
          'name': 'B',
          'help': 'B subparser'}
     ]
