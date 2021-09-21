@@ -130,7 +130,7 @@ def test_parse_description():
 
 
 def test_parse_nested():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='test_parse_nested')
     parser.add_argument('foo', default=False, help='foo help')
     parser.add_argument('bar', default=False)
 
@@ -157,9 +157,10 @@ def test_parse_nested():
     assert data['children'] == [
         {
             'name': 'install',
+            'prog': 'test_parse_nested',
             'help': 'install help',
-            'usage': 'usage: py.test install [-h] [--upgrade] ref',
-            'bare_usage': 'py.test install [-h] [--upgrade] ref',
+            'usage': 'usage: test_parse_nested install [-h] [--upgrade] ref',
+            'bare_usage': 'test_parse_nested install [-h] [--upgrade] ref',
             'action_groups': [
                 {
                     'title': 'Positional Arguments',
@@ -190,7 +191,7 @@ def test_parse_nested():
 
 if six.PY3:
     def test_parse_nested_with_alias():
-        parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser(prog='test_parse_nested_with_alias')
         parser.add_argument('foo', default=False, help='foo help')
         parser.add_argument('bar', default=False)
 
@@ -217,10 +218,11 @@ if six.PY3:
         assert data['children'] == [
             {
                 'name': 'install (i)',
+                'prog': 'test_parse_nested_with_alias',
                 'identifier': 'install',
                 'help': 'install help',
-                'usage': 'usage: py.test install [-h] [--upgrade] ref',
-                'bare_usage': 'py.test install [-h] [--upgrade] ref',
+                'usage': 'usage: test_parse_nested_with_alias install [-h] [--upgrade] ref',
+                'bare_usage': 'test_parse_nested_with_alias install [-h] [--upgrade] ref',
                 'action_groups': [
                     {
                         'title': 'Positional Arguments',
@@ -249,7 +251,7 @@ if six.PY3:
         ]
 
     def test_aliased_traversal():
-        parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser(prog='test_aliased_traversal')
 
         subparsers1 = parser.add_subparsers()
         subparsers1.add_parser('level1', aliases=['l1'])
@@ -259,15 +261,16 @@ if six.PY3:
         data2 = parser_navigate(data, 'level1')
 
         assert(data2 == {
-            'bare_usage': 'py.test level1 [-h]',
+            'bare_usage': 'test_aliased_traversal level1 [-h]',
             'help': '',
-            'usage': 'usage: py.test level1 [-h]',
+            'usage': 'usage: test_aliased_traversal level1 [-h]',
             'name': 'level1 (l1)',
+            'prog': 'test_aliased_traversal',
             'identifier': 'level1'})
 
 
 def test_parse_nested_traversal():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='test_parse_nested_traversal')
 
     subparsers1 = parser.add_subparsers()
     subparser1 = subparsers1.add_parser('level1')
@@ -301,9 +304,10 @@ def test_parse_nested_traversal():
     assert data2['children'] == [
         {
             'name': 'level3',
+            'prog': 'test_parse_nested_traversal level1 level2',
             'help': '',
-            'usage': 'usage: py.test level1 level2 level3 [-h] foo bar',
-            'bare_usage': 'py.test level1 level2 level3 [-h] foo bar',
+            'usage': 'usage: test_parse_nested_traversal level1 level2 level3 [-h] foo bar',
+            'bare_usage': 'test_parse_nested_traversal level1 level2 level3 [-h] foo bar',
             'action_groups': [
                 {
                     'title': 'Positional Arguments',
@@ -327,21 +331,49 @@ def test_parse_nested_traversal():
     assert data == parser_navigate(data, '')
 
 
-def test_fill_in_default_prog():
+def test_fill_in_help_specifiers_incl_prog():
     """
-    Ensure that %(default)s and %(prog)s are getting properly filled in inside help=''
+    Ensure that format specifiers get filled in inside help.
+
+    Specifiers are %(prog)s and most keyword arguments to add_argument().
     """
-    parser = argparse.ArgumentParser(prog='test_fill_in_default_prog')
+    parser = argparse.ArgumentParser(prog='test_fill_in_help_specifiers_incl_prog')
     parser.add_argument('bar', default='foo', help='%(prog)s (default: %(default)s)')
+    parser.add_argument('-p', type=int, metavar='passes',
+                        help='number of %(metavar)s (%(type)s)')
     data = parse_parser(parser)
 
     assert data['action_groups'][0]['options'] == [
         {
             'default': '"foo"',
             'name': ['bar'],
-            'help': 'test_fill_in_default_prog (default: "foo")'
+            'help': 'test_fill_in_help_specifiers_incl_prog (default: "foo")'
         }
     ]
+    assert data['action_groups'][1]['options'] == [
+        {
+            'default': None,
+            'name': ['-p'],
+            'help': 'number of passes (int)'
+        }
+    ]
+
+
+def test_fill_in_usage_description_epilog():
+    """
+    Ensure that %(prog)s gets filled in inside usage, description and epilog.
+    """
+    parser = argparse.ArgumentParser(
+        prog='test_fill_in_usage_description_epilog',
+        usage='%(prog)s [options]',
+        description='Welcome to %(prog)s',
+        epilog='%(prog)s salutes you')
+    data = parse_parser(parser)
+
+    assert data['usage'] == 'usage: test_fill_in_usage_description_epilog [options]'
+    assert data['bare_usage'] == 'test_fill_in_usage_description_epilog [options]'
+    assert data['description'] == 'Welcome to test_fill_in_usage_description_epilog'
+    assert data['epilog'] == 'test_fill_in_usage_description_epilog salutes you'
 
 
 def test_string_quoting():
@@ -396,9 +428,14 @@ def test_action_groups_with_subcommands():
     """
     parser = argparse.ArgumentParser('foo')
     subparsers = parser.add_subparsers()
-    parserA = subparsers.add_parser('A', help='A subparser')
+    parserA = subparsers.add_parser('A', help='A subparser for %(prog)s',
+                                    usage='%(prog)s [options] baz',
+                                    description='Perform action a from'
+                                    ' within %(prog)s.')
     parserA.add_argument('baz', type=int, help='An integer')
-    parserB = subparsers.add_parser('B', help='B subparser')
+    parserB = subparsers.add_parser('B', help='B subparser',
+                                    epilog='Action b is expensive when'
+                                    ' performed by %(prog)s.')
     parserB.add_argument('--barg', choices='XYZ', help='A list of choices')
 
     parser.add_argument('--foo', help='foo help')
@@ -420,6 +457,27 @@ def test_action_groups_with_subcommands():
     ]
 
     assert data['children'] == [
-        {'usage': 'usage: foo A [-h] baz', 'action_groups': [{'options': [{'default': None, 'name': ['baz'], 'help': 'An integer'}], 'description': None, 'title': 'Positional Arguments'}], 'bare_usage': 'foo A [-h] baz', 'name': 'A', 'help': 'A subparser'},
-        {'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]', 'action_groups': [{'options': [{'default': None, 'choices': 'XYZ', 'name': ['--barg'], 'help': 'A list of choices'}], 'description': None, 'title': 'Named Arguments'}], 'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]', 'name': 'B', 'help': 'B subparser'}
+        {'usage': 'usage: foo A [options] baz',
+         'action_groups': [{'options': [{'default': None,
+                                         'name': ['baz'],
+                                         'help': 'An integer'}],
+                            'description': None,
+                            'title': 'Positional Arguments'}],
+         'bare_usage': 'foo A [options] baz',
+         'description': 'Perform action a from within foo.',
+         'name': 'A',
+         'prog': 'foo',
+         'help': 'A subparser for foo'},
+        {'usage': 'usage: foo B [-h] [--barg {X,Y,Z}]',
+         'action_groups': [{'options': [{'default': None,
+                                         'choices': 'XYZ',
+                                         'name': ['--barg'],
+                                         'help': 'A list of choices'}],
+                            'description': None,
+                            'title': 'Named Arguments'}],
+         'bare_usage': 'foo B [-h] [--barg {X,Y,Z}]',
+         'epilog': 'Action b is expensive when performed by foo.',
+         'name': 'B',
+         'prog': 'foo',
+         'help': 'B subparser'}
     ]

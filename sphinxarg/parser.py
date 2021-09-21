@@ -37,7 +37,7 @@ def _try_add_parser_attribute(data, parser, attribname):
     if not isinstance(attribval, str):
         return
     if len(attribval) > 0:
-        data[attribname] = attribval
+        data[attribname] = attribval % {'prog': data['prog']}
 
 
 def _format_usage_without_prefix(parser):
@@ -86,10 +86,12 @@ def parse_parser(parser, data=None, **kwargs):
             subaction.prog = '%s %s' % (parser.prog, name)
             subdata = {
                 'name': name if not subalias else '%s (%s)' % (name, ', '.join(subalias)),
-                'help': helps.get(name, ''),
                 'usage': subaction.format_usage().strip(),
                 'bare_usage': _format_usage_without_prefix(subaction),
+                'prog': parser.prog,
             }
+            subdata['help'] = helps.get(name, '') % {'prog': parser.prog}
+
             if subalias:
                 subdata['identifier'] = name
             parse_parser(subaction, subdata, **kwargs)
@@ -117,10 +119,16 @@ def parse_parser(parser, data=None, **kwargs):
             default = action.default
             if action.default not in ['', None, True, False] and action.type in [None, str] and isinstance(action.default, str):
                 default = '"%s"' % default
+            # Don't use repr of types
+            typename = None
+            if action.type is not None:
+                typename = action.type.__name__
 
             # fill in any formatters, like %(default)s
-            formatDict = dict(vars(action), prog=data.get('prog', ''), default=default)
-            formatDict['default'] = default
+            formatDict = dict(vars(action),
+                              prog=data.get('prog', ''),
+                              default=default,
+                              type=typename)
             helpStr = action.help or ''  # Ensure we don't print None
             try:
                 helpStr = helpStr % formatDict
