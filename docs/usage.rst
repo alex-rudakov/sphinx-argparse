@@ -12,6 +12,8 @@ The `module`, `func` and `prog` options are required.
 
 `func` is a function that returns an instance of the `argparse.ArgumentParser` class.
 
+If `func` is a class method then use `klass` to indicate the class it belongs to.
+
 Alternatively, one can use :ref: like this::
 
     .. argparse::
