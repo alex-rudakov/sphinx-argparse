@@ -130,7 +130,7 @@ def test_parse_description():
 
 
 def test_parse_nested():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='test_parse_nested')
     parser.add_argument('foo', default=False, help='foo help')
     parser.add_argument('bar', default=False)
 
@@ -158,8 +158,8 @@ def test_parse_nested():
         {
             'name': 'install',
             'help': 'install help',
-            'usage': 'usage: py.test install [-h] [--upgrade] ref',
-            'bare_usage': 'py.test install [-h] [--upgrade] ref',
+            'usage': 'usage: test_parse_nested install [-h] [--upgrade] ref',
+            'bare_usage': 'test_parse_nested install [-h] [--upgrade] ref',
             'action_groups': [
                 {
                     'title': 'Positional Arguments',
@@ -190,7 +190,7 @@ def test_parse_nested():
 
 if six.PY3:
     def test_parse_nested_with_alias():
-        parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser(prog='test_parse_nested_with_alias')
         parser.add_argument('foo', default=False, help='foo help')
         parser.add_argument('bar', default=False)
 
@@ -219,8 +219,8 @@ if six.PY3:
                 'name': 'install (i)',
                 'identifier': 'install',
                 'help': 'install help',
-                'usage': 'usage: py.test install [-h] [--upgrade] ref',
-                'bare_usage': 'py.test install [-h] [--upgrade] ref',
+                'usage': 'usage: test_parse_nested_with_alias install [-h] [--upgrade] ref',
+                'bare_usage': 'test_parse_nested_with_alias install [-h] [--upgrade] ref',
                 'action_groups': [
                     {
                         'title': 'Positional Arguments',
@@ -249,7 +249,7 @@ if six.PY3:
         ]
 
     def test_aliased_traversal():
-        parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser(prog='test_aliased_traversal')
 
         subparsers1 = parser.add_subparsers()
         subparsers1.add_parser('level1', aliases=['l1'])
@@ -259,15 +259,15 @@ if six.PY3:
         data2 = parser_navigate(data, 'level1')
 
         assert(data2 == {
-            'bare_usage': 'py.test level1 [-h]',
+            'bare_usage': 'test_aliased_traversal level1 [-h]',
             'help': '',
-            'usage': 'usage: py.test level1 [-h]',
+            'usage': 'usage: test_aliased_traversal level1 [-h]',
             'name': 'level1 (l1)',
             'identifier': 'level1'})
 
 
 def test_parse_nested_traversal():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(prog='test_parse_nested_traversal')
 
     subparsers1 = parser.add_subparsers()
     subparser1 = subparsers1.add_parser('level1')
@@ -302,8 +302,8 @@ def test_parse_nested_traversal():
         {
             'name': 'level3',
             'help': '',
-            'usage': 'usage: py.test level1 level2 level3 [-h] foo bar',
-            'bare_usage': 'py.test level1 level2 level3 [-h] foo bar',
+            'usage': 'usage: test_parse_nested_traversal level1 level2 level3 [-h] foo bar',
+            'bare_usage': 'test_parse_nested_traversal level1 level2 level3 [-h] foo bar',
             'action_groups': [
                 {
                     'title': 'Positional Arguments',
@@ -342,6 +342,20 @@ def test_fill_in_default_prog():
             'help': 'test_fill_in_default_prog (default: "foo")'
         }
     ]
+
+
+def test_fill_in_description_epilog():
+    """
+    Ensure that %(prog)s gets filled in inside description and epilog.
+    """
+    parser = argparse.ArgumentParser(
+        prog='test_fill_in_description',
+        description='Welcome to %(prog)s',
+        epilog='%(prog)s salutes you')
+    data = parse_parser(parser)
+
+    assert data['description'] == 'Welcome to test_fill_in_description'
+    assert data['epilog'] == 'test_fill_in_description salutes you'
 
 
 def test_string_quoting():

@@ -37,7 +37,7 @@ def _try_add_parser_attribute(data, parser, attribname):
     if not isinstance(attribval, str):
         return
     if len(attribval) > 0:
-        data[attribname] = attribval
+        data[attribname] = attribval % {'prog': data['prog']}
 
 
 def _format_usage_without_prefix(parser):
@@ -59,6 +59,9 @@ def parse_parser(parser, data=None, **kwargs):
             'bare_usage': _format_usage_without_prefix(parser),
             'prog': parser.prog,
         }
+    if 'prog' not in data:
+        data['prog'] = parser.prog
+
     _try_add_parser_attribute(data, parser, 'description')
     _try_add_parser_attribute(data, parser, 'epilog')
     for action in parser._get_positional_actions():
@@ -164,8 +167,12 @@ def parse_parser(parser, data=None, **kwargs):
         if action_group.title == 'positional arguments':
             action_group.title = 'Positional Arguments'
 
+        description = action_group.description
+        if description is not None:
+            description = description % {'prog': data.get('prog', '') }
+
         group = {'title': action_group.title,
-                 'description': action_group.description,
+                 'description': description,
                  'options': options_list}
 
         action_groups.append(group)
