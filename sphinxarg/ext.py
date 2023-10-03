@@ -1,6 +1,7 @@
 import sys
 from argparse import ArgumentParser
 import os
+from enum import EnumType
 
 from docutils import nodes
 from docutils.statemachine import StringList
@@ -125,11 +126,15 @@ def print_action_groups(data, nested_content, markDownHelp=False, settings=None)
                     name	A list of option names (e.g., ['-h', '--help']
                     help	The help message string
                 There may also be a 'choices' member.
+                There may also be a 'type' member. If this type is an EnumType
+                then this will be used as possible choices.
                 """
                 # Build the help text
                 arg = []
                 if 'choices' in entry:
                     arg.append('Possible choices: {}\n'.format(", ".join([str(c) for c in entry['choices']])))
+                elif 'type' in entry and isinstance(entry['type'], EnumType):
+                    arg.append('Possible choices: {}\n'.format(', '.join(entry['type'])))
                 if 'help' in entry:
                     arg.append(entry['help'])
                 if entry['default'] is not None and entry['default'] not in ['"==SUPPRESS=="', '==SUPPRESS==']:
@@ -355,6 +360,10 @@ class ArgParseDirective(Directive):
                 arg_items.append(
                     nodes.paragraph(
                         text='Possible choices: ' + ', '.join(arg['choices'])))
+            elif 'type' in arg and isinstance(arg['type'], EnumType):
+                arg_items.append(
+                    nodes.paragraph(
+                        text='Possible choices: ' + ', '.join(arg['type'])))
             items.append(
                 nodes.option_list_item(
                     '',
@@ -387,6 +396,10 @@ class ArgParseDirective(Directive):
                 opt_items.append(
                     nodes.paragraph(
                         text='Possible choices: ' + ', '.join(opt['choices'])))
+            elif 'type' in opt and isinstance(opt['type'], EnumType):
+                opt_items.append(
+                    nodes.paragraph(
+                        text='Possible choices: ' + ', '.join(opt['type'])))
             items.append(
                 nodes.option_list_item(
                     '', nodes.option_group('', *names),
