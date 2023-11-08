@@ -221,7 +221,7 @@ def print_subcommands(data, nested_content, markDownHelp=False, settings=None):
     return items
 
 
-def ensureUniqueIDs(items):
+def ensureUniqueIDs(items, prefix):
     """
     If action groups are repeated, then links in the table of contents will
     just go to the first of the repeats. This may not be desirable, particularly
@@ -234,6 +234,7 @@ def ensureUniqueIDs(items):
         for n in item.traverse(descend=True, siblings=True, ascend=False):
             if isinstance(n, nodes.section):
                 ids = n['ids']
+                ids = ['%s %s' % (prefix, i) for i in ids]
                 for idx, id in enumerate(ids):
                     if id not in s:
                         s.add(id)
@@ -416,24 +417,29 @@ class ArgParseDirective(Directive):
         return content
 
     def run(self):
+        prefix = ''
         if 'module' in self.options and 'func' in self.options:
             module_name = self.options['module']
             attr_name = self.options['func']
+            prefix = 'module-%s.%s' % (module_name, attr_name)
         elif 'ref' in self.options:
             _parts = self.options['ref'].split('.')
             module_name = '.'.join(_parts[0:-1])
             attr_name = _parts[-1]
+            prefix = 'module-%s.%s' % (module_name, attr_name)
         elif 'filename' in self.options and 'func' in self.options:
+            filename = self.options['filename']
             mod = {}
             try:
-                f = open(self.options['filename'])
+                f = open(filename)
             except IOError:
                 # try open with abspath
-                f = open(os.path.abspath(self.options['filename']))
-            code = compile(f.read(), self.options['filename'], 'exec')
+                f = open(os.path.abspath(filename))
+            code = compile(f.read(), filename, 'exec')
             exec(code, mod)
             attr_name = self.options['func']
             func = mod[attr_name]
+            prefix = '%s.%s' % (filename, attr_name)
         else:
             raise self.error(
                 ':module: and :func: should be specified, or :ref:, or :filename: and :func:')
@@ -503,7 +509,7 @@ class ArgParseDirective(Directive):
             items.append(self._nested_parse_paragraph(result['epilog']))
 
         # Traverse the returned nodes, modifying the title IDs as necessary to avoid repeats
-        ensureUniqueIDs(items)
+        ensureUniqueIDs(items, prefix)
 
         return items
 
